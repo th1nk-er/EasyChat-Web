@@ -1,0 +1,50 @@
+import { JSEncrypt } from "jsencrypt";
+
+const publicKey = `MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0oTxqCTPKgE4OkxudSvz
+ic+MyGQL6bOEsQG+FgmsIgXAx/yokL5Nz9HjNWpBD1iI9s9kAHwi7bJQIONtoCE/
+pd4ty0/JQ+rtncq2C6298NURW/pugfql0dB4Orlf6ELCRj7abILSTqPGMKiMJ2H9
+IrZd8+vKJZ91N1ktJQr4odMs0PORxRvbjkiRADCRwiAS9avGOgVrdhK9lCaI0uNa
+fyRbPAcah3yMi5Qx+d7KLlJ3usaQRcIZCBQo0y04SuxawLVwFZx98wUEho0622VG
+DoCVH0RvNBDPRjSi5CybhkOF/Z4gqWBu8M3vVtRvjYKKZwPCjm8PJApwJt9Cdql0
+PQIDAQAB`;
+
+const privateKey = `MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDShPGoJM8qATg6
+TG51K/OJz4zIZAvps4SxAb4WCawiBcDH/KiQvk3P0eM1akEPWIj2z2QAfCLtslAg
+422gIT+l3i3LT8lD6u2dyrYLrb3w1RFb+m6B+qXR0Hg6uV/oQsJGPtpsgtJOo8Yw
+qIwnYf0itl3z68oln3U3WS0lCvih0yzQ85HFG9uOSJEAMJHCIBL1q8Y6BWt2Er2U
+JojS41p/JFs8BxqHfIyLlDH53souUne6xpBFwhkIFCjTLThK7FrAtXAVnH3zBQSG
+jTrbZUYOgJUfRG80EM9GNKLkLJuGQ4X9niCpYG7wze9W1G+NgopnA8KObw8kCnAm
+30J2qXQ9AgMBAAECggEAIkpbXosYX3wxX3WhrF5LXhA7m0yIkDmYjIh/IPHUYvpS
+64BhKKqG3CoQ+1tiW5CNRr6DSHzv543a9XB2I9Ymmur0xKArZW+34rLpMj/Lp5Xd
+LQE+zNc5+VIes1oMoDV3lZ+ZToGEpiCRIM3jfmq8o9HWveuTUsuFeU2CR/1ggGMs
+kGehgiku/NGRxsZoMfvK0V5klRkBrV/8HY8CnI0tzZXnsbpLQOYlVAZe+jGQw14L
+95WqxMBJjorzIi3kQUnzor4P09lHj4LCbgHAd/Kf8oqaIfgdhEHQ8Ns5Tp3DRoDG
+hcT6p0tDFr3NdDyasDfQCyC73/xA46w8fJYkYNz2FQKBgQD8B5btKZsJwSuyiBbv
+VvJo1RY7jhRSUKRNatC0GWYSXFjWTq1UU6HD8pzDgqWsbiOiJsTtVKPDp61hHWAo
+4t7u++kvRNHZRnbCzUgYReMUpttiKX2qSLXsk6cpARkj5/JwX/pfQHwfWadK3n44
++7Z9nwmOoshyE+H2EhwMie0nmwKBgQDV1fKHKdbiffw3XAOAHbgc+D4bb02TTDF3
+S3tJHbxwnzeACzUnwPNoKi4oHXjiKKyDF2iUYA3yaPNdtbp8/xr/BWL8Wenz9gzz
+gJ84p2ua6x8UZOx0w9mS5UsFJmnsHO/Ekey+jKZh0OymrOb9ZwbGFfhCoLTQPavq
+E+6eGWeNBwKBgBwajI3tscgorkK+QjB2NZnTCSOi+EkljOzFGHi8zFEH0zAyncll
+eghrqWdzzh2oOnj+cb81TP2oWQEXUX29rrZfiOUoe24LGXsngP6T7HqFELmlfsna
+Sc8Tt/QulysV1kcJrNWqTyz/xlPm85RPHU5syZgKNufhp7TU2CPdzYA5AoGAHoOR
+QEhwKZHg0+WFelrDUx75feC8KTDOPj+/MAfWRBv0R4lR5IJcOZkLTR4nid5T/8Dv
+Y3zxgI4JbG3qVrvwlkOmhGwwPmf2ISlRjzwU1t6GaNqeA2uPOK8PrYR1yQO4E0zf
+g7F+bKbrnj0+GRsClHG+I4PbSXwDdDuz6UumwzECgYEAm+vgr/lbKuM25i1S/nN6
+drJmY3Wdepynh1Fp//JitLlHlyMwWsbgf6W39Quh9ekptVdd6nmiK2ZhDoaDr5eF
+UDTGiE4rdZwy9syoMab727EDnu3AQfKfnLIlbUSmrFcRWgBWbo/l0S/fNARsxnmX
+hCGBQZr+eJae10VeFF3IhS0=`;
+
+// 加密
+export const encrypt = (txt: string) => {
+  const encryptor = new JSEncrypt();
+  encryptor.setPublicKey(publicKey);
+  return encryptor.encrypt(txt);
+};
+
+// 解密
+export const decrypt = (txt: string) => {
+  const encryptor = new JSEncrypt();
+  encryptor.setPrivateKey(privateKey);
+  return encryptor.decrypt(txt);
+};
