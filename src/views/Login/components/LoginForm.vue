@@ -23,9 +23,12 @@
       <el-link type="primary" :onClick="toRecoverPassword">忘记密码?</el-link>
     </div>
     <el-form-item>
-      <el-button class="button" type="primary" :onClick="handleLogin"
-        >登录</el-button
-      >
+      <div class="button-group">
+        <el-button class="button" type="primary" :onClick="handleLogin"
+          >登录</el-button
+        >
+        <el-button class="button" :onClick="toRegister">注册</el-button>
+      </div>
     </el-form-item>
   </el-form>
 </template>
@@ -54,8 +57,20 @@ const toRecoverPassword = () => {
   // router.push({name:"RecoverPassword"})
 };
 
+const toRegister = () => {
+  router.push({ name: "Register" });
+};
+
 const formCheck = () => {
-  // TODO 表单校验
+  if (formData.username.length < 3 || formData.username.length > 20) {
+    ElMessage.error("用户名长度应在3-20之间");
+    return false;
+  }
+
+  if (formData.password.length < 6 || formData.password.length > 20) {
+    ElMessage.error("密码长度应在6-20之间");
+    return false;
+  }
   return true;
 };
 
@@ -91,10 +106,14 @@ const handleLogin = () => {
     height: 38px;
     width: var(--width);
   }
-
-  .button {
-    height: 40px;
-    width: var(--width);
+  .button-group {
+    display: flex;
+    flex-direction: column;
+    .button {
+      margin: 3px;
+      height: 40px;
+      width: var(--width);
+    }
   }
 }
 </style>
