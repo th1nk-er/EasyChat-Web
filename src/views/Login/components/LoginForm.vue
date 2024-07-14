@@ -36,9 +36,12 @@
 import IconAccount from "@/components/icons/IconAccount.vue";
 import IconLock from "@/components/icons/IconLock.vue";
 import { LoginType, useLoginState } from "./userLogin";
-
+import { login } from "@/api/login";
+import type { UserLoginVo } from "@/api/login/types";
+import { useUserStore } from "@/stores/user";
 const router = useRouter();
 const loginState = useLoginState();
+const userStore = useUserStore();
 const getShow = computed(
   () => unref(loginState.getLoginType) === LoginType.PASSWORD
 );
@@ -47,7 +50,7 @@ const getShow = computed(
 const formData = reactive({
   username: "",
   password: "",
-});
+} as UserLoginVo);
 
 // 记住我
 const rememberMe = ref(false);
@@ -74,9 +77,14 @@ const formCheck = () => {
   return true;
 };
 
-const handleLogin = () => {
+const handleLogin = async () => {
   if (!formCheck()) return;
   // TODO 登录
+  const resp = await login(formData);
+  userStore.userToken = resp.data;
+  if (rememberMe.value)
+    userStore.setLoginForm(formData.username, formData.password);
+  else userStore.removeLoginForm();
 };
 </script>
 <style scoped lang="scss">

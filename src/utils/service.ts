@@ -1,3 +1,4 @@
+import { useUserStore } from "@/stores/user";
 import axios, { type AxiosInstance } from "axios";
 
 const service: AxiosInstance = axios.create({
@@ -8,6 +9,9 @@ const service: AxiosInstance = axios.create({
 // 请求拦截器
 service.interceptors.request.use(
   (config) => {
+    const userStore = useUserStore();
+    if (userStore.getUserToken?.token)
+      config.headers.Authorization = userStore.getUserToken?.token;
     return config;
   },
   (error) => {
@@ -17,9 +21,21 @@ service.interceptors.request.use(
 // 响应拦截器
 service.interceptors.response.use(
   (response) => {
+    if (response.data && response.data.code != 200) {
+      ElMessage.error(response.data.message);
+      return response;
+    }
     return response;
   },
   (error) => {
+    if (error.status == 401 || error.status == 403) {
+      ElMessage.error("请先登录");
+      const userStore = useUserStore();
+      userStore.removeToken();
+      const router = useRouter();
+      router.push({ name: "Login" });
+    }
+    ElMessage.error("请求出错");
     return Promise.reject(error);
   }
 );

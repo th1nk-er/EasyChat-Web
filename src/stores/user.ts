@@ -38,6 +38,13 @@ export const useUserStore = defineStore("user", {
       this.loginForm.username = username;
       this.loginForm.password = encrypt(password) as string;
     },
+    removeLoginForm() {
+      this.loginForm.username = "";
+      this.loginForm.password = "";
+    },
+    removeToken() {
+      this.userToken = {} as UserToken;
+    },
   },
   persist: true,
 });
