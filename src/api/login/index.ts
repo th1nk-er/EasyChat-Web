@@ -10,3 +10,11 @@ export const login = (data: UserLoginVo) => {
     data,
   });
 };
+
+export const sendVerifyCode = (data: { email: string }) => {
+  return request.post<Result<string>>({
+    url: "/user/verify-email",
+    method: "post",
+    data,
+  });
+};

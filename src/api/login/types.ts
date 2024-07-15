@@ -1,7 +1,7 @@
 import { LoginType } from "@/views/Login/components/userLogin";
 
 export type UserLoginVo = {
-  loginType: LoginType;
+  type: LoginType;
   username: string;
   password: string;
   email: string;

@@ -13,6 +13,7 @@ export const useUserStore = defineStore("user", {
       loginForm: {
         username: "",
         password: "",
+        rememberMe: false,
       },
     };
   },
@@ -21,6 +22,7 @@ export const useUserStore = defineStore("user", {
       return {
         username: state.loginForm.username,
         password: decrypt(state.loginForm.password) as string,
+        rememberMe: state.loginForm.rememberMe,
       };
     },
     getUserToken: (state) => {
@@ -37,10 +39,12 @@ export const useUserStore = defineStore("user", {
     setLoginForm(username: string, password: string) {
       this.loginForm.username = username;
       this.loginForm.password = encrypt(password) as string;
+      this.loginForm.rememberMe = true;
     },
     removeLoginForm() {
       this.loginForm.username = "";
       this.loginForm.password = "";
+      this.loginForm.rememberMe = false;
     },
     removeToken() {
       this.userToken = {} as UserToken;

@@ -3,7 +3,7 @@ import axios, { type AxiosInstance } from "axios";
 
 const service: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL, // api 的 base_url
-  timeout: 3000, // 请求超时时间
+  timeout: 10000, // 请求超时时间
   withCredentials: false, // 禁用 Cookie 等信息
 });
 // 请求拦截器
@@ -23,7 +23,7 @@ service.interceptors.response.use(
   (response) => {
     if (response.data && response.data.code != 200) {
       ElMessage.error(response.data.message);
-      return response;
+      return Promise.reject(response);
     }
     return response;
   },

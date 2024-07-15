@@ -14,6 +14,8 @@ declare module 'vue' {
     ElInput: typeof import('element-plus/es')['ElInput']
     ElLink: typeof import('element-plus/es')['ElLink']
     IconAccount: typeof import('./src/components/icons/IconAccount.vue')['default']
+    IconEmail: typeof import('./src/components/icons/IconEmail.vue')['default']
+    IconKey: typeof import('./src/components/icons/IconKey.vue')['default']
     IconLock: typeof import('./src/components/icons/IconLock.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']

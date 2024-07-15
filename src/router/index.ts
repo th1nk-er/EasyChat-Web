@@ -24,6 +24,14 @@ const router = createRouter({
         title: "注册",
       },
     },
+    {
+      path: "/chat",
+      name: "Chat",
+      component: () => import("@/views/Chat/Chat.vue"),
+      meta:{
+        title:"主页",
+      }
+    },
   ],
 });
 

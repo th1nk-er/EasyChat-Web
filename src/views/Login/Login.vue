@@ -2,11 +2,12 @@
   <div class="box">
     <div class="main">
       <LoginFrom />
+      <EmailForm />
     </div>
   </div>
 </template>
 <script setup lang="ts">
-import { LoginFrom } from "./components";
+import { EmailForm, LoginFrom } from "./components";
 </script>
 <style lang="scss" scoped>
 .box {

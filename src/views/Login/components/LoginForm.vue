@@ -30,6 +30,7 @@
         <el-button class="button" :onClick="toRegister">注册</el-button>
       </div>
     </el-form-item>
+    <el-link type="primary" :onClick="toEmailLogin">邮箱验证码登录</el-link>
   </el-form>
 </template>
 <script setup lang="ts">
@@ -64,6 +65,9 @@ const toRegister = () => {
   router.push({ name: "Register" });
 };
 
+const toEmailLogin = () => {
+  loginState.toEmailLogin();
+};
 const formCheck = () => {
   if (formData.username.length < 3 || formData.username.length > 20) {
     ElMessage.error("用户名长度应在3-20之间");
@@ -85,7 +89,15 @@ const handleLogin = async () => {
   if (rememberMe.value)
     userStore.setLoginForm(formData.username, formData.password);
   else userStore.removeLoginForm();
+  ElMessage.success("登录成功");
+  router.push({ name: "Chat" });
 };
+onMounted(() => {
+  if (userStore.getLoginForm && userStore.getLoginForm.rememberMe) {
+    formData.username = userStore.getLoginForm.username;
+    formData.password = userStore.getLoginForm.password;
+  }
+});
 </script>
 <style scoped lang="scss">
 .form {

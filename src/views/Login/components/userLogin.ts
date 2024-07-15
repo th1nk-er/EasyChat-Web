@@ -11,8 +11,13 @@ export function useLoginState() {
     currentType.value = LoginType.PASSWORD;
   };
 
+  const toEmailLogin = () => {
+    currentType.value = LoginType.EMAIL;
+  };
+
   return {
     getLoginType,
     backToPasswordLogin,
+    toEmailLogin,
   };
 }
