@@ -3,14 +3,14 @@
     <el-form-item prop="username" class="register-form-item">
       <el-input
         v-model="formData.username"
-        placeholder="用户名"
+        placeholder="请输入用户名"
         maxlength="20"
       ></el-input>
     </el-form-item>
     <el-form-item prop="password" class="register-form-item">
       <el-input
         v-model="formData.password"
-        placeholder="密码"
+        placeholder="请输入密码"
         type="password"
         show-password
         maxlength="20"
@@ -28,7 +28,7 @@
     <el-form-item prop="email" class="register-form-item">
       <el-input
         v-model="formData.email"
-        placeholder="邮箱"
+        placeholder="请输入邮箱"
         maxlength="30"
       ></el-input>
     </el-form-item>
@@ -45,7 +45,10 @@
           class="verifycode-container__link-getverifycode"
           type="primary"
           @click="getVerifyCode"
-          >获取验证码</el-link
+          :disabled="sendDisabled"
+          >获取验证码<span v-show="sendSeconds > 0"
+            >({{ sendSeconds }})</span
+          ></el-link
         >
       </div>
     </el-form-item>
@@ -146,14 +149,29 @@ const toLogin = () => {
   router.push({ name: "Login" });
 };
 
+const sendDisabled = ref(true);
+const sendSeconds = ref(0);
 const getVerifyCode = async () => {
+  sendDisabled.value = true;
   if (isValidEmail(formData.email)) {
     await sendVerifyCode(formData.email);
     ElMessage.success("验证码已发送");
+    sendSeconds.value = 60;
   } else {
     ElMessage.error("请输入正确的邮箱");
+    sendDisabled.value = false;
   }
 };
+
+watch(sendSeconds, (newValue) => {
+  if (newValue > 0) {
+    setTimeout(() => {
+      sendSeconds.value--;
+    }, 1000);
+  } else {
+    sendDisabled.value = false;
+  }
+});
 
 const handleRegister = async (formEl: FormInstance | undefined) => {
   if (!formEl) return;

@@ -3,32 +3,40 @@
     v-show="getShow"
     :model="formData"
     ref="formRef"
-    class="form"
+    class="login-form"
     :rules="rules"
   >
-    <el-form-item prop="email">
+    <el-form-item prop="email" class="login-form-item">
       <el-input
-        class="input"
+        class="login-form-item__input-email"
         v-model="formData.email"
         :prefix-icon="IconEmail"
         placeholder="请输入邮箱"
+        maxlength="30"
       />
     </el-form-item>
-    <el-form-item prop="verifyCode">
-      <el-input
-        class="input code"
-        v-model="formData.verifyCode"
-        :prefix-icon="IconKey"
-        placeholder="请输入验证码"
-      />
-      <el-button class="button send" @click="sendEmail" :disabled="sendDisable"
-        >发送验证码
-        <p v-show="(sendSeconds = 0)">({{ sendSeconds }})</p></el-button
-      >
+    <el-form-item prop="verifyCode" class="login-form-item">
+      <div class="code-container">
+        <el-input
+          class="code-container__input-code"
+          v-model="formData.verifyCode"
+          :prefix-icon="IconKey"
+          placeholder="请输入验证码"
+          maxlength="6"
+        />
+        <el-link
+          class="code-container__link-code"
+          @click="sendEmail"
+          :disabled="sendDisabled"
+          type="primary"
+          >获取验证码
+          <span v-show="(sendSeconds > 0)">({{ sendSeconds }})</span></el-link
+        >
+      </div>
     </el-form-item>
-    <el-form-item>
+    <el-form-item class="login-form-item">
       <el-button
-        class="button login"
+        class="login-form-item__button-login"
         type="primary"
         @click="handleLogin(formRef)"
         >登录</el-button
@@ -45,6 +53,7 @@ import type { FormInstance, FormRules } from "element-plus";
 import { login, sendVerifyCode } from "@/api/login";
 import type { UserLoginVo } from "@/api/login/types";
 import { useUserStore } from "@/stores/user";
+import { isValidEmail } from "@/utils/validate";
 const loginState = useLoginState();
 const userStore = useUserStore();
 const router = useRouter();
@@ -70,30 +79,30 @@ const rules = reactive<FormRules<typeof formData>>({
     {
       type: "email",
       message: "请输入正确的邮箱",
-      trigger: ["blur", "change"],
     },
   ],
   verifyCode: [
     {
       required: true,
+      message: "请输入验证码",
+      trigger: "blur",
+    },
+    {
       min: 4,
       max: 6,
       message: "请输入正确的验证码",
-      trigger: ["blur", "change"],
     },
   ],
 });
 
-const sendDisable = ref(false);
+const sendDisabled = ref(false);
 const sendSeconds = ref(0);
 // 发送邮箱验证码
 const sendEmail = async () => {
-  sendDisable.value = true;
-  if (
-    !/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/.test(formData.email)
-  ) {
+  sendDisabled.value = true;
+  if (!isValidEmail(formData.email)) {
     ElMessage.error("请输入正确的邮箱");
-    sendDisable.value = false;
+    sendDisabled.value = false;
     return;
   }
   await sendVerifyCode({ email: formData.email });
@@ -107,7 +116,7 @@ watch(sendSeconds, (newValue) => {
       sendSeconds.value--;
     }, 1000);
   } else {
-    sendDisable.value = false;
+    sendDisabled.value = false;
   }
 });
 
@@ -129,9 +138,9 @@ const handleLogin = async (formEl: FormInstance | undefined) => {
 };
 </script>
 <style scoped lang="scss">
-.form {
+.login-form {
   border-radius: 10px;
-  padding: 0 20px;
+  padding: 30px 50px;
   background-color: var(--color-background);
   box-shadow: 8px 8px 2px 1px rgba(0, 0, 0, 0.2);
   opacity: 0.8;
@@ -139,25 +148,28 @@ const handleLogin = async (formEl: FormInstance | undefined) => {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  min-height: 350px;
 
-  .input {
-    height: 38px;
-    width: 300px;
-  }
-  .input.code {
-    width: 200px;
-  }
-  .button {
-    margin: 3px;
-    height: 40px;
-  }
-  .button.login {
-    width: 300px;
-  }
-  .button.send {
-    margin: 0px;
-    width: 100px;
+  &-item {
+    width: 330px;
+
+    .code-container {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      &__input-code {
+        flex: 1;
+      }
+
+      &__link-code {
+        margin-left: 10px;
+      }
+    }
+
+    &__button-login {
+      width: 100%;
+    }
   }
 }
 </style>

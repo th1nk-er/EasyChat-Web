@@ -1,36 +1,45 @@
 <template>
-  <el-form v-show="getShow" v-model="formData" class="form">
-    <el-form-item>
+  <el-form
+    ref="formRef"
+    :model="formData"
+    class="login-form"
+    v-show="getShow"
+    :rules="rules"
+  >
+    <el-form-item class="login-form-item" prop="username">
       <el-input
-        class="input"
         v-model="formData.username"
+        placeholder="用户名"
+        maxlength="20"
         :prefix-icon="IconAccount"
-        placeholder="请输入用户名"
       />
     </el-form-item>
-    <el-form-item>
+    <el-form-item class="login-form-item" prop="password">
       <el-input
-        class="input"
         v-model="formData.password"
-        type="password"
         :prefix-icon="IconLock"
+        type="password"
         placeholder="请输入密码"
         show-password
+        maxlength="20"
       />
     </el-form-item>
-    <div class="tool">
+    <div class="login-options">
       <el-checkbox label="记住我" v-model="rememberMe" />
-      <el-link type="primary" :onClick="toRecoverPassword">忘记密码?</el-link>
+      <el-link type="primary" @click="toRecoverPassword">忘记密码?</el-link>
     </div>
-    <el-form-item>
-      <div class="button-group">
-        <el-button class="button" type="primary" :onClick="handleLogin"
-          >登录</el-button
-        >
-        <el-button class="button" :onClick="toRegister">注册</el-button>
-      </div>
+    <el-form-item class="login-form-item button-group">
+      <el-button
+        type="primary"
+        class="login-form-item__button-login"
+        @click="handleLogin(formRef)"
+        >登录</el-button
+      >
+      <el-button class="login-form-item__button-register" @click="toRegister"
+        >注册</el-button
+      >
     </el-form-item>
-    <el-link type="primary" :onClick="toEmailLogin">邮箱验证码登录</el-link>
+    <el-link type="primary" @click="toEmailLogin">邮箱登录</el-link>
   </el-form>
 </template>
 <script setup lang="ts">
@@ -40,6 +49,7 @@ import { LoginType, useLoginState } from "./userLogin";
 import { login } from "@/api/login";
 import type { UserLoginVo } from "@/api/login/types";
 import { useUserStore } from "@/stores/user";
+import type { FormInstance, FormRules } from "element-plus";
 const router = useRouter();
 const loginState = useLoginState();
 const userStore = useUserStore();
@@ -47,12 +57,38 @@ const getShow = computed(
   () => unref(loginState.getLoginType) === LoginType.PASSWORD
 );
 
+const formRef = ref<FormInstance>();
 // 表单数据
 const formData = reactive({
   username: "",
   password: "",
 } as UserLoginVo);
 
+const rules = reactive<FormRules<typeof formData>>({
+  username: [
+    {
+      required: true,
+      message: "请输入用户名",
+      trigger: "blur",
+    },
+    {
+      pattern: /^[a-zA-Z0-9_-]{3,20}$/,
+      message: "只能包含字母、数字、下划线、减号, 长度在3-20个字符之间",
+    },
+  ],
+  password: [
+    {
+      required: true,
+      message: "请输入密码",
+      trigger: "blur",
+    },
+    {
+      min: 6,
+      max: 20,
+      message: "密码长度在6-20个字符之间",
+    },
+  ],
+});
 // 记住我
 const rememberMe = ref(false);
 
@@ -68,72 +104,57 @@ const toRegister = () => {
 const toEmailLogin = () => {
   loginState.toEmailLogin();
 };
-const formCheck = () => {
-  if (formData.username.length < 3 || formData.username.length > 20) {
-    ElMessage.error("用户名长度应在3-20之间");
-    return false;
-  }
-
-  if (formData.password.length < 6 || formData.password.length > 20) {
-    ElMessage.error("密码长度应在6-20之间");
-    return false;
-  }
-  return true;
-};
-
-const handleLogin = async () => {
-  if (!formCheck()) return;
-  // TODO 登录
-  const resp = await login(formData);
-  userStore.userToken = resp.data;
-  if (rememberMe.value)
-    userStore.setLoginForm(formData.username, formData.password);
-  else userStore.removeLoginForm();
-  ElMessage.success("登录成功");
-  router.push({ name: "Chat" });
+const handleLogin = async (formEl: FormInstance | undefined) => {
+  if (!formEl) return;
+  formEl.validate(async (valid, fields) => {
+    if (valid) {
+      const resp = await login(formData);
+      userStore.userToken = resp.data;
+      if (rememberMe.value)
+        userStore.setLoginForm(formData.username, formData.password);
+      else userStore.removeLoginForm();
+      ElMessage.success("登录成功");
+      router.push({ name: "Chat" });
+    }
+  });
 };
 onMounted(() => {
   if (userStore.getLoginForm && userStore.getLoginForm.rememberMe) {
     formData.username = userStore.getLoginForm.username;
     formData.password = userStore.getLoginForm.password;
+    rememberMe.value = true;
   }
 });
 </script>
 <style scoped lang="scss">
-.form {
-  --width: 300px;
-  border-radius: 10px;
-  padding: 0 20px;
+.login-form {
   background-color: var(--color-background);
-  box-shadow: 8px 8px 2px 1px rgba(0, 0, 0, 0.2);
-  opacity: 0.8;
+  padding: 30px 50px;
+  border-radius: 10px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  min-height: 350px;
+  opacity: 0.8;
 
-  .tool {
-    display: flex;
-    margin-bottom: 5px;
-    width: var(--width);
-    justify-content: space-between;
-    align-items: center;
-    height: 30px;
-  }
+  &-item {
+    width: 330px;
 
-  .input {
-    height: 38px;
-    width: var(--width);
-  }
-  .button-group {
-    display: flex;
-    flex-direction: column;
-    .button {
-      margin: 3px;
-      height: 40px;
-      width: var(--width);
+    .button-group {
+      display: flex;
+      flex-direction: column;
     }
+    &__button-login,
+    &__button-register {
+      margin: 2px;
+      width: 100%;
+    }
+  }
+
+  .login-options {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
   }
 }
 </style>
