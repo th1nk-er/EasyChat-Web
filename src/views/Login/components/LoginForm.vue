@@ -11,7 +11,7 @@
         v-model="formData.username"
         placeholder="用户名"
         maxlength="20"
-        :prefix-icon="IconAccount"
+        :prefix-icon="IconPerson"
       />
     </el-form-item>
     <el-form-item class="login-form-item" prop="password">
@@ -43,7 +43,7 @@
   </el-form>
 </template>
 <script setup lang="ts">
-import IconAccount from "@/components/icons/IconAccount.vue";
+import IconPerson from "@/components/icons/IconPerson.vue;
 import IconLock from "@/components/icons/IconLock.vue";
 import { LoginType, useLoginState } from "./userLogin";
 import { login } from "@/api/login";
