@@ -8,6 +8,10 @@
           class="item"
           :show-zero="false"
           :is-dot="user.muted"
+          :offset="[-3, 3]"
+          :badge-style="
+            user.muted == 1 ? { width: '13px', height: '13px' } : ''
+          "
         >
           <img :src="user.avatar" class="user-item__avatar-box__img-avatar" />
         </el-badge>
@@ -37,7 +41,7 @@ const data = reactive([
     name: "th1nk",
     partMessage: "abcdefg1234567890",
     time: "19:21",
-    unread: 1,
+    unread: 100,
     muted: false,
   },
 ]);
@@ -89,11 +93,12 @@ const loadChatList = () => {
 
     &__avatar-box {
       padding: 10px 7px;
+      margin-right: 5px;
 
       &__img-avatar {
         width: 48px;
         height: 48px;
-        border-radius: 15px;
+        border-radius: 8px;
       }
     }
 
