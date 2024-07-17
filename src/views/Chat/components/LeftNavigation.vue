@@ -1,6 +1,14 @@
 <template>
   <div class="container">
-    <IconChat class="icon-selected" />
+    <el-badge
+      :value="chatStore.unread"
+      :max="99"
+      :show-zero="false"
+      class="item"
+      :offset="[-10, 10]"
+    >
+      <IconChat class="icon-selected" />
+    </el-badge>
     <IconPerson />
     <IconGroup />
     <div class="divider" />
@@ -8,7 +16,11 @@
     <IconSettings />
   </div>
 </template>
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { useChatStore } from "@/stores/chat";
+
+const chatStore = useChatStore();
+</script>
 
 <style lang="scss" scoped>
 .container {

@@ -7,11 +7,9 @@
           :max="99"
           class="item"
           :show-zero="false"
-          :is-dot="user.muted"
+          :is-dot="user.muted && user.unread > 0"
           :offset="[-3, 3]"
-          :badge-style="
-            user.muted == 1 ? { width: '13px', height: '13px' } : ''
-          "
+          :badge-style="user.muted ? { width: '13px', height: '13px' } : ''"
         >
           <img :src="user.avatar" class="user-item__avatar-box__img-avatar" />
         </el-badge>
@@ -35,6 +33,10 @@
   </div>
 </template>
 <script setup lang="ts">
+import { useChatStore } from "@/stores/chat";
+
+const chatStore = useChatStore();
+
 const data = reactive([
   {
     avatar: "https://avatars.githubusercontent.com/u/69061641?v=4",
@@ -59,8 +61,19 @@ const addTestData = () => {
     });
   }
 };
+const getUnreadCount = () => {
+  let res = 0;
+  for (let i = 0; i < data.length; i++) {
+    if (data[i].unread > 0) {
+      if (data[i].muted) res++;
+      else res += data[i].unread;
+    }
+  }
+  return res;
+};
 onMounted(() => {
   addTestData();
+  chatStore.unread = getUnreadCount();
 });
 
 const loadChatList = () => {
