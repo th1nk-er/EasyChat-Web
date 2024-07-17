@@ -43,7 +43,7 @@
   </el-form>
 </template>
 <script setup lang="ts">
-import IconPerson from "@/components/icons/IconPerson.vue;
+import IconPerson from "@/components/icons/IconPerson.vue";
 import IconLock from "@/components/icons/IconLock.vue";
 import { LoginType, useLoginState } from "./userLogin";
 import { login } from "@/api/login";
