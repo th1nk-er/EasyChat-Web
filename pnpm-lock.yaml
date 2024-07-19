@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@stomp/stompjs':
+        specifier: ^7.0.0
+        version: 7.0.0
       axios:
         specifier: ^1.7.2
         version: 1.7.2
@@ -29,6 +32,9 @@ importers:
       vue-router:
         specifier: ^4.3.3
         version: 4.4.0(vue@3.4.31(typescript@5.4.5))
+      ws:
+        specifier: ^8.18.0
+        version: 8.18.0
     devDependencies:
       '@tsconfig/node20':
         specifier: ^20.1.4
@@ -36,6 +42,9 @@ importers:
       '@types/node':
         specifier: ^20.14.5
         version: 20.14.10
+      '@types/ws':
+        specifier: ^8.5.11
+        version: 8.5.11
       '@vitejs/plugin-vue':
         specifier: ^5.0.5
         version: 5.0.5(vite@5.3.3(@types/node@20.14.10)(sass@1.77.8))(vue@3.4.31(typescript@5.4.5))
@@ -355,6 +364,9 @@ packages:
     cpu: [x64]
     os: [win32]
 
+  '@stomp/stompjs@7.0.0':
+    resolution: {integrity: sha512-fGdq4wPDnSV/KyOsjq4P+zLc8MFWC3lMmP5FBgLWKPJTYcuCbAIrnRGjB7q2jHZdYCOD5vxLuFoKIYLy5/u8Pw==}
+
   '@sxzz/popperjs-es@2.11.7':
     resolution: {integrity: sha512-Ccy0NlLkzr0Ex2FKvh2X+OyERHXJ88XJ1MXtsI9y9fGexlaXaVTPzBCRBwIxFkORuOb+uBqeu+RqnpgYTEZRUQ==}
 
@@ -375,6 +387,9 @@ packages:
 
   '@types/web-bluetooth@0.0.16':
     resolution: {integrity: sha512-oh8q2Zc32S6gd/j50GowEjKLoOVOwHP/bWVjKJInBwQqdOYMdPrf1oVlelTlyfFK3CKxL1uahMDAr+vy8T7yMQ==}
+
+  '@types/ws@8.5.11':
+    resolution: {integrity: sha512-4+q7P5h3SpJxaBft0Dzpbr6lmMaqh0Jr2tbhJZ/luAwvD7ohSCniYkwz/pLxuT2h0EOa6QADgJj1Ko+TzRfZ+w==}
 
   '@vitejs/plugin-vue@5.0.5':
     resolution: {integrity: sha512-LOjm7XeIimLBZyzinBQ6OSm3UBCNVCpLkxGC0oWmm2YPzVZoxMsdvNVimLTBzpAnR9hl/yn1SHGuRfe6/Td9rQ==}
@@ -923,6 +938,18 @@ packages:
     engines: {node: '>= 8'}
     hasBin: true
 
+  ws@8.18.0:
+    resolution: {integrity: sha512-8VbfWfHLbbwu3+N6OKsOMpBdT4kXPDDB9cJk2bJ6mh9ucxdlnNvH1e+roYkKmN9Nxw2yjz7VzeO9oOz2zJ04Pw==}
+    engines: {node: '>=10.0.0'}
+    peerDependencies:
+      bufferutil: ^4.0.1
+      utf-8-validate: '>=5.0.2'
+    peerDependenciesMeta:
+      bufferutil:
+        optional: true
+      utf-8-validate:
+        optional: true
+
 snapshots:
 
   '@antfu/utils@0.7.10': {}
@@ -1097,6 +1124,8 @@ snapshots:
   '@rollup/rollup-win32-x64-msvc@4.18.1':
     optional: true
 
+  '@stomp/stompjs@7.0.0': {}
+
   '@sxzz/popperjs-es@2.11.7': {}
 
   '@tsconfig/node20@20.1.4': {}
@@ -1114,6 +1143,10 @@ snapshots:
       undici-types: 5.26.5
 
   '@types/web-bluetooth@0.0.16': {}
+
+  '@types/ws@8.5.11':
+    dependencies:
+      '@types/node': 20.14.10
 
   '@vitejs/plugin-vue@5.0.5(vite@5.3.3(@types/node@20.14.10)(sass@1.77.8))(vue@3.4.31(typescript@5.4.5))':
     dependencies:
@@ -1698,3 +1731,5 @@ snapshots:
   which@2.0.2:
     dependencies:
       isexe: 2.0.0
+
+  ws@8.18.0: {}
