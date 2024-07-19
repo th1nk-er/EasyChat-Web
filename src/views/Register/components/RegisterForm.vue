@@ -149,7 +149,7 @@ const toLogin = () => {
   router.push({ name: "Login" });
 };
 
-const sendDisabled = ref(true);
+const sendDisabled = ref(false);
 const sendSeconds = ref(0);
 const getVerifyCode = async () => {
   sendDisabled.value = true;
