@@ -8,6 +8,6 @@ import type { SearchResult } from "./types";
 export const searchUser = (keyword: string) => {
   return request.get<Result<SearchResult>>({
     url: "/user/search",
-    data: keyword,
+    params: { keyword },
   });
 };
