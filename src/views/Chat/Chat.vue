@@ -2,13 +2,14 @@
   <div class="main">
     <LeftNavigation />
     <div class="center">
+      <ToolBar />
       <ChatList />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ChatList, LeftNavigation } from "./components";
+import { ChatList, LeftNavigation, ToolBar } from "./components";
 </script>
 
 <style scoped lang="scss">
@@ -19,6 +20,6 @@ import { ChatList, LeftNavigation } from "./components";
 }
 .center {
   height: 100vh;
-  width:400px;
+  width: 400px;
 }
 </style>
