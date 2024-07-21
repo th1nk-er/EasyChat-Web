@@ -1,5 +1,5 @@
 <template>
-  <div class="main" v-infinite-scroll="loadChatList">
+  <div class="chat-list-box" v-infinite-scroll="loadChatList">
     <div v-for="(user, key) in loadedData" :key="key" class="user-item">
       <div class="user-item__avatar-box">
         <el-badge
@@ -85,10 +85,8 @@ const loadChatList = () => {
 };
 </script>
 <style scoped lang="scss">
-.main {
-  height: 100%;
-  max-width: 400px;
-  min-width: 200px;
+.chat-list-box {
+  width: 100%;
   background-color: var(--color-background-mute);
   display: flex;
   flex-direction: column;

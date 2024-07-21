@@ -1,12 +1,16 @@
 export type SearchResult = {
-  id: number;
-  username: string;
-  nickname: string;
-  sex: UserSex;
+  total: number;
+  pageSize: number;
+  records: {
+    id: number;
+    username: string;
+    nickname: string;
+    sex: UserSex;
+  }[];
 };
 
 export enum UserSex {
-  MALE = 0,
-  FEMALE = 1,
-  SECRET = 2,
+  MALE = "MALE",
+  FEMALE = "FEMALE",
+  SECRET = "SECRET",
 }

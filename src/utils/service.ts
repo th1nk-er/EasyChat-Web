@@ -28,12 +28,15 @@ service.interceptors.response.use(
     return response;
   },
   (error) => {
-    if (error.status == 401 || error.status == 403) {
+    if (
+      error.response != undefined &&
+      (error.response.status == 401 || error.response.status == 403)
+    ) {
       ElMessage.error("请先登录");
       const userStore = useUserStore();
       userStore.removeToken();
-      const router = useRouter();
-      router.push({ name: "Login" });
+      window.location.href = `/login?redirect=${window.location.href}`;
+      return Promise.reject(error);
     }
     ElMessage.error("请求出错");
     return Promise.reject(error);

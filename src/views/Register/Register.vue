@@ -1,5 +1,5 @@
 <template>
-  <div class="main">
+  <div class="chat-list-box">
     <AppTitle />
     <RegisterForm />
   </div>
@@ -10,7 +10,7 @@ import AppTitle from "@/components/common/AppTitle.vue";
 import { RegisterForm } from "./components";
 </script>
 <style scoped lang="scss">
-.main {
+.chat-list-box {
   height: 100vh;
   width: 100%;
   display: flex;
