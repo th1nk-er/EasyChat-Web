@@ -39,7 +39,7 @@
                 </div>
                 <el-button
                   class="user-item__content__button-add"
-                  @click="handleAddFriend(user.id)"
+                  @click="openAddDialog(user.id)"
                   >添加</el-button
                 >
               </div>
@@ -55,11 +55,26 @@
             @update:current-page="handlePagechange()"
           />
         </div>
+        <el-dialog v-model="addInfoDialogVisible" title="附加信息" width="30%">
+          <el-input
+            type="textarea"
+            v-model="addInfoText"
+            placeholder="请输入附加消息"
+            maxlength="50"
+            aria-required="true"
+            class="input-add-info"
+          />
+          <el-button type="primary" @click="handleAddFriend()"
+            >发送申请</el-button
+          >
+          <el-button @click="addInfoDialogVisible = false">取消</el-button>
+        </el-dialog>
       </div>
     </el-dialog>
   </div>
 </template>
 <script setup lang="ts">
+import { sendAddRequest } from "@/api/friend";
 import { searchUser } from "@/api/user";
 import { type SearchResult } from "@/api/user/types";
 
@@ -82,8 +97,21 @@ const handlePagechange = () => {
   handleSearch();
 };
 
-const handleAddFriend = (id: number) => {
-  //TODO 发送好友申请
+const addInfoDialogVisible = ref(false);
+const addInfoText = ref("");
+const addStrangerId = ref(0);
+const openAddDialog = (id: number) => {
+  addStrangerId.value = id;
+  addInfoDialogVisible.value = true;
+};
+const handleAddFriend = async () => {
+  await sendAddRequest({
+    addId: addStrangerId.value,
+    addInfo: addInfoText.value,
+  });
+  ElMessage.success("好友申请已发送");
+  addInfoDialogVisible.value = false;
+  addInfoText.value = "";
 };
 </script>
 
@@ -184,11 +212,12 @@ const handleAddFriend = (id: number) => {
               max-width: 260px;
             }
           }
-          &__button-add {
-          }
         }
       }
     }
+  }
+  .input-add-info {
+    margin-bottom: 10px;
   }
 }
 </style>
