@@ -28,9 +28,28 @@ const router = createRouter({
       path: "/chat",
       name: "Chat",
       component: () => import("@/views/Chat/Chat.vue"),
-      meta:{
-        title:"主页",
-      }
+      meta: {
+        title: "主页",
+      },
+      children: [
+        {
+          path: "",
+          name: "ChatList",
+          component: () =>
+            import("@/views/Chat/Children/ChatList/ChatList.vue"),
+          meta: {
+            title: "聊天列表",
+          },
+        },
+        {
+          path: "friend",
+          name: "Friend",
+          component: () => import("@/views/Chat/Children/Friend/Friend.vue"),
+          meta: {
+            title: "好友",
+          },
+        },
+      ],
     },
   ],
 });

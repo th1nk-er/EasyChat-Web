@@ -7,10 +7,22 @@
       class="item"
       :offset="[-10, 10]"
     >
-      <IconChat class="icon-selected" />
+      <IconChat
+        :class="routerName == 'ChatList' ? 'icon-selected' : ''"
+        @click="
+          router.push({ name: 'ChatList' });
+          routerName = 'ChatList';
+        "
+      />
     </el-badge>
-    <IconPerson />
-    <IconGroup />
+    <IconPerson
+      :class="routerName == 'Friend' ? 'icon-selected' : ''"
+      @click="
+        router.push({ name: 'Friend' });
+        routerName = 'Friend';
+      "
+    />
+    <IconGroup :class="routerName == 'Group' ? 'icon-selected' : ''" />
     <div class="divider" />
     <IconAccountCircle />
     <IconSettings />
@@ -19,6 +31,11 @@
 <script setup lang="ts">
 import { useChatStore } from "@/stores/chat";
 
+const router = useRouter();
+const routerName = ref("");
+onMounted(() => {
+  routerName.value = router.currentRoute.value.name;
+});
 const chatStore = useChatStore();
 </script>
 
