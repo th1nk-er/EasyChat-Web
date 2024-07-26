@@ -26,7 +26,10 @@
               :key="key"
               class="user-item"
             >
-              <img class="user-item__img-avatar" />
+              <img
+                class="user-item__img-avatar"
+                :src="getAvatarUrl(user.avatar)"
+              />
               <div class="user-item__content">
                 <div class="user-item__content__text">
                   <p class="user-item__content__text-nickname">
@@ -77,6 +80,7 @@
 import { sendAddRequest } from "@/api/friend";
 import { searchUser } from "@/api/user";
 import { type SearchResult } from "@/api/user/types";
+import { getAvatarUrl } from "@/utils/userUtils";
 
 const addDialogVisible = ref(false);
 const searchContent = ref("");

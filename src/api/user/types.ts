@@ -5,6 +5,7 @@ export type SearchResult = {
     id: number;
     username: string;
     nickname: string;
+    avatar: string;
     sex: UserSex;
   }[];
 };
