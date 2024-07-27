@@ -9,6 +9,7 @@ import router from "./router";
 import "./router/routerGuard";
 
 import "nprogress/nprogress.css";
+import 'element-plus/theme-chalk/dark/css-vars.css'
 
 const app = createApp(App);
 

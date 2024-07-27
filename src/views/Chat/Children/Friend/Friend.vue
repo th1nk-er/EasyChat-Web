@@ -2,12 +2,13 @@
   <div class="container">
     <ToolBar />
     <div class="main">
-      <div class="friend-item">
+      <FriendRequestDialog v-model="requestDialogShow" />
+      <div class="friend-item" @click="requestDialogShow = true">
         <IconPersonFill
           class="friend-item__img-avatar svg"
           style="background-color: orange; fill: white"
         />
-        <p class="friend-item__title">好友申请列表</p>
+        <p class="friend-item__title">新朋友</p>
       </div>
       <div class="friend-list">
         <div class="friend-item">
@@ -25,7 +26,9 @@
 </template>
 <script setup lang="ts">
 import { ToolBar } from "../../components";
-//TODO 获取好友列表并显示
+import { FriendRequestDialog } from "./components";
+
+const requestDialogShow = ref(false);
 </script>
 
 <style scoped lang="scss">
