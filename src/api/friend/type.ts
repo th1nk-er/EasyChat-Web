@@ -8,19 +8,25 @@ export type AddFriendVo = {
 export type FriendRequestData = {
   total: number;
   pageSize: number;
-  records: {
-    id: number;
-    nickname: string;
-    username: string;
-    sex: UserSex;
-    avatar: string;
-    addInfo: string;
-    createTime: string;
-    status: AddStatus;
-    addType: AddType;
-    strangerId: number;
-    uid: number;
-  }[];
+  records: RequestRecord[];
+};
+export type RequestRecord = {
+  id: number;
+  nickname: string;
+  username: string;
+  sex: UserSex;
+  avatar: string;
+  addInfo: string;
+  createTime: string;
+  status: AddStatus;
+  addType: AddType;
+  strangerId: number;
+  uid: number;
+};
+export type handleRequestData = {
+  id: number;
+  status: AddStatus;
+  remark?: string;
 };
 
 export enum AddType {
