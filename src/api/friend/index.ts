@@ -1,5 +1,5 @@
 import request from "@/utils/service";
-import type { FriendRequestData, AddFriendVo, handleRequestData } from "./type";
+import type { FriendRequestData, AddFriendVo, ReplyAddRequestData } from "./type";
 import type { Result } from "../types";
 
 /**
@@ -26,7 +26,7 @@ export const getAddRequestList = (page: number) => {
 /**
  * 处理好友请求
  */
-export const handleAddRequest = (data: handleRequestData) => {
+export const replyAddRequest = (data: ReplyAddRequestData) => {
   return request.put<Result<null>>({
     url: "/friend/request",
     method: "put",

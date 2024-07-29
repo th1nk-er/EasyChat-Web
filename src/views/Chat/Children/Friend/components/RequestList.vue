@@ -25,15 +25,24 @@
             v-show="item.addType == AddType.ADD_OTHER"
             style="fill: var(--color-subtitle)"
           />
-          <div v-show="item.addType == AddType.ADD_OTHER">
-            <p v-show="item.status == AddStatus.PENDING">等待验证</p>
-            <p v-show="item.status == AddStatus.AGREED">已同意</p>
-            <p v-show="item.status == AddStatus.REFUSED">已拒绝</p>
-          </div>
+          <p
+            v-show="
+              item.addType == AddType.ADD_OTHER &&
+              item.status == AddStatus.PENDING
+            "
+          >
+            等待验证
+          </p>
+          <p v-show="item.status == AddStatus.AGREED">已同意</p>
+          <p v-show="item.status == AddStatus.REFUSED">已拒绝</p>
+          <p v-show="item.status == AddStatus.IGNORED">已忽略</p>
           <el-button
             size="small"
-            v-show="item.addType == AddType.ADD_BY_OTHER"
-            @click="handleAddRequest({ id: item.id, status: AddStatus.AGREED })"
+            v-show="
+              item.addType == AddType.ADD_BY_OTHER &&
+              item.status == AddStatus.PENDING
+            "
+            @click="handleAgreeRequest(key)"
             >同意</el-button
           >
         </div>
@@ -42,7 +51,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { getAddRequestList, handleAddRequest } from "@/api/friend";
+import { getAddRequestList } from "@/api/friend";
 import {
   AddStatus,
   AddType,
@@ -50,6 +59,7 @@ import {
   type RequestRecord,
 } from "@/api/friend/type";
 import { getAvatarUrl } from "@/utils/userUtils";
+import { agreeRequest } from "./request";
 const emit = defineEmits<{
   (event: "onSelected", value: RequestRecord): void;
 }>();
@@ -76,6 +86,11 @@ watch(visible, (value) => {
     loadRequestList();
   }
 });
+const handleAgreeRequest = async (key: number) => {
+  await agreeRequest(loadedData.value.records[key].id);
+  loadedData.value.records[key].status = AddStatus.AGREED;
+  ElMessage.success("您已同意该好友申请");
+};
 </script>
 <style scoped lang="scss">
 .request-list {
@@ -119,6 +134,7 @@ watch(visible, (value) => {
       .content-operation {
         display: flex;
         gap: 3px;
+        padding: 0 5px;
       }
     }
   }

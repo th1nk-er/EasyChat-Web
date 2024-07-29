@@ -23,7 +23,7 @@ export type RequestRecord = {
   strangerId: number;
   uid: number;
 };
-export type handleRequestData = {
+export type ReplyAddRequestData = {
   id: number;
   status: AddStatus;
   remark?: string;
