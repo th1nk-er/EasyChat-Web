@@ -1,5 +1,10 @@
 import request from "@/utils/service";
-import type { FriendRequestData, AddFriendVo, ReplyAddRequestData } from "./type";
+import type {
+  FriendRequestData,
+  AddFriendVo,
+  ReplyAddRequestData,
+  FriendListVo,
+} from "./type";
 import type { Result } from "../types";
 
 /**
@@ -31,5 +36,15 @@ export const replyAddRequest = (data: ReplyAddRequestData) => {
     url: "/friend/request",
     method: "put",
     data,
+  });
+};
+
+/**
+ * 获取用户好友列表
+ */
+export const getUserFriendList = (page: number) => {
+  return request.get<Result<FriendListVo>>({
+    url: `/friend/list/${page}`,
+    method: "get",
   });
 };

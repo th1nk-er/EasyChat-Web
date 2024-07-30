@@ -5,6 +5,21 @@ export type AddFriendVo = {
   addInfo: string;
 };
 
+export type UserFriendVo = {
+  uid: number;
+  friendId: number;
+  nickname: string;
+  remark: string;
+  createTime: string;
+  avatar: string;
+};
+
+export type FriendListVo = {
+  total: number;
+  pageSize: number;
+  records: UserFriendVo[];
+};
+
 export type FriendRequestData = {
   total: number;
   pageSize: number;
