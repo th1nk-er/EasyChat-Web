@@ -29,7 +29,7 @@ export const useUserStore = defineStore("user", {
       // 如果未定义或过期，返回undefined
       if (
         state.userToken.expireTime === undefined ||
-        state.userToken.expireTime < Date.now()
+        new Date(state.userToken.expireTime) < new Date()
       )
         return undefined;
       return state.userToken;
