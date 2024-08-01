@@ -15,3 +15,15 @@ export enum UserSex {
   FEMALE = "FEMALE",
   SECRET = "SECRET",
 }
+export type UserVo = {
+  id: number;
+  username: string;
+  nickname: string;
+  email: string;
+  avatar: string;
+  loginType: number;
+  sex: UserSex;
+  locked: boolean;
+  createTime: String;
+  updateTime: String;
+};
