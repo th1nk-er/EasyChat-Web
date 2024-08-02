@@ -28,6 +28,7 @@ declare module 'vue' {
     IconKey: typeof import('./src/components/icons/IconKey.vue')['default']
     IconLock: typeof import('./src/components/icons/IconLock.vue')['default']
     IconMale: typeof import('./src/components/icons/IconMale.vue')['default']
+    IconMoreHoriz: typeof import('./src/components/icons/IconMoreHoriz.vue')['default']
     IconNorthEast: typeof import('./src/components/icons/IconNorthEast.vue')['default']
     IconNotificationOff: typeof import('./src/components/icons/IconNotificationOff.vue')['default']
     IconPerson: typeof import('./src/components/icons/IconPerson.vue')['default']

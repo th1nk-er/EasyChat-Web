@@ -1,43 +1,50 @@
 <template>
-  <div class="chat-list">
-    <ToolBar />
-    <div class="chat-list-box" v-infinite-scroll="loadChatList">
-      <div v-for="(user, key) in loadedData" :key="key" class="user-item">
-        <div class="user-item__avatar-box">
-          <el-badge
-            :value="user.unread"
-            :max="99"
-            class="item"
-            :show-zero="false"
-            :is-dot="user.muted && user.unread > 0"
-            :offset="[-3, 3]"
-            :badge-style="user.muted ? { width: '13px', height: '13px' } : ''"
-          >
-            <img :src="user.avatar" class="user-item__avatar-box__img-avatar" />
-          </el-badge>
-        </div>
-        <div class="user-item__content">
-          <div class="user-item__content__text">
-            <p class="user-item__content__text-name">{{ user.name }}</p>
-            <p class="user-item__content__text-part-message">
-              {{ user.partMessage }}
-            </p>
+  <div class="container">
+    <div class="chat-list">
+      <ToolBar />
+      <div class="chat-list-box" v-infinite-scroll="loadChatList">
+        <div v-for="(user, key) in loadedData" :key="key" class="user-item">
+          <div class="user-item__avatar-box">
+            <el-badge
+              :value="user.unread"
+              :max="99"
+              class="item"
+              :show-zero="false"
+              :is-dot="user.muted && user.unread > 0"
+              :offset="[-3, 3]"
+              :badge-style="user.muted ? { width: '13px', height: '13px' } : ''"
+            >
+              <img
+                :src="user.avatar"
+                class="user-item__avatar-box__img-avatar"
+              />
+            </el-badge>
           </div>
-          <div class="user-item__content__info">
-            <p class="user-item__content__info-time">{{ user.time }}</p>
-            <IconNotificationOff
-              class="user-item__content__info-muted"
-              v-if="user.muted"
-            />
+          <div class="user-item__content">
+            <div class="user-item__content__text">
+              <p class="user-item__content__text-name">{{ user.name }}</p>
+              <p class="user-item__content__text-part-message">
+                {{ user.partMessage }}
+              </p>
+            </div>
+            <div class="user-item__content__info">
+              <p class="user-item__content__info-time">{{ user.time }}</p>
+              <IconNotificationOff
+                class="user-item__content__info-muted"
+                v-if="user.muted"
+              />
+            </div>
           </div>
         </div>
       </div>
     </div>
+    <ChatInstance class="chat-instance" />
   </div>
 </template>
 <script setup lang="ts">
 import { ToolBar } from "../../components";
 import { useChatStore } from "@/stores/chat";
+import { ChatInstance } from "./components";
 
 const chatStore = useChatStore();
 
@@ -89,6 +96,14 @@ const loadChatList = () => {
 };
 </script>
 <style scoped lang="scss">
+.container {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  .chat-instance {
+    flex-grow: 1;
+  }
+}
 .chat-list {
   display: flex;
   flex-direction: column;
