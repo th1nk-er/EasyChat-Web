@@ -1,9 +1,9 @@
 export type ChatMessage = {
   type: MessageType;
   content: string;
-  fromId: string;
-  toId?: string;
-  groupId?: string;
+  fromId: number;
+  toId?: number;
+  groupId?: number;
 };
 
 export enum MessageType {

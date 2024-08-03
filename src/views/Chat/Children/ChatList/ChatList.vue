@@ -38,7 +38,7 @@
         </div>
       </div>
     </div>
-    <ChatInstance class="chat-instance" />
+    <ChatInstance />
   </div>
 </template>
 <script setup lang="ts">
@@ -100,9 +100,6 @@ const loadChatList = () => {
   width: 100%;
   height: 100vh;
   display: flex;
-  .chat-instance {
-    flex-grow: 1;
-  }
 }
 .chat-list {
   display: flex;

@@ -1,35 +1,48 @@
-import { StompClient } from "@/utils/ws";
+import { stompClient } from "@/utils/ws";
 import type { ChatMessage } from "./types";
 import { SHA256 } from "crypto-js";
+import { useUserStore } from "@/stores/user";
+const userStore = useUserStore();
 
-export const subscribeMessage = (
-  client: StompClient,
-  token: string | undefined,
-  callback: (message: ChatMessage) => void
-) => {
-  if (!client.connected) return;
-  client.subscribe(
-    "/notify/message/" + SHA256(token ? token : "").toString(),
+/**
+ * 订阅消息
+ */
+export const subscribeMessage = (callback: (message: ChatMessage) => void) => {
+  const userToken = userStore.getUserToken?.token;
+  if (userToken == undefined) {
+    return false;
+  }
+  if (!stompClient.connected) return;
+  stompClient.subscribe(
+    "/notify/message/" + SHA256(userToken).toString(),
     (message) => {
       callback(JSON.parse(message.body));
     }
   );
+  return true;
 };
-export const sendMessage = (
-  client: StompClient,
-  token: string | undefined,
-  message: ChatMessage
-) => {
-  if (!client.connected) return;
-  client.publish({
-    destination: "/notify/send/" + SHA256(token ? token : ""),
+/**
+ * 发送消息
+ */
+export const sendMessage = (message: ChatMessage) => {
+  const userToken = userStore.getUserToken?.token;
+  if (userToken == undefined) {
+    return false;
+  }
+  if (!stompClient.connected) return;
+  stompClient.publish({
+    destination: "/notify/send/" + SHA256(userToken),
     body: JSON.stringify(message),
   });
+  return true;
 };
 
-export const sendConnect = (client: StompClient) => {
-  if (!client.connected) return;
-  client.publish({
+/**
+ * 发送连接消息
+ */
+export const sendConnect = () => {
+  if (!stompClient.connected) return;
+  stompClient.publish({
     destination: "/notify/connect",
     body: "",
   });

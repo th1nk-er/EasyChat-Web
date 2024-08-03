@@ -24,6 +24,7 @@ declare module 'vue' {
     IconChat: typeof import('./src/components/icons/IconChat.vue')['default']
     IconEmail: typeof import('./src/components/icons/IconEmail.vue')['default']
     IconFemale: typeof import('./src/components/icons/IconFemale.vue')['default']
+    IconForum: typeof import('./src/components/icons/IconForum.vue')['default']
     IconGroup: typeof import('./src/components/icons/IconGroup.vue')['default']
     IconKey: typeof import('./src/components/icons/IconKey.vue')['default']
     IconLock: typeof import('./src/components/icons/IconLock.vue')['default']

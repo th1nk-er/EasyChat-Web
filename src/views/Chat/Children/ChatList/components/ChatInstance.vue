@@ -1,5 +1,8 @@
 <template>
-  <div class="container">
+  <div class="no-user" v-if="chatStore.chatId == undefined">
+    <IconForum class="icon-forum" />
+  </div>
+  <div class="container" v-if="chatStore.chatId != undefined">
     <div class="container__header">
       <div class="container__header__title">
         <div class="container__header__title__name">th1nk</div>
@@ -11,7 +14,7 @@
       <div class="message-container" ref="msgBox">
         <div
           :class="
-            item.fromId == userId
+            item.fromId == userStore.userInfo.id
               ? 'message-container-item item-right'
               : 'message-container-item item-left'
           "
@@ -32,11 +35,12 @@
 </template>
 <script setup lang="ts">
 import { MessageType, type ChatMessage } from "@/api/chat/types";
-
+import { useChatStore } from "@/stores/chat";
+import { useUserStore } from "@/stores/user";
+const chatStore = useChatStore();
+const userStore = useUserStore();
 const messageData = ref<ChatMessage[]>([]);
 const msgBox = ref<HTMLElement>();
-
-const userId = ref("1");
 const scrollToBottom = (delay: number = 200) => {
   setTimeout(() => {
     msgBox.value?.scrollTo({
@@ -53,15 +57,29 @@ onMounted(() => {
     messageData.value?.push({
       type: MessageType.TEXT,
       content: "测试消息" + i,
-      fromId: fromId,
-      toId: toId,
+      fromId: userStore.userInfo.id,
+      toId: chatStore.chatId,
     });
   }
   scrollToBottom();
 });
 </script>
 <style scoped lang="scss">
+.no-user {
+  flex-grow: 1;
+  background-color: var(--color-background-soft);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-left: 2px solid var(--color-border);
+  .icon-forum {
+    height: 20%;
+    width: 20%;
+    fill: var(--color-subtitle);
+  }
+}
 .container {
+  flex-grow: 1;
   min-width: 400px;
   background-color: var(--color-background-mute);
   display: flex;

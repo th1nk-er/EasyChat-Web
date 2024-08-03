@@ -15,7 +15,7 @@ export const searchUser = (keyword: string, page: number) => {
 /**
  * 获取用户信息
  */
-export const getInfo = () => {
+export const getUserInfo = () => {
   return request.get<Result<UserVo>>({
     url: "/user/info",
   });

@@ -1,11 +1,11 @@
 import type { UserToken } from "@/api/login/types";
+import type { UserVo } from "@/api/user/types";
 import { decrypt, encrypt } from "@/utils/jsencrypt";
 import { defineStore } from "pinia";
 
 export const useUserStore = defineStore("user", {
   state: () => {
     return {
-      rememberMe: false,
       userToken: {} as UserToken,
       /**
        * 登录表单，务必用 getter 和 setter 获取和设置
@@ -15,6 +15,7 @@ export const useUserStore = defineStore("user", {
         password: "",
         rememberMe: false,
       },
+      userInfo: {} as UserVo,
     };
   },
   getters: {
@@ -30,8 +31,10 @@ export const useUserStore = defineStore("user", {
       if (
         state.userToken.expireTime === undefined ||
         new Date(state.userToken.expireTime) < new Date()
-      )
+      ) {
+        state.userToken = {} as UserToken;
         return undefined;
+      }
       return state.userToken;
     },
   },
@@ -50,5 +53,7 @@ export const useUserStore = defineStore("user", {
       this.userToken = {} as UserToken;
     },
   },
-  persist: true,
+  persist: {
+    paths: ["userToken", "loginForm"],
+  },
 });

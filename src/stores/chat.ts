@@ -4,6 +4,8 @@ export const useChatStore = defineStore("chat", {
     return {
       /** 未读消息数 */
       unread: 0,
+      /** 当前聊天的用户ID */
+      chatId: undefined as number | undefined,
     };
   },
 });

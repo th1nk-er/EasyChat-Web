@@ -9,7 +9,7 @@ import {
 import SockJs from "sockjs-client/dist/sockjs.min.js";
 const userStore = useUserStore();
 const tokenString = userStore.getUserToken ? userStore.getUserToken.token : "";
-export class StompClient extends Client {
+class StompClient extends Client {
   PUB_PREFIX: string = "/app";
   connectHeaders: StompHeaders = {
     Authentication: tokenString,
@@ -31,3 +31,5 @@ export class StompClient extends Client {
     });
   }
 }
+
+export const stompClient = new StompClient();
