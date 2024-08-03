@@ -4,6 +4,7 @@ import type {
   AddFriendVo,
   ReplyAddRequestData,
   FriendListVo,
+  FriendInfo,
 } from "./type";
 import type { Result } from "../types";
 
@@ -45,6 +46,16 @@ export const replyAddRequest = (data: ReplyAddRequestData) => {
 export const getUserFriendList = (page: number) => {
   return request.get<Result<FriendListVo>>({
     url: `/friend/list/${page}`,
+    method: "get",
+  });
+};
+
+/**
+ * 获取好友信息
+ */
+export const getFriendInfo = (friendId: number) => {
+  return request.get<Result<FriendInfo>>({
+    url: `/friend/info/${friendId}`,
     method: "get",
   });
 };

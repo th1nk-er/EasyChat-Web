@@ -6,6 +6,8 @@ export const useChatStore = defineStore("chat", {
       unread: 0,
       /** 当前聊天的用户ID */
       chatId: undefined as number | undefined,
+      isChatting: false,
+      chatType: "friend" as "friend" | "group",
     };
   },
 });

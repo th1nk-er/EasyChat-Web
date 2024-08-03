@@ -1,12 +1,18 @@
 <template>
-  <div class="no-user" v-if="chatStore.chatId == undefined">
+  <div class="no-user" v-if="!chatStore.isChatting">
     <IconForum class="icon-forum" />
   </div>
-  <div class="container" v-if="chatStore.chatId != undefined">
+  <div class="container" v-if="chatStore.isChatting">
     <div class="container__header">
       <div class="container__header__title">
-        <div class="container__header__title__name">th1nk</div>
-        <IconNotificationOff class="container__header__title__muted" />
+        <div class="container__header__title__name">
+          <span v-if="chatInfo.remark == undefined">{{ chatInfo.name }}</span>
+          <span v-else>{{ chatInfo.remark }}</span>
+        </div>
+        <IconNotificationOff
+          class="container__header__title__muted"
+          v-if="chatInfo.muted"
+        />
       </div>
       <IconMoreHoriz class="container__header__more" />
     </div>
@@ -22,7 +28,11 @@
           :key="index"
         >
           <img
-            src="https://avatars.githubusercontent.com/u/69061641?v=4"
+            :src="
+              item.fromId == userStore.userInfo.id
+                ? getAvatarUrl(userStore.userInfo.avatar)
+                : getAvatarUrl(chatInfo.avatar)
+            "
             class="message-container-item-avatar"
           />
           <p class="message-container-item-content">
@@ -30,17 +40,53 @@
           </p>
         </div>
       </div>
+      <div class="toolbar-container"></div>
+      <div class="input-container">
+        <el-input
+          v-model="inputMessage"
+          type="textarea"
+          resize="none"
+          :rows="5"
+          class="input-container__textarea"
+          @keyup.enter="handleSendMessage"
+        />
+        <el-button
+          class="input-container__button-send"
+          type="primary"
+          @click="handleSendMessage"
+          >发送</el-button
+        >
+      </div>
     </div>
   </div>
 </template>
 <script setup lang="ts">
+import { sendMessage, subscribeMessage } from "@/api/chat";
 import { MessageType, type ChatMessage } from "@/api/chat/types";
+import { getFriendInfo } from "@/api/friend";
 import { useChatStore } from "@/stores/chat";
 import { useUserStore } from "@/stores/user";
+import { getAvatarUrl } from "@/utils/userUtils";
 const chatStore = useChatStore();
 const userStore = useUserStore();
 const messageData = ref<ChatMessage[]>([]);
 const msgBox = ref<HTMLElement>();
+
+/** 用户输入的消息 */
+const inputMessage = ref("");
+const handleSendMessage = () => {
+  if (inputMessage.value == "") return;
+  const message: ChatMessage = {
+    type: MessageType.TEXT,
+    content: inputMessage.value,
+    fromId: userStore.userInfo.id,
+    toId: chatStore.chatId,
+  };
+  if (!sendMessage(message)) ElMessage.error("消息发送失败");
+  messageData.value.push(message);
+  inputMessage.value = "";
+  scrollToBottom();
+};
 const scrollToBottom = (delay: number = 200) => {
   setTimeout(() => {
     msgBox.value?.scrollTo({
@@ -49,19 +95,35 @@ const scrollToBottom = (delay: number = 200) => {
     });
   }, delay);
 };
-onMounted(() => {
-  // 添加测试数据
-  for (let i = 0; i < 50; i++) {
-    const fromId = "" + Math.round(Math.random() + 1);
-    const toId = fromId == "1" ? "2" : "1";
-    messageData.value?.push({
-      type: MessageType.TEXT,
-      content: "测试消息" + i,
-      fromId: userStore.userInfo.id,
-      toId: chatStore.chatId,
+const chatInfo = ref({
+  chatId: 0,
+  name: "",
+  remark: "",
+  avatar: "",
+  muted: false,
+});
+const initChatData = async () => {
+  messageData.value = [];
+  if (!chatStore.isChatting) return;
+  if (chatStore.chatType == "friend") {
+    const resp = await getFriendInfo(chatStore.chatId!);
+    chatInfo.value.chatId = resp.data.friendId;
+    chatInfo.value.name = resp.data.nickname;
+    chatInfo.value.remark = resp.data.remark;
+    chatInfo.value.avatar = resp.data.avatar;
+    chatInfo.value.muted = resp.data.muted;
+    // 订阅消息
+    subscribeMessage((message: ChatMessage) => {
+      if (message.fromId == chatStore.chatId) {
+        messageData.value.push(message);
+        scrollToBottom();
+      }
     });
   }
-  scrollToBottom();
+};
+
+onMounted(() => {
+  initChatData();
 });
 </script>
 <style scoped lang="scss">
@@ -120,6 +182,9 @@ onMounted(() => {
   &__main {
     flex-grow: 1;
     background-color: var(--color-background-soft);
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
 
     .message-container {
       height: 65vh;
@@ -138,10 +203,14 @@ onMounted(() => {
           padding: 3px 8px;
           background-color: var(--color-background-mute);
           max-width: 55%;
+          text-wrap: wrap;
+          white-space: pre-wrap; /* 保留空格，允许换行 */
+          word-break: break-all; /* 允许单词内部断开 */
         }
         &-avatar {
           width: 40px;
           height: 40px;
+          border-radius: 10px;
         }
 
         &.item-right {
@@ -151,6 +220,22 @@ onMounted(() => {
             background-color: rgb(149, 236, 105);
           }
         }
+      }
+    }
+    .toolbar-container {
+      height: 30px;
+      border-bottom: 2px solid var(--color-border);
+    }
+    .input-container {
+      flex-grow: 1;
+      padding: 0 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      &__textarea {
+        width: 100%;
+      }
+      &__button-send {
       }
     }
   }

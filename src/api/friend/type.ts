@@ -54,3 +54,14 @@ export enum AddStatus {
   REFUSED = "REFUSED",
   IGNORED = "IGNORED",
 }
+
+export type FriendInfo = {
+  friendId: number;
+  nickname: string;
+  username: string;
+  avatar: string;
+  sex: UserSex;
+  createTime: string;
+  remark: string;
+  muted: boolean;
+};

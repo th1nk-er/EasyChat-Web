@@ -31,7 +31,7 @@ export const sendMessage = (message: ChatMessage) => {
   }
   if (!stompClient.connected) return;
   stompClient.publish({
-    destination: "/notify/send/" + SHA256(userToken),
+    destination: "/message/chat.send",
     body: JSON.stringify(message),
   });
   return true;

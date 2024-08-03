@@ -19,6 +19,7 @@
           class="friend-item"
           v-for="(item, index) in friendList.records"
           :key="index"
+          @click="handleFriendClick(item.friendId)"
         >
           <img
             :src="getAvatarUrl(item.avatar)"
@@ -48,6 +49,9 @@ import { ToolBar } from "../../components";
 import { FriendRequestDialog } from "./components";
 import type { FriendListVo } from "@/api/friend/type";
 import { getAvatarUrl } from "@/utils/userUtils";
+import { useChatStore } from "@/stores/chat";
+const chatStore = useChatStore();
+const router = useRouter();
 
 const requestDialogShow = ref(false);
 
@@ -70,6 +74,13 @@ const loadFriendList = async () => {
     scrollDisabled.value = true;
     return;
   }
+};
+
+const handleFriendClick = (friendId: number) => {
+  chatStore.chatId = friendId;
+  chatStore.chatType = "friend";
+  chatStore.isChatting = true;
+  router.push({ name: "ChatList" });
 };
 </script>
 
