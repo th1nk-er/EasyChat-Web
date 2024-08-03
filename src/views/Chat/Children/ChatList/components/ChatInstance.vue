@@ -235,8 +235,6 @@ onMounted(() => {
       &__textarea {
         width: 100%;
       }
-      &__button-send {
-      }
     }
   }
 }
