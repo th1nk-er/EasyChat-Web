@@ -27,6 +27,7 @@
   "devDependencies": {
     "@tsconfig/node20": "^20.1.4",
     "@types/crypto-js": "^4.2.2",
+    "@types/node": "^22.1.0",
     "@types/nprogress": "^0.2.3",
     "@types/sockjs-client": "^1.5.4",
     "@types/ws": "^8.5.11",
