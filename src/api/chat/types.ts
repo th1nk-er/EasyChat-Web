@@ -1,4 +1,4 @@
-export type ChatMessage = {
+export type WSMessage = {
   type: MessageType;
   content: string;
   fromId: number;
@@ -14,3 +14,13 @@ export enum MessageType {
   ERROR = "ERROR",
   COMMAND = "COMMAND",
 }
+
+export type ChatMessage = {
+  id?: number;
+  senderId?: number;
+  senderGroupId?: number;
+  receiverId: number;
+  type: MessageType;
+  content: string;
+  createTime: string;
+};

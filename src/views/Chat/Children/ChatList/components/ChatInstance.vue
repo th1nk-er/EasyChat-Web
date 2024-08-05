@@ -19,25 +19,40 @@
     <div class="container__main">
       <div class="message-container" ref="msgBox">
         <div
-          :class="
-            item.fromId == userStore.userInfo.id
-              ? 'message-container-item item-right'
-              : 'message-container-item item-left'
-          "
+          class="message-container-item"
           v-for="(item, index) in messageData"
           :key="index"
         >
-          <img
-            :src="
-              item.fromId == userStore.userInfo.id
-                ? getAvatarUrl(userStore.userInfo.avatar)
-                : getAvatarUrl(chatInfo.avatar)
+          <p
+            class="message-container-item-time"
+            v-if="
+              index != 0 &&
+              new Date(item.createTime).getTime() -
+                new Date(messageData[index - 1].createTime).getTime() >
+                1000 * 60 * 3
             "
-            class="message-container-item-avatar"
-          />
-          <p class="message-container-item-content">
-            {{ item.content }}
+          >
+            {{ getTimeString(item.createTime) }}
           </p>
+          <div
+            :class="
+              item.senderId == userStore.userInfo.id
+                ? 'item-right'
+                : 'item-left'
+            "
+          >
+            <img
+              :src="
+                item.senderId == userStore.userInfo.id
+                  ? getAvatarUrl(userStore.userInfo.avatar)
+                  : getAvatarUrl(chatInfo.avatar)
+              "
+              class="message-container-item-avatar"
+            />
+            <p class="message-container-item-content">
+              {{ item.content }}
+            </p>
+          </div>
         </div>
       </div>
       <div class="toolbar-container"></div>
@@ -48,7 +63,7 @@
           resize="none"
           :rows="5"
           class="input-container__textarea"
-          @keyup.enter="handleSendMessage"
+          @keyup.enter.prevent="handleSendMessage"
         />
         <el-button
           class="input-container__button-send"
@@ -61,11 +76,16 @@
   </div>
 </template>
 <script setup lang="ts">
-import { sendMessage, subscribeMessage } from "@/api/chat";
-import { MessageType, type ChatMessage } from "@/api/chat/types";
+import { getMessageHistory, sendMessage, subscribeMessage } from "@/api/chat";
+import {
+  MessageType,
+  type ChatMessage,
+  type WSMessage,
+} from "@/api/chat/types";
 import { getFriendInfo } from "@/api/friend";
 import { useChatStore } from "@/stores/chat";
 import { useUserStore } from "@/stores/user";
+import { getTimeString } from "@/utils/timeUtils";
 import { getAvatarUrl } from "@/utils/userUtils";
 const chatStore = useChatStore();
 const userStore = useUserStore();
@@ -76,14 +96,25 @@ const msgBox = ref<HTMLElement>();
 const inputMessage = ref("");
 const handleSendMessage = () => {
   if (inputMessage.value == "") return;
-  const message: ChatMessage = {
+  if (inputMessage.value.endsWith("\n"))
+    inputMessage.value = inputMessage.value.slice(
+      0,
+      inputMessage.value.length - 2
+    );
+  const message: WSMessage = {
     type: MessageType.TEXT,
     content: inputMessage.value,
     fromId: userStore.userInfo.id,
     toId: chatStore.chatId,
   };
   if (!sendMessage(message)) ElMessage.error("消息发送失败");
-  messageData.value.push(message);
+  messageData.value.push({
+    senderId: userStore.userInfo.id,
+    receiverId: chatStore.chatId!,
+    type: MessageType.TEXT,
+    content: inputMessage.value,
+    createTime: new Date().toISOString(),
+  });
   inputMessage.value = "";
   scrollToBottom();
 };
@@ -112,10 +143,21 @@ const initChatData = async () => {
     chatInfo.value.remark = resp.data.remark;
     chatInfo.value.avatar = resp.data.avatar;
     chatInfo.value.muted = resp.data.muted;
+    // 获取最近的消息
+    messageData.value.push(
+      ...(await getMessageHistory(chatInfo.value.chatId, 1)).data
+    );
+    scrollToBottom();
     // 订阅消息
-    subscribeMessage((message: ChatMessage) => {
+    subscribeMessage((message: WSMessage) => {
       if (message.fromId == chatStore.chatId) {
-        messageData.value.push(message);
+        messageData.value.push({
+          senderId: message.fromId,
+          receiverId: userStore.userInfo.id,
+          type: message.type,
+          content: message.content,
+          createTime: new Date().toISOString(),
+        });
         scrollToBottom();
       }
     });
@@ -197,7 +239,17 @@ onMounted(() => {
 
       &-item {
         display: flex;
-        gap: 8px;
+        gap: 3px;
+        flex-direction: column;
+        .item-right,
+        .item-left {
+          display: flex;
+          gap: 8px;
+        }
+        &-time {
+          text-align: center;
+          color: var(--color-subtitle);
+        }
         &-content {
           border-radius: 5px;
           padding: 3px 8px;
@@ -213,7 +265,7 @@ onMounted(() => {
           border-radius: 10px;
         }
 
-        &.item-right {
+        .item-right {
           flex-direction: row-reverse;
 
           .message-container-item-content {

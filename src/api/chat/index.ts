@@ -1,13 +1,15 @@
 import { stompClient } from "@/utils/ws";
-import type { ChatMessage } from "./types";
+import request from "@/utils/service";
+import type { ChatMessage, WSMessage } from "./types";
 import { SHA256 } from "crypto-js";
 import { useUserStore } from "@/stores/user";
+import type { Result } from "../types";
 const userStore = useUserStore();
 
 /**
  * 订阅消息
  */
-export const subscribeMessage = (callback: (message: ChatMessage) => void) => {
+export const subscribeMessage = (callback: (message: WSMessage) => void) => {
   const userToken = userStore.getUserToken?.token;
   if (userToken == undefined) {
     return false;
@@ -24,7 +26,7 @@ export const subscribeMessage = (callback: (message: ChatMessage) => void) => {
 /**
  * 发送消息
  */
-export const sendMessage = (message: ChatMessage) => {
+export const sendMessage = (message: WSMessage) => {
   const userToken = userStore.getUserToken?.token;
   if (userToken == undefined) {
     return false;
@@ -45,5 +47,18 @@ export const sendConnect = () => {
   stompClient.publish({
     destination: "/notify/connect",
     body: "",
+  });
+};
+
+/**
+ * 获取消息历史记录
+ * @param userId 对方用户ID
+ * @param currentPage 页码
+ * @returns
+ */
+export const getMessageHistory = (userId: number, currentPage: number) => {
+  return request.get<Result<ChatMessage[]>>({
+    url: `/message/history/${userId}/${currentPage}`,
+    method: "get",
   });
 };
