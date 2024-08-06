@@ -99,7 +99,7 @@ const handleSendMessage = () => {
   if (inputMessage.value.endsWith("\n"))
     inputMessage.value = inputMessage.value.slice(
       0,
-      inputMessage.value.length - 2
+      inputMessage.value.length - 1
     );
   const message: WSMessage = {
     type: MessageType.TEXT,
