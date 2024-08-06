@@ -1,6 +1,6 @@
 import { stompClient } from "@/utils/ws";
 import request from "@/utils/service";
-import type { ChatMessage, WSMessage } from "./types";
+import type { ChatMessage, UserConversation, WSMessage } from "./types";
 import { SHA256 } from "crypto-js";
 import { useUserStore } from "@/stores/user";
 import type { Result } from "../types";
@@ -59,6 +59,16 @@ export const sendConnect = () => {
 export const getMessageHistory = (userId: number, currentPage: number) => {
   return request.get<Result<ChatMessage[]>>({
     url: `/message/history/${userId}/${currentPage}`,
+    method: "get",
+  });
+};
+
+/**
+ * 获取用户对话列表
+ */
+export const getUserConversationList = (pageNum: number) => {
+  return request.get<Result<UserConversation[]>>({
+    url: `/conversation/list/${pageNum}`,
     method: "get",
   });
 };

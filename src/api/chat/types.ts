@@ -24,3 +24,14 @@ export type ChatMessage = {
   content: string;
   createTime: string;
 };
+
+export type UserConversation = {
+  id: number;
+  uid: number;
+  friendId?: number;
+  groupId?: number;
+  unreadCount: number;
+  lastMessage: string;
+  messageType: MessageType;
+  updateTime: string;
+};
