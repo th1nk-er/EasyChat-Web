@@ -2,33 +2,47 @@
   <div class="container">
     <div class="chat-list">
       <ToolBar />
-      <div class="chat-list-box" v-infinite-scroll="loadChatList">
-        <div v-for="(user, key) in loadedData" :key="key" class="user-item">
+      <div
+        class="chat-list-box"
+        v-infinite-scroll="loadConversations"
+        :infinite-scroll-disabled="scrollDisabled"
+      >
+        <div v-for="(user, key) in data" :key="key" class="user-item">
           <div class="user-item__avatar-box">
             <el-badge
-              :value="user.unread"
+              :value="user.unreadCount"
               :max="99"
               class="item"
               :show-zero="false"
-              :is-dot="user.muted && user.unread > 0"
+              :is-dot="user.muted && user.unreadCount > 0"
               :offset="[-3, 3]"
               :badge-style="user.muted ? { width: '13px', height: '13px' } : ''"
             >
               <img
-                :src="user.avatar"
+                :src="getAvatarUrl(user.avatar)"
                 class="user-item__avatar-box__img-avatar"
               />
             </el-badge>
           </div>
           <div class="user-item__content">
             <div class="user-item__content__text">
-              <p class="user-item__content__text-name">{{ user.name }}</p>
+              <p
+                class="user-item__content__text-name"
+                v-if="user.remark == undefined"
+              >
+                {{ user.nickname }}
+              </p>
+              <p class="user-item__content__text-name" v-else>
+                {{ user.remark }}
+              </p>
               <p class="user-item__content__text-part-message">
-                {{ user.partMessage }}
+                {{ user.lastMessage }}
               </p>
             </div>
             <div class="user-item__content__info">
-              <p class="user-item__content__info-time">{{ user.time }}</p>
+              <p class="user-item__content__info-time">
+                {{ getTimeString(user.updateTime) }}
+              </p>
               <IconNotificationOff
                 class="user-item__content__info-muted"
                 v-if="user.muted"
@@ -45,54 +59,34 @@
 import { ToolBar } from "../../components";
 import { useChatStore } from "@/stores/chat";
 import { ChatInstance } from "./components";
+import { getUserConversationList } from "@/api/chat";
+import type { UserConversation } from "@/api/chat/types";
+import { getTimeString } from "@/utils/timeUtils";
+import { getAvatarUrl } from "@/utils/userUtils";
 
 const chatStore = useChatStore();
 
-const data = reactive([
-  {
-    avatar: "https://avatars.githubusercontent.com/u/69061641?v=4",
-    name: "th1nk",
-    partMessage: "abcdefg1234567890",
-    time: "19:21",
-    unread: 100,
-    muted: false,
-  },
-]);
-const loadedData = reactive([] as any[]);
-// 添加测试数据
-const addTestData = () => {
-  for (let i = 0; i < 100; i++) {
-    data.push({
-      avatar: `https://avatars.githubusercontent.com/u/${69061642 + i}?v=4`,
-      name: window.crypto.randomUUID(),
-      partMessage: window.crypto.getRandomValues(new Uint8Array(30)).join(""),
-      time: "19:21",
-      unread: Math.random() > 0.5 ? Math.round(Math.random() * 20) : 0,
-      muted: Math.random() > 0.5 ? true : false,
-    });
+const data = reactive([] as UserConversation[]);
+const currentPage = ref(1);
+const scrollDisabled = ref(false);
+const loadConversations = async () => {
+  const resp = await getUserConversationList(currentPage.value);
+  if (resp.data.length == 0) {
+    scrollDisabled.value = true;
   }
+  currentPage.value++;
+  data.push(...resp.data);
+  chatStore.unread = getUnreadCount();
 };
 const getUnreadCount = () => {
   let res = 0;
   for (let i = 0; i < data.length; i++) {
-    if (data[i].unread > 0) {
+    if (data[i].unreadCount > 0) {
       if (data[i].muted) res++;
-      else res += data[i].unread;
+      else res += data[i].unreadCount;
     }
   }
   return res;
-};
-onMounted(() => {
-  addTestData();
-  chatStore.unread = getUnreadCount();
-});
-
-const loadChatList = () => {
-  if (data.length == loadedData.length) return;
-  const len = loadedData.length;
-  const appendCount = len + 15 > data.length ? data.length - len : 15;
-  const newData = data.slice(len, len + appendCount);
-  loadedData.push(...newData);
 };
 </script>
 <style scoped lang="scss">

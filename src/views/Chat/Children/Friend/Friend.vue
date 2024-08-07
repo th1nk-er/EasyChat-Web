@@ -35,7 +35,7 @@
                   ? 'friend-item__title'
                   : 'friend-item__subtitle'
               "
-              >({{ item.nickname }})</span
+              >{{ item.nickname }}</span
             >
           </div>
         </div>

@@ -28,8 +28,12 @@ export type ChatMessage = {
 export type UserConversation = {
   id: number;
   uid: number;
+  avatar: string;
+  nickname: string;
+  remark:string;
   friendId?: number;
   groupId?: number;
+  muted: boolean;
   unreadCount: number;
   lastMessage: string;
   messageType: MessageType;
