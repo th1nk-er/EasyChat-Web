@@ -11,10 +11,12 @@
 import { sendConnect, subscribeMessage } from "@/api/chat";
 import { LeftNavigation } from "./components";
 import { stompClient } from "@/utils/ws";
-import { MessageType, type ChatMessage } from "@/api/chat/types";
+import { MessageType, type WSMessage } from "@/api/chat/types";
 import { useUserStore } from "@/stores/user";
 import { getUserInfo } from "@/api/user";
+import { useChatStore } from "@/stores/chat";
 const userStore = useUserStore();
+const chatStore = useChatStore();
 const router = useRouter();
 const wsConnect = () => {
   const userToken = userStore.getUserToken?.token;
@@ -35,18 +37,18 @@ onMounted(async () => {
   wsConnect();
   userStore.userInfo = (await getUserInfo()).data;
 });
-const handleWsMessage = (message: ChatMessage) => {
-  console.log(message);
-
+const handleWsMessage = (message: WSMessage) => {
   if (message.type == MessageType.SYSTEM) {
     handleSystemMessage(message);
-    return;
   } else if (message.type == MessageType.COMMAND) {
     handleCommandMessage(message);
-    return;
+  } else if (message.type == MessageType.ERROR) {
+    ElMessage.error(message.content);
+  } else {
+    handleUserMessage(message);
   }
 };
-const handleCommandMessage = (message: ChatMessage) => {
+const handleCommandMessage = (message: WSMessage) => {
   switch (message.content) {
     case "CONNECTED":
       ElMessage.success("已连接到通信服务器");
@@ -56,7 +58,10 @@ const handleCommandMessage = (message: ChatMessage) => {
       break;
   }
 };
-const handleSystemMessage = (message: ChatMessage) => {};
+const handleSystemMessage = (message: WSMessage) => {};
+const handleUserMessage = (message: WSMessage) => {
+  chatStore.updateConversation(message);
+};
 </script>
 
 <style scoped lang="scss">

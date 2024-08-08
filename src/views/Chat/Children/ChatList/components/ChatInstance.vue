@@ -62,6 +62,7 @@
           type="textarea"
           resize="none"
           :rows="5"
+          maxlength="1024"
           class="input-container__textarea"
           @keyup.enter.prevent="handleSendMessage"
         />
@@ -107,7 +108,10 @@ const handleSendMessage = () => {
     fromId: userStore.userInfo.id,
     toId: chatStore.chatId,
   };
-  if (!sendMessage(message)) ElMessage.error("消息发送失败");
+  if (!sendMessage(message)) {
+    ElMessage.error("消息发送失败");
+    return;
+  }
   messageData.value.push({
     senderId: userStore.userInfo.id,
     receiverId: chatStore.chatId!,
@@ -115,6 +119,7 @@ const handleSendMessage = () => {
     content: inputMessage.value,
     createTime: new Date().toISOString(),
   });
+  chatStore.updateConversation(message);
   inputMessage.value = "";
   scrollToBottom();
 };
@@ -163,7 +168,13 @@ const initChatData = async () => {
     });
   }
 };
-
+watch(
+  chatStore,
+  () => {
+    if (chatStore.isChatting) initChatData();
+  },
+  { deep: false }
+);
 onMounted(() => {
   initChatData();
 });

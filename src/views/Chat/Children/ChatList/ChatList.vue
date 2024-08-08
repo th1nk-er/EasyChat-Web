@@ -7,19 +7,26 @@
         v-infinite-scroll="loadConversations"
         :infinite-scroll-disabled="scrollDisabled"
       >
-        <div v-for="(user, key) in data" :key="key" class="user-item">
+        <div
+          v-for="(conversation, key) in data"
+          :key="key"
+          class="user-item"
+          @click="handleClickConversation(conversation)"
+        >
           <div class="user-item__avatar-box">
             <el-badge
-              :value="user.unreadCount"
+              :value="conversation.unreadCount"
               :max="99"
               class="item"
               :show-zero="false"
-              :is-dot="user.muted && user.unreadCount > 0"
+              :is-dot="conversation.muted && conversation.unreadCount > 0"
               :offset="[-3, 3]"
-              :badge-style="user.muted ? { width: '13px', height: '13px' } : ''"
+              :badge-style="
+                conversation.muted ? { width: '13px', height: '13px' } : ''
+              "
             >
               <img
-                :src="getAvatarUrl(user.avatar)"
+                :src="getAvatarUrl(conversation.avatar)"
                 class="user-item__avatar-box__img-avatar"
               />
             </el-badge>
@@ -28,24 +35,24 @@
             <div class="user-item__content__text">
               <p
                 class="user-item__content__text-name"
-                v-if="user.remark == undefined"
+                v-if="conversation.remark == undefined"
               >
-                {{ user.nickname }}
+                {{ conversation.nickname }}
               </p>
               <p class="user-item__content__text-name" v-else>
-                {{ user.remark }}
+                {{ conversation.remark }}
               </p>
               <p class="user-item__content__text-part-message">
-                {{ user.lastMessage }}
+                {{ conversation.lastMessage }}
               </p>
             </div>
             <div class="user-item__content__info">
               <p class="user-item__content__info-time">
-                {{ getTimeString(user.updateTime) }}
+                {{ getTimeString(conversation.updateTime) }}
               </p>
               <IconNotificationOff
                 class="user-item__content__info-muted"
-                v-if="user.muted"
+                v-if="conversation.muted"
               />
             </div>
           </div>
@@ -76,17 +83,16 @@ const loadConversations = async () => {
   }
   currentPage.value++;
   data.push(...resp.data);
-  chatStore.unread = getUnreadCount();
+  chatStore.conversationList = data;
 };
-const getUnreadCount = () => {
-  let res = 0;
-  for (let i = 0; i < data.length; i++) {
-    if (data[i].unreadCount > 0) {
-      if (data[i].muted) res++;
-      else res += data[i].unreadCount;
-    }
+
+const handleClickConversation = (conversation: UserConversation) => {
+  if (conversation.friendId != undefined) {
+    chatStore.clearFriendUnread(conversation.friendId);
+    chatStore.chatId = conversation.friendId;
+    chatStore.chatType = "friend";
+    chatStore.isChatting = true;
   }
-  return res;
 };
 </script>
 <style scoped lang="scss">
