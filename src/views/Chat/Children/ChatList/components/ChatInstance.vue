@@ -77,7 +77,12 @@
   </div>
 </template>
 <script setup lang="ts">
-import { getMessageHistory, sendMessage, subscribeMessage } from "@/api/chat";
+import {
+  getMessageHistory,
+  publishOpenConversation,
+  sendMessage,
+  subscribeMessage,
+} from "@/api/chat";
 import {
   MessageType,
   type ChatMessage,
@@ -142,6 +147,7 @@ const initChatData = async () => {
   messageData.value = [];
   if (!chatStore.isChatting) return;
   if (chatStore.chatType == "friend") {
+    publishOpenConversation(chatStore.chatId!);
     const resp = await getFriendInfo(chatStore.chatId!);
     chatInfo.value.chatId = resp.data.friendId;
     chatInfo.value.name = resp.data.nickname;

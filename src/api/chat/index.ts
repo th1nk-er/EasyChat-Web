@@ -49,7 +49,16 @@ export const sendConnect = () => {
     body: "",
   });
 };
-
+/**
+ * 当打开某个对话时向服务器发送信息
+ */
+export const publishOpenConversation = (toId: number) => {
+  if (!stompClient.connected) return;
+  stompClient.publish({
+    destination: "/conversation/open",
+    body: JSON.stringify({ toId: toId } as WSMessage),
+  });
+};
 /**
  * 获取消息历史记录
  * @param userId 对方用户ID
