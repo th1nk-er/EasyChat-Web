@@ -20,3 +20,15 @@ export const getUserInfo = () => {
     url: "/user/info",
   });
 };
+
+/**
+ * 修改密码
+ * @param code 邮箱验证码
+ * @param newPassword 新密码
+ */
+export const changePassword = (code: string, newPassword: string) => {
+  return request.put<Result<null>>({
+    url: "/user/password",
+    data: { code, newPassword },
+  });
+};

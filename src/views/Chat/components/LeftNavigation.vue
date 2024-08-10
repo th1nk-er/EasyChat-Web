@@ -22,15 +22,18 @@
       :class="router.currentRoute.value.name == 'Group' ? 'icon-selected' : ''"
     />
     <div class="divider" />
-    <IconAccountCircle />
+    <IconAccountCircle @click="userInfoShow = true" />
     <IconSettings />
+    <UserInfoDialog v-model="userInfoShow" />
   </div>
 </template>
 <script setup lang="ts">
 import { useChatStore } from "@/stores/chat";
+import { UserInfoDialog } from ".";
 
 const router = useRouter();
 const chatStore = useChatStore();
+const userInfoShow = ref(false);
 </script>
 
 <style lang="scss" scoped>
