@@ -270,6 +270,7 @@ onMounted(() => {
         &-content {
           border-radius: 5px;
           padding: 3px 8px;
+
           background-color: var(--color-background-mute);
           max-width: 55%;
           text-wrap: wrap;
@@ -286,6 +287,7 @@ onMounted(() => {
           flex-direction: row-reverse;
 
           .message-container-item-content {
+            color: black;
             background-color: rgb(149, 236, 105);
           }
         }
