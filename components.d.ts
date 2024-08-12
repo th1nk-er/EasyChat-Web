@@ -20,6 +20,7 @@ declare module 'vue' {
     ElPagination: typeof import('element-plus/es')['ElPagination']
     IconAccountCircle: typeof import('./src/components/icons/IconAccountCircle.vue')['default']
     IconAdd: typeof import('./src/components/icons/IconAdd.vue')['default']
+    IconAddAPhoto: typeof import('./src/components/icons/IconAddAPhoto.vue')['default']
     IconAgender: typeof import('./src/components/icons/IconAgender.vue')['default']
     IconChat: typeof import('./src/components/icons/IconChat.vue')['default']
     IconEmail: typeof import('./src/components/icons/IconEmail.vue')['default']

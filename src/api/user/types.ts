@@ -24,6 +24,6 @@ export type UserVo = {
   loginType: number;
   sex: UserSex;
   locked: boolean;
-  createTime: String;
-  updateTime: String;
+  createTime: string;
+  updateTime: string;
 };
