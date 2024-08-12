@@ -255,9 +255,22 @@ onMounted(() => {
       border-bottom: 2px solid var(--color-border);
 
       &-item {
+        @keyframes appear {
+          from {
+            opacity: 0;
+            transform: translateX(-100px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0px);
+          }
+        }
         display: flex;
         gap: 3px;
         flex-direction: column;
+        animation: appear linear;
+        animation-timeline: view();
+        animation-range: entry 0% cover 25%;
         .item-right,
         .item-left {
           display: flex;
