@@ -1,5 +1,5 @@
 import { useUserStore } from "@/stores/user";
-import axios, { type AxiosInstance } from "axios";
+import axios, { type AxiosInstance, type AxiosRequestConfig } from "axios";
 
 const service: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL, // api 的 base_url
@@ -44,23 +44,23 @@ service.interceptors.response.use(
 );
 
 export default {
-  get: async <T = any>(option: any) => {
+  get: async <T = any>(option: AxiosRequestConfig) => {
     const res = await service({ method: "GET", ...option });
     return res.data as unknown as T;
   },
-  post: async <T = any>(option: any) => {
+  post: async <T = any>(option: AxiosRequestConfig) => {
     const res = await service({ method: "POST", ...option });
     return res.data as unknown as T;
   },
-  delete: async <T = any>(option: any) => {
+  delete: async <T = any>(option: AxiosRequestConfig) => {
     const res = await service({ method: "DELETE", ...option });
     return res.data as unknown as T;
   },
-  put: async <T = any>(option: any) => {
+  put: async <T = any>(option: AxiosRequestConfig) => {
     const res = await service({ method: "PUT", ...option });
     return res.data as unknown as T;
   },
-  download: async <T = any>(option: any) => {
+  download: async <T = any>(option: AxiosRequestConfig) => {
     const res = await service({
       method: "GET",
       responseType: "blob",
@@ -68,9 +68,12 @@ export default {
     });
     return res as unknown as Promise<T>;
   },
-  upload: async <T = any>(option: any) => {
-    option.headersType = "multipart/form-data";
+  upload: async <T = any>(option: AxiosRequestConfig) => {
+    option.headers = {
+      "Content-Type": "multipart/form-data",
+      ...option.headers,
+    };
     const res = await service({ method: "POST", ...option });
-    return res as unknown as Promise<T>;
+    return res.data as unknown as T;
   },
 };

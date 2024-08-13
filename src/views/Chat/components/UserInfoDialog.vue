@@ -6,7 +6,18 @@
           :src="getAvatarUrl(userStore.userInfo.avatar)"
           class="img-avatar"
         />
-        <IconAddAPhoto class="icon-add-a-photo" />
+        <IconAddAPhoto
+          class="icon-add-a-photo"
+          @click="avatarUploader?.click()"
+        />
+        <input
+          type="file"
+          hidden
+          ref="avatarUploader"
+          multiple="false"
+          accept="image/*"
+          @change="handleAvatarUpload"
+        />
       </div>
       <el-divider />
       <div class="info-container">
@@ -55,6 +66,7 @@
   >
 </template>
 <script setup lang="ts">
+import { changeAvatar } from "@/api/user";
 import { useUserStore } from "@/stores/user";
 import { getAvatarUrl, getSexString } from "@/utils/userUtils";
 
@@ -63,6 +75,15 @@ const dialogShow = defineModel("dialogShow", {
   type: Boolean,
   default: false,
 });
+
+const avatarUploader = ref<HTMLInputElement>();
+const handleAvatarUpload = async () => {
+  const file = avatarUploader.value?.files?.[0];
+  if (file == undefined) return;
+  const resp = await changeAvatar(file);
+  userStore.userInfo.avatar = resp.data;
+  ElMessage.success("头像上传成功");
+};
 </script>
 <style scoped lang="scss">
 .container {

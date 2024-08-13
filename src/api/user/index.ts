@@ -32,3 +32,17 @@ export const changePassword = (code: string, newPassword: string) => {
     data: { code, newPassword },
   });
 };
+
+/**
+ * 修改头像
+ * @param formData 表单数据
+ * @returns 上传后的头像路径
+ */
+export const changeAvatar = (file: File) => {
+  const formData = new FormData();
+  formData.append("file", file, file.name);
+  return request.upload<Result<string>>({
+    url: "/user/avatar",
+    data: formData,
+  });
+};

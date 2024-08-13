@@ -186,6 +186,16 @@ onMounted(() => {
 });
 </script>
 <style scoped lang="scss">
+@keyframes appear {
+  from {
+    opacity: 0;
+    transform: translateX(-100px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0px);
+  }
+}
 .no-user {
   flex-grow: 1;
   background-color: var(--color-background-soft);
@@ -255,16 +265,6 @@ onMounted(() => {
       border-bottom: 2px solid var(--color-border);
 
       &-item {
-        @keyframes appear {
-          from {
-            opacity: 0;
-            transform: translateX(-100px);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(0px);
-          }
-        }
         display: flex;
         gap: 3px;
         flex-direction: column;
