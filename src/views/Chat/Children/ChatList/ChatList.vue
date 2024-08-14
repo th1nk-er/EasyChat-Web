@@ -104,7 +104,7 @@ const handleClickConversation = (conversation: UserConversation) => {
 .chat-list {
   display: flex;
   flex-direction: column;
-  width: 400px;
+  min-width: 400px;
   height: 100vh;
   &-box {
     flex-grow: 1;

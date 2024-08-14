@@ -13,7 +13,7 @@ export const login = (data: UserLoginVo) => {
 
 export const sendVerifyCode = (data: { email: string }) => {
   return request.post<Result<string>>({
-    url: "/user/verify-email",
+    url: "/user/email/login",
     method: "post",
     data,
   });

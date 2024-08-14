@@ -12,7 +12,7 @@ export const register = (data: RegisterVo) => {
 
 export const sendVerifyCode = (email: string) => {
   return request.post<Result<string>>({
-    url: "/user/register/verify-email",
+    url: "/user/email/register",
     method: "post",
     data: { email },
   });

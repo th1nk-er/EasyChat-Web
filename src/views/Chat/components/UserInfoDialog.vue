@@ -58,24 +58,29 @@
         <el-divider />
         <div class="info-item-button-group">
           <el-button type="primary" class="button">编辑资料</el-button>
-          <el-button class="button">修改密码</el-button>
+          <el-button class="button" @click="changePasswordDialogShow = true"
+            >修改密码</el-button
+          >
           <el-button class="button">修改邮箱</el-button>
+          <ChangePasswordDialog v-model="changePasswordDialogShow" />
         </div>
       </div>
-    </div></el-dialog
-  >
+    </div>
+  </el-dialog>
 </template>
 <script setup lang="ts">
 import { changeAvatar } from "@/api/user";
 import { useUserStore } from "@/stores/user";
 import { getAvatarUrl, getSexString } from "@/utils/userUtils";
+import { ChangePasswordDialog } from ".";
 
 const userStore = useUserStore();
-const dialogShow = defineModel("dialogShow", {
+const dialogShow = defineModel({
   type: Boolean,
   default: false,
 });
 
+const changePasswordDialogShow = ref(false);
 const avatarUploader = ref<HTMLInputElement>();
 const handleAvatarUpload = async () => {
   const file = avatarUploader.value?.files?.[0];

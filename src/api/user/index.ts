@@ -32,7 +32,14 @@ export const changePassword = (code: string, newPassword: string) => {
     data: { code, newPassword },
   });
 };
-
+/**
+ * 发送修改密码的验证邮件
+ */
+export const sendChangePasswordEmail = () => {
+  return request.post<Result<null>>({
+    url: "/user/email/change-password",
+  });
+};
 /**
  * 修改头像
  * @param formData 表单数据

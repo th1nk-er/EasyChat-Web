@@ -270,7 +270,7 @@ onMounted(() => {
         flex-direction: column;
         animation: appear linear;
         animation-timeline: view();
-        animation-range: entry 0% cover 25%;
+        animation-range: entry 0% cover 10%;
         .item-right,
         .item-left {
           display: flex;
