@@ -52,7 +52,6 @@ const handleCommandMessage = (message: WSMessage) => {
   switch (message.content) {
     case "CONNECTED":
       ElMessage.success("已连接到通信服务器");
-      //TODO 设置store变量存储连接状态
       break;
     default:
       break;
@@ -72,6 +71,6 @@ const handleUserMessage = (message: WSMessage) => {
 }
 .center-box {
   flex-grow: 1;
-  height: 100vh;
+  height: 100%;
 }
 </style>

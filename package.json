@@ -22,6 +22,7 @@
     "sockjs-client": "^1.6.1",
     "vue": "^3.4.29",
     "vue-router": "^4.3.3",
+    "vue3-emoji-picker": "^1.1.8",
     "ws": "^8.18.0"
   },
   "devDependencies": {

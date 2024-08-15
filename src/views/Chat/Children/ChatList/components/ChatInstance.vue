@@ -55,16 +55,33 @@
           </div>
         </div>
       </div>
-      <div class="toolbar-container"></div>
+      <div class="toolbar-container">
+        <div class="emoji-selector-container">
+          <IconMood
+            class="icon-mood"
+            @click="emojiSelectorVisible = !emojiSelectorVisible"
+          />
+          <EmojiPicker
+            :native="true"
+            theme="auto"
+            class="emoji-picker"
+            :display-recent="true"
+            :hide-group-names="true"
+            v-show="emojiSelectorVisible"
+            @select="onSelectEmoji"
+          />
+        </div>
+      </div>
       <div class="input-container">
         <el-input
           v-model="inputMessage"
           type="textarea"
           resize="none"
-          :rows="5"
+          :rows="4"
           maxlength="1024"
           class="input-container__textarea"
-          @keyup.enter.prevent="handleSendMessage"
+          @keydown.enter.native="handleEnterDown"
+          ref="messageInputRef"
         />
         <el-button
           class="input-container__button-send"
@@ -93,6 +110,10 @@ import { useChatStore } from "@/stores/chat";
 import { useUserStore } from "@/stores/user";
 import { getTimeString } from "@/utils/timeUtils";
 import { getAvatarUrl } from "@/utils/userUtils";
+import EmojiPicker from "vue3-emoji-picker";
+import "vue3-emoji-picker/css";
+const emojiSelectorVisible = ref(false);
+
 const chatStore = useChatStore();
 const userStore = useUserStore();
 const messageData = ref<ChatMessage[]>([]);
@@ -100,6 +121,20 @@ const msgBox = ref<HTMLElement>();
 
 /** 用户输入的消息 */
 const inputMessage = ref("");
+/** 消息输入框 */
+const messageInputRef = ref<HTMLElement>();
+/** 处理用户按下回车 */
+const handleEnterDown = (e: Event | KeyboardEvent) => {
+  if (e instanceof KeyboardEvent) {
+    if (e.shiftKey) {
+      inputMessage.value += "\n";
+    } else {
+      e.preventDefault();
+      handleSendMessage();
+    }
+  }
+};
+/** 处理发送消息 */
 const handleSendMessage = () => {
   if (inputMessage.value == "") return;
   if (inputMessage.value.endsWith("\n"))
@@ -128,6 +163,14 @@ const handleSendMessage = () => {
   inputMessage.value = "";
   scrollToBottom();
 };
+
+/** 当用户选择表情 */
+const onSelectEmoji = (emoji: any) => {
+  emojiSelectorVisible.value = false;
+  inputMessage.value = inputMessage.value + emoji.i;
+  messageInputRef.value?.focus();
+};
+/** 将对话框滚动到最底部 */
 const scrollToBottom = (delay: number = 200) => {
   setTimeout(() => {
     msgBox.value?.scrollTo({
@@ -143,6 +186,7 @@ const chatInfo = ref({
   avatar: "",
   muted: false,
 });
+/** 初始化数据 */
 const initChatData = async () => {
   messageData.value = [];
   if (!chatStore.isChatting) return;
@@ -283,7 +327,7 @@ onMounted(() => {
         &-content {
           border-radius: 5px;
           padding: 3px 8px;
-
+          font-size: 1.2rem;
           background-color: var(--color-background-mute);
           max-width: 55%;
           text-wrap: wrap;
@@ -309,15 +353,30 @@ onMounted(() => {
     .toolbar-container {
       height: 30px;
       border-bottom: 2px solid var(--color-border);
+      padding-left: 10px;
+      .emoji-selector-container {
+        position: relative;
+        .icon-mood {
+          cursor: pointer;
+          &:hover {
+            fill: dodgerblue;
+          }
+        }
+        .emoji-picker {
+          position: absolute;
+          bottom: 110%;
+        }
+      }
     }
     .input-container {
       flex-grow: 1;
-      padding: 0 10px;
+      padding: 3px 10px;
       display: flex;
       flex-direction: column;
       gap: 5px;
       &__textarea {
         width: 100%;
+        font-size: 1.2rem;
       }
     }
   }

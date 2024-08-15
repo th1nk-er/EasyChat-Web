@@ -98,14 +98,14 @@ const handleClickConversation = (conversation: UserConversation) => {
 <style scoped lang="scss">
 .container {
   width: 100%;
-  height: 100vh;
+  height: 100%;
   display: flex;
 }
 .chat-list {
   display: flex;
   flex-direction: column;
   min-width: 400px;
-  height: 100vh;
+  height: 100%;
   &-box {
     flex-grow: 1;
     width: 100%;
