@@ -23,6 +23,7 @@
           :prefix-icon="IconKey"
           placeholder="请输入验证码"
           maxlength="6"
+          @keydown.enter="handleLogin(formRef)"
         />
         <el-link
           class="code-container__link-code"
@@ -30,7 +31,7 @@
           :disabled="sendDisabled"
           type="primary"
           >获取验证码
-          <span v-show="(sendSeconds > 0)">({{ sendSeconds }})</span></el-link
+          <span v-show="sendSeconds > 0">({{ sendSeconds }})</span></el-link
         >
       </div>
     </el-form-item>

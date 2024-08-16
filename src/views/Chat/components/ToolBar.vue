@@ -12,6 +12,7 @@
           <el-input
             v-model="searchContent"
             placeholder="请输入用户名/昵称进行搜索"
+            @keydown.enter="handleSearch"
           >
             <template #prepend>
               <IconSearch />
@@ -43,6 +44,7 @@
                 <el-button
                   class="user-item__content__button-add"
                   @click="openAddDialog(user.id)"
+                  v-show="user.id !== userStore.userInfo.id"
                   >添加</el-button
                 >
               </div>
@@ -80,8 +82,10 @@
 import { sendAddRequest } from "@/api/friend";
 import { searchUser } from "@/api/user";
 import { type SearchResult } from "@/api/user/types";
+import { useUserStore } from "@/stores/user";
 import { getAvatarUrl } from "@/utils/userUtils";
 
+const userStore = useUserStore();
 const addDialogVisible = ref(false);
 const searchContent = ref("");
 const searchCurrentPage = ref(1);
@@ -176,8 +180,7 @@ const handleAddFriend = async () => {
         }
 
         &__img-avatar {
-          padding: 10px 7px;
-          margin-right: 5px;
+          margin: 10px 5px;
           width: 48px;
           height: 48px;
           border-radius: 8px;

@@ -22,6 +22,7 @@
         placeholder="请输入密码"
         show-password
         maxlength="20"
+        @keydown.enter="handleLogin(formRef)"
       />
     </el-form-item>
     <div class="login-options">
