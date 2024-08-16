@@ -85,6 +85,10 @@ const avatarUploader = ref<HTMLInputElement>();
 const handleAvatarUpload = async () => {
   const file = avatarUploader.value?.files?.[0];
   if (file == undefined) return;
+  if (file.size > 1024 * 1024 * 5) {
+    ElMessage.error("头像图片过大,请更换其他图片");
+    return;
+  }
   const resp = await changeAvatar(file);
   userStore.userInfo.avatar = resp.data;
   ElMessage.success("头像上传成功");
