@@ -27,3 +27,8 @@ export type UserVo = {
   createTime: string;
   updateTime: string;
 };
+
+export type UpdateUserInfoParams = {
+  nickname: string;
+  sex: UserSex;
+};

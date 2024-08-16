@@ -54,6 +54,6 @@ export const useUserStore = defineStore("user", {
     },
   },
   persist: {
-    paths: ["userToken", "loginForm"],
+    paths: ["userToken", "loginForm", "userInfo"],
   },
 });

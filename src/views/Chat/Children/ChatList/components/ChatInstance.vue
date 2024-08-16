@@ -136,12 +136,14 @@ const handleEnterDown = (e: Event | KeyboardEvent) => {
 };
 /** 处理发送消息 */
 const handleSendMessage = () => {
-  if (inputMessage.value == "") return;
-  if (inputMessage.value.endsWith("\n"))
-    inputMessage.value = inputMessage.value.slice(
-      0,
-      inputMessage.value.length - 1
-    );
+  if (inputMessage.value.trim() == "") {
+    inputMessage.value = "";
+    return;
+  }
+  inputMessage.value = inputMessage.value.slice(
+    0,
+    inputMessage.value.length - 1
+  );
   const message: WSMessage = {
     type: MessageType.TEXT,
     content: inputMessage.value,
@@ -218,13 +220,10 @@ const initChatData = async () => {
     });
   }
 };
-watch(
-  chatStore,
-  () => {
-    if (chatStore.isChatting) initChatData();
-  },
-  { deep: false }
-);
+const isChatting = computed(() => chatStore.isChatting);
+watch(isChatting, (value) => {
+  if (value) initChatData();
+});
 onMounted(() => {
   initChatData();
 });

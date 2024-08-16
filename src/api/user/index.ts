@@ -1,6 +1,6 @@
 import request from "@/utils/service";
 import type { Result } from "../types";
-import type { SearchResult, UserVo } from "./types";
+import type { SearchResult, UpdateUserInfoParams, UserVo } from "./types";
 
 /**
  * 根据关键词搜索用户
@@ -51,5 +51,16 @@ export const changeAvatar = (file: File) => {
   return request.upload<Result<string>>({
     url: "/user/avatar",
     data: formData,
+  });
+};
+
+/**
+ * 修改用户信息
+ * @param updateUserInfo 更新的用户信息
+ */
+export const updateUserInfo = (updateUserInfo: UpdateUserInfoParams) => {
+  return request.put<Result<null>>({
+    url: "/user/info",
+    data: updateUserInfo,
   });
 };
