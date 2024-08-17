@@ -1,4 +1,5 @@
 import type { UserConversation, WSMessage } from "@/api/chat/types";
+import type { FriendInfo } from "@/api/friend/type";
 import { defineStore } from "pinia";
 export const useChatStore = defineStore("chat", {
   state() {
@@ -60,6 +61,19 @@ export const useChatStore = defineStore("chat", {
           this.conversationList[i].messageType = message.type;
           this.conversationList[i].updateTime = new Date().toISOString();
           this.conversationList[i].unreadCount++;
+        }
+      }
+    },
+    updateFriendConversation(friendInfo: FriendInfo) {
+      const list = this.conversationList;
+      for (let i = 0; i < list.length; i++) {
+        if (
+          friendInfo.friendId != undefined &&
+          list[i].friendId === friendInfo.friendId
+        ) {
+          this.conversationList[i].remark = friendInfo.remark;
+          this.conversationList[i].muted = friendInfo.muted;
+          return;
         }
       }
     },

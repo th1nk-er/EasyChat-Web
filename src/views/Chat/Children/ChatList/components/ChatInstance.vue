@@ -5,7 +5,15 @@
   <div class="container" v-if="chatStore.isChatting">
     <div class="container__header">
       <div class="container__header__title">
-        <div class="container__header__title__name">
+        <FriendInfoDialog
+          v-model="friendInfoDialogShow"
+          :friend-info="friendInfo"
+          @on-friend-info-update="onFriendInfoUpdate"
+        />
+        <div
+          class="container__header__title__name"
+          @click="friendInfoDialogShow = true"
+        >
           <span v-if="chatInfo.remark == undefined">{{ chatInfo.name }}</span>
           <span v-else>{{ chatInfo.remark }}</span>
         </div>
@@ -94,6 +102,7 @@
   </div>
 </template>
 <script setup lang="ts">
+import FriendInfoDialog from "@/components/friend/FriendInfoDialog.vue";
 import {
   getMessageHistory,
   publishOpenConversation,
@@ -112,6 +121,8 @@ import { getTimeString } from "@/utils/timeUtils";
 import { getAvatarUrl } from "@/utils/userUtils";
 import EmojiPicker from "vue3-emoji-picker";
 import "vue3-emoji-picker/css";
+import type { FriendInfo } from "@/api/friend/type";
+import { UserSex } from "@/api/user/types";
 const emojiSelectorVisible = ref(false);
 
 const chatStore = useChatStore();
@@ -119,6 +130,25 @@ const userStore = useUserStore();
 const messageData = ref<ChatMessage[]>([]);
 const msgBox = ref<HTMLElement>();
 
+const friendInfoDialogShow = ref(false);
+const friendInfo = ref<FriendInfo>({
+  friendId: 0,
+  nickname: "",
+  username: "",
+  avatar: "",
+  sex: UserSex.SECRET,
+  createTime: "",
+  remark: "",
+  muted: false,
+});
+const onFriendInfoUpdate = (data: FriendInfo) => {
+  friendInfo.value = data;
+  chatInfo.value.chatId = data.friendId;
+  chatInfo.value.name = data.nickname;
+  chatInfo.value.remark = data.remark;
+  chatInfo.value.avatar = data.avatar;
+  chatInfo.value.muted = data.muted;
+};
 /** 用户输入的消息 */
 const inputMessage = ref("");
 /** 消息输入框 */
@@ -195,6 +225,7 @@ const initChatData = async () => {
   if (chatStore.chatType == "friend") {
     publishOpenConversation(chatStore.chatId!);
     const resp = await getFriendInfo(chatStore.chatId!);
+    friendInfo.value = resp.data;
     chatInfo.value.chatId = resp.data.friendId;
     chatInfo.value.name = resp.data.nickname;
     chatInfo.value.remark = resp.data.remark;
@@ -278,6 +309,11 @@ onMounted(() => {
       &__name {
         font-weight: bolder;
         font-size: 20px;
+        cursor: pointer;
+        &:hover {
+          // 添加下划线
+          text-decoration: underline;
+        }
       }
       &__muted {
         width: 20px;

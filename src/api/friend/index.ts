@@ -59,3 +59,15 @@ export const getFriendInfo = (friendId: number) => {
     method: "get",
   });
 };
+
+/**
+ * 修改好友的信息
+ * @param data 修改后的信息
+ */
+export const updateFriendInfo = (data: FriendInfo) => {
+  return request.put<Result<null>>({
+    url: `/friend/info`,
+    method: "put",
+    data,
+  });
+};
