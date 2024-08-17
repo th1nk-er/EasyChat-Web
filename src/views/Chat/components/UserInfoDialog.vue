@@ -31,7 +31,24 @@
           <span class="info-item__label"
             >昵&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;称</span
           >
-          <el-input v-model="userNickname" max="20" style="width: 180px" />
+          <span class="info-item__content" v-show="!editNicknameShow">{{
+            userNickname
+          }}</span>
+          <IconEdit
+            class="icon-edit"
+            v-show="!editNicknameShow"
+            @click="
+              editNicknameShow = true;
+              nicknameInputRef?.focus();
+            "
+          />
+          <el-input
+            ref="nicknameInputRef"
+            v-model="userNickname"
+            v-show="editNicknameShow"
+            style="width: 30%"
+            @blur="editNicknameShow = false"
+          />
         </div>
         <div class="info-item">
           <span class="info-item__label"
@@ -108,6 +125,8 @@ const handleAvatarUpload = async () => {
 
 const selectedSex = ref<UserSex>(UserSex.SECRET);
 const userNickname = ref("");
+const nicknameInputRef = ref<HTMLInputElement>();
+const editNicknameShow = ref(false);
 const handleUpdateUserInfo = async () => {
   if (userNickname.value.length < 3 || userNickname.value.length > 20) {
     ElMessage.error("昵称长度在3-20个字符之间");
@@ -176,12 +195,20 @@ watch(dialogShow, (value) => {
       display: flex;
       width: 100%;
       font-size: 18px;
+      align-items: center;
       &__label {
         width: 30%;
         color: var(--color-subtitle);
       }
       &__content {
         color: var(--color-text);
+      }
+      .icon-edit {
+        margin-left: 10px;
+        cursor: pointer;
+        &:hover {
+          fill: var(--color-subtitle);
+        }
       }
       &-button-group {
         display: flex;

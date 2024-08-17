@@ -33,7 +33,6 @@
           />
           <el-input
             v-model="friendInfo.remark"
-            placeholder="请输入"
             maxlength="20"
             v-show="editRemarkShow"
             ref="remarkInputRef"
