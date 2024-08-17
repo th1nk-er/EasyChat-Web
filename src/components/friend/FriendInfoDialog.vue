@@ -78,7 +78,6 @@
 <script setup lang="ts">
 import { updateFriendInfo } from "@/api/friend";
 import type { FriendInfo } from "@/api/friend/type";
-import { UserSex } from "@/api/user/types";
 import { useChatStore } from "@/stores/chat";
 import { getAvatarUrl, getSexString } from "@/utils/userUtils";
 const chatStore = useChatStore();
@@ -87,22 +86,12 @@ const props = defineProps({
   friendInfo: { type: Object as PropType<FriendInfo>, required: true },
 });
 const emit = defineEmits(["onFriendInfoUpdate"]);
-const friendInfo = ref<FriendInfo>({
-  friendId: 0,
-  nickname: "",
-  username: "",
-  avatar: "",
-  sex: UserSex.SECRET,
-  createTime: "",
-  remark: "",
-  muted: false,
-});
-watch(
-  () => props.friendInfo,
-  (value) => {
-    friendInfo.value = value;
+const friendInfo = ref<FriendInfo>({ ...props.friendInfo });
+watch(dialogShow, (value) => {
+  if (value) {
+    friendInfo.value = { ...props.friendInfo };
   }
-);
+});
 const editRemarkShow = ref(false);
 const remarkInputRef = ref<HTMLInputElement>();
 const handleUpdateFriendInfo = async () => {
