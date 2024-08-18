@@ -221,6 +221,7 @@ const initChatData = async () => {
     publishOpenConversation(chatStore.chatId!);
     const resp = await getFriendInfo(chatStore.chatId!);
     friendInfo.value = resp.data;
+    chatStore.updateFriendConversation(resp.data);
     chatInfo.value.chatId = resp.data.friendId;
     chatInfo.value.name = resp.data.nickname;
     chatInfo.value.remark = resp.data.remark;

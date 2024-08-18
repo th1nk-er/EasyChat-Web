@@ -8,7 +8,7 @@
         :infinite-scroll-disabled="scrollDisabled"
       >
         <div
-          v-for="(conversation, key) in data"
+          v-for="(conversation, key) in chatStore.conversationList"
           :key="key"
           class="user-item"
           @click="handleClickConversation(conversation)"
@@ -77,9 +77,11 @@ const data = reactive([] as UserConversation[]);
 const currentPage = ref(1);
 const scrollDisabled = ref(false);
 const loadConversations = async () => {
+  if (scrollDisabled.value) return;
   const resp = await getUserConversationList(currentPage.value);
   if (resp.data.length == 0) {
     scrollDisabled.value = true;
+    return;
   }
   currentPage.value++;
   data.push(...resp.data);

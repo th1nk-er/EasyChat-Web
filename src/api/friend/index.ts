@@ -71,3 +71,14 @@ export const updateFriendInfo = (data: UserFriendVo) => {
     data,
   });
 };
+
+/**
+ * 删除好友
+ * @param friendId 好友ID
+ */
+export const deleteFriend = (friendId: number) => {
+  return request.delete<Result<null>>({
+    url: `/friend/${friendId}`,
+    method: "delete",
+  });
+};

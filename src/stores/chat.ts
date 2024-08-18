@@ -1,4 +1,8 @@
-import type { UserConversation, WSMessage } from "@/api/chat/types";
+import {
+  MessageType,
+  type UserConversation,
+  type WSMessage,
+} from "@/api/chat/types";
 import type { UserFriendVo } from "@/api/friend/type";
 import { defineStore } from "pinia";
 export const useChatStore = defineStore("chat", {
@@ -74,6 +78,28 @@ export const useChatStore = defineStore("chat", {
           this.conversationList[i].remark = friendInfo.remark;
           this.conversationList[i].muted = friendInfo.muted;
           return;
+        }
+      }
+      this.conversationList.unshift({
+        id: 0,
+        uid: 0,
+        friendId: friendInfo.friendId,
+        avatar: friendInfo.avatar,
+        nickname: friendInfo.nickname,
+        remark: friendInfo.remark,
+        muted: friendInfo.muted,
+        unreadCount: 0,
+        lastMessage: "",
+        messageType: MessageType.TEXT,
+        updateTime: new Date() + "",
+      });
+    },
+    deleteFriendConversation(friendId: number) {
+      const list = this.conversationList;
+      for (let i = 0; i < list.length; i++) {
+        if (friendId != undefined && list[i].friendId === friendId) {
+          this.conversationList.splice(i, 1);
+          break;
         }
       }
     },

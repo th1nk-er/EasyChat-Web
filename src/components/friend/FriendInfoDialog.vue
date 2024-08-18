@@ -71,14 +71,16 @@
           <el-button class="button" type="primary" @click="handleSendMessage"
             >发送消息</el-button
           >
-          <el-button class="button" type="danger">删除好友</el-button>
+          <el-button class="button" type="danger" @click="handleDeleteFriend"
+            >删除好友</el-button
+          >
         </div>
       </div>
     </div>
   </el-dialog>
 </template>
 <script setup lang="ts">
-import { updateFriendInfo } from "@/api/friend";
+import { deleteFriend, updateFriendInfo } from "@/api/friend";
 import type { UserFriendVo } from "@/api/friend/type";
 import { useChatStore } from "@/stores/chat";
 import { useFriendStore } from "@/stores/friend";
@@ -102,8 +104,6 @@ const remarkInputRef = ref<HTMLInputElement>();
 const handleUpdateFriendInfo = async () => {
   await updateFriendInfo(friendInfo.value);
   emit("onFriendInfoUpdate", friendInfo.value);
-  // 更新对话列表的信息
-  chatStore.updateFriendConversation(friendInfo.value);
   // 更新好友列表的信息
   friendStore.updateFriendVo(friendInfo.value);
   ElMessage.success("修改成功");
@@ -115,6 +115,22 @@ const handleSendMessage = () => {
   chatStore.isChatting = true;
   router.push({ name: "ChatList" });
   dialogShow.value = false;
+};
+
+const handleDeleteFriend = async () => {
+  ElMessageBox.confirm("删除操作将无法恢复,确认删除好友?", "警告", {
+    confirmButtonText: "确认删除",
+    cancelButtonText: "取消",
+    type: "warning",
+  })
+    .then(async () => {
+      await deleteFriend(friendInfo.value.friendId);
+      ElMessage.success("删除成功");
+      chatStore.deleteFriendConversation(friendInfo.value.friendId);
+      friendStore.deleteFriendVo(friendInfo.value.friendId);
+      dialogShow.value = false;
+    })
+    .catch(() => {});
 };
 </script>
 <style lang="scss" scoped>

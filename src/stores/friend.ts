@@ -18,5 +18,14 @@ export const useFriendStore = defineStore("friend", {
         this.friendList[index] = friendVo;
       }
     },
+    deleteFriendVo(friendId: number) {
+      const list = this.friendList;
+      for (let i = 0; i < list.length; i++) {
+        if (friendId != undefined && list[i].friendId === friendId) {
+          this.friendList.splice(i, 1);
+          break;
+        }
+      }
+    },
   },
 });
