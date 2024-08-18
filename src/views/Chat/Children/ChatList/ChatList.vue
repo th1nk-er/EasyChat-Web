@@ -76,7 +76,10 @@ const chatStore = useChatStore();
 const data = reactive([] as UserConversation[]);
 const currentPage = ref(1);
 const scrollDisabled = ref(false);
+const lastCallArg = ref(0);
 const loadConversations = async () => {
+  if (lastCallArg.value == currentPage.value) return;
+  else lastCallArg.value = currentPage.value;
   if (scrollDisabled.value) return;
   const resp = await getUserConversationList(currentPage.value);
   if (resp.data.length == 0) {
