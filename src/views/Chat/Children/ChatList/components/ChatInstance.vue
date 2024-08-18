@@ -169,10 +169,6 @@ const handleSendMessage = () => {
     inputMessage.value = "";
     return;
   }
-  inputMessage.value = inputMessage.value.slice(
-    0,
-    inputMessage.value.length - 1
-  );
   const message: WSMessage = {
     type: MessageType.TEXT,
     content: inputMessage.value,
