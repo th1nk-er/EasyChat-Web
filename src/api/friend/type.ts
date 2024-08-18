@@ -6,12 +6,14 @@ export type AddFriendVo = {
 };
 
 export type UserFriendVo = {
-  uid: number;
   friendId: number;
   nickname: string;
-  remark: string;
-  createTime: string;
+  username: string;
   avatar: string;
+  sex: UserSex;
+  createTime: string;
+  remark: string;
+  muted: boolean;
 };
 
 export type FriendListVo = {
@@ -54,14 +56,3 @@ export enum AddStatus {
   REFUSED = "REFUSED",
   IGNORED = "IGNORED",
 }
-
-export type FriendInfo = {
-  friendId: number;
-  nickname: string;
-  username: string;
-  avatar: string;
-  sex: UserSex;
-  createTime: string;
-  remark: string;
-  muted: boolean;
-};

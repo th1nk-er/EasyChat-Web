@@ -1,5 +1,5 @@
 import type { UserConversation, WSMessage } from "@/api/chat/types";
-import type { FriendInfo } from "@/api/friend/type";
+import type { UserFriendVo } from "@/api/friend/type";
 import { defineStore } from "pinia";
 export const useChatStore = defineStore("chat", {
   state() {
@@ -64,7 +64,7 @@ export const useChatStore = defineStore("chat", {
         }
       }
     },
-    updateFriendConversation(friendInfo: FriendInfo) {
+    updateFriendConversation(friendInfo: UserFriendVo) {
       const list = this.conversationList;
       for (let i = 0; i < list.length; i++) {
         if (

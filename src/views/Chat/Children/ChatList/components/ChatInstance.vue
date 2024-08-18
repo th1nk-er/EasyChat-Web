@@ -22,7 +22,6 @@
           v-if="chatInfo.muted"
         />
       </div>
-      <IconMoreHoriz class="container__header__more" />
     </div>
     <div class="container__main">
       <div class="message-container" ref="msgBox">
@@ -121,7 +120,7 @@ import { getTimeString } from "@/utils/timeUtils";
 import { getAvatarUrl } from "@/utils/userUtils";
 import EmojiPicker from "vue3-emoji-picker";
 import "vue3-emoji-picker/css";
-import type { FriendInfo } from "@/api/friend/type";
+import type { UserFriendVo } from "@/api/friend/type";
 import { UserSex } from "@/api/user/types";
 const emojiSelectorVisible = ref(false);
 
@@ -131,7 +130,7 @@ const messageData = ref<ChatMessage[]>([]);
 const msgBox = ref<HTMLElement>();
 
 const friendInfoDialogShow = ref(false);
-const friendInfo = ref<FriendInfo>({
+const friendInfo = ref<UserFriendVo>({
   friendId: 0,
   nickname: "",
   username: "",
@@ -141,7 +140,7 @@ const friendInfo = ref<FriendInfo>({
   remark: "",
   muted: false,
 });
-const onFriendInfoUpdate = (data: FriendInfo) => {
+const onFriendInfoUpdate = (data: UserFriendVo) => {
   friendInfo.value = data;
   chatInfo.value.chatId = data.friendId;
   chatInfo.value.name = data.nickname;
@@ -320,10 +319,6 @@ onMounted(() => {
         height: 20px;
         fill: var(--color-subtitle);
       }
-    }
-    &__more {
-      width: 30px;
-      height: 30px;
     }
   }
 

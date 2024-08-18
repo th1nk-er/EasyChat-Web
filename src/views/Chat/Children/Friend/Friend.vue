@@ -17,9 +17,9 @@
       >
         <div
           class="friend-item"
-          v-for="(item, index) in friendList.records"
+          v-for="(item, index) in friendStore.friendList"
           :key="index"
-          @click="handleFriendClick(item.friendId)"
+          @click="handleFriendClick(index)"
         >
           <img
             :src="getAvatarUrl(item.avatar)"
@@ -41,23 +41,26 @@
         </div>
       </div>
     </div>
+    <FriendInfoDialog
+      v-model="friendInfoShow"
+      :friend-info="selectedFriendInfo"
+    />
   </div>
 </template>
 <script setup lang="ts">
 import { getUserFriendList } from "@/api/friend";
 import { ToolBar } from "../../components";
 import { FriendRequestDialog } from "./components";
-import type { FriendListVo } from "@/api/friend/type";
+import type { FriendListVo, UserFriendVo } from "@/api/friend/type";
 import { getAvatarUrl } from "@/utils/userUtils";
-import { useChatStore } from "@/stores/chat";
-const chatStore = useChatStore();
-const router = useRouter();
-
+import FriendInfoDialog from "@/components/friend/FriendInfoDialog.vue";
+import { UserSex } from "@/api/user/types";
+import { useFriendStore } from "@/stores/friend";
 const requestDialogShow = ref(false);
-
+const friendStore = useFriendStore();
 const currentPage = ref(1);
 const scrollDisabled = ref(false);
-const friendList = ref<FriendListVo>({
+const friendListVo = ref<FriendListVo>({
   total: 0,
   pageSize: 0,
   records: [],
@@ -65,10 +68,11 @@ const friendList = ref<FriendListVo>({
 const loadFriendList = async () => {
   const resp = await getUserFriendList(currentPage.value);
   if (resp.data.records.length > 0) {
-    friendList.value.total = resp.data.total;
-    friendList.value.pageSize = resp.data.pageSize;
-    friendList.value.records.push(...resp.data.records);
+    friendListVo.value.total = resp.data.total;
+    friendListVo.value.pageSize = resp.data.pageSize;
+    friendListVo.value.records.push(...resp.data.records);
     currentPage.value++;
+    friendStore.friendList = friendListVo.value.records;
   }
   if (resp.data.records.length < resp.data.pageSize) {
     scrollDisabled.value = true;
@@ -76,11 +80,20 @@ const loadFriendList = async () => {
   }
 };
 
-const handleFriendClick = (friendId: number) => {
-  chatStore.chatId = friendId;
-  chatStore.chatType = "friend";
-  chatStore.isChatting = true;
-  router.push({ name: "ChatList" });
+const friendInfoShow = ref(false);
+const selectedFriendInfo = ref<UserFriendVo>({
+  friendId: 0,
+  nickname: "",
+  username: "",
+  avatar: "",
+  sex: UserSex.SECRET,
+  createTime: "",
+  remark: "",
+  muted: false,
+});
+const handleFriendClick = (index: number) => {
+  selectedFriendInfo.value = friendStore.friendList[index];
+  friendInfoShow.value = true;
 };
 </script>
 

@@ -68,7 +68,9 @@
             @click="handleUpdateFriendInfo"
             >保存修改</el-button
           >
-          <el-button class="button" type="primary">发送消息</el-button>
+          <el-button class="button" type="primary" @click="handleSendMessage"
+            >发送消息</el-button
+          >
           <el-button class="button" type="danger">删除好友</el-button>
         </div>
       </div>
@@ -77,16 +79,19 @@
 </template>
 <script setup lang="ts">
 import { updateFriendInfo } from "@/api/friend";
-import type { FriendInfo } from "@/api/friend/type";
+import type { UserFriendVo } from "@/api/friend/type";
 import { useChatStore } from "@/stores/chat";
+import { useFriendStore } from "@/stores/friend";
 import { getAvatarUrl, getSexString } from "@/utils/userUtils";
+const router = useRouter();
 const chatStore = useChatStore();
+const friendStore = useFriendStore();
 const dialogShow = defineModel({ type: Boolean, default: false });
 const props = defineProps({
-  friendInfo: { type: Object as PropType<FriendInfo>, required: true },
+  friendInfo: { type: Object as PropType<UserFriendVo>, required: true },
 });
 const emit = defineEmits(["onFriendInfoUpdate"]);
-const friendInfo = ref<FriendInfo>({ ...props.friendInfo });
+const friendInfo = ref<UserFriendVo>({ ...props.friendInfo });
 watch(dialogShow, (value) => {
   if (value) {
     friendInfo.value = { ...props.friendInfo };
@@ -97,8 +102,18 @@ const remarkInputRef = ref<HTMLInputElement>();
 const handleUpdateFriendInfo = async () => {
   await updateFriendInfo(friendInfo.value);
   emit("onFriendInfoUpdate", friendInfo.value);
+  // 更新对话列表的信息
   chatStore.updateFriendConversation(friendInfo.value);
+  // 更新好友列表的信息
+  friendStore.updateFriendVo(friendInfo.value);
   ElMessage.success("修改成功");
+  dialogShow.value = false;
+};
+const handleSendMessage = () => {
+  chatStore.chatId = friendInfo.value.friendId;
+  chatStore.chatType = "friend";
+  chatStore.isChatting = true;
+  router.push({ name: "ChatList" });
   dialogShow.value = false;
 };
 </script>
