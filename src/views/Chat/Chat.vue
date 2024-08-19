@@ -38,11 +38,11 @@ onMounted(async () => {
   userStore.userInfo = (await getUserInfo()).data;
 });
 const handleWsMessage = (message: WSMessage) => {
-  if (message.type == MessageType.SYSTEM) {
+  if (message.messageType == MessageType.SYSTEM) {
     handleSystemMessage(message);
-  } else if (message.type == MessageType.COMMAND) {
+  } else if (message.messageType == MessageType.COMMAND) {
     handleCommandMessage(message);
-  } else if (message.type == MessageType.ERROR) {
+  } else if (message.messageType == MessageType.ERROR) {
     ElMessage.error(message.content);
   } else {
     handleUserMessage(message);

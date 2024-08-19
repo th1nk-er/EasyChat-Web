@@ -67,7 +67,7 @@ import { ToolBar } from "../../components";
 import { useChatStore } from "@/stores/chat";
 import { ChatInstance } from "./components";
 import { getUserConversationList } from "@/api/chat";
-import type { UserConversation } from "@/api/chat/types";
+import { ChatType, type UserConversation } from "@/api/chat/types";
 import { getTimeString } from "@/utils/timeUtils";
 import { getAvatarUrl } from "@/utils/userUtils";
 
@@ -92,10 +92,10 @@ const loadConversations = async () => {
 };
 
 const handleClickConversation = (conversation: UserConversation) => {
-  if (conversation.friendId != undefined) {
-    chatStore.clearFriendUnread(conversation.friendId);
-    chatStore.chatId = conversation.friendId;
-    chatStore.chatType = "friend";
+  if (conversation.chatType == ChatType.FRIEND) {
+    chatStore.clearConversationUnread(conversation.senderId);
+    chatStore.chatId = conversation.senderId;
+    chatStore.chatType = ChatType.FRIEND;
     chatStore.isChatting = true;
   }
 };

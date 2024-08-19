@@ -80,8 +80,9 @@
   </el-dialog>
 </template>
 <script setup lang="ts">
+import { ChatType } from "@/api/chat/types";
 import { deleteFriend, updateFriendInfo } from "@/api/friend";
-import type { UserFriendVo } from "@/api/friend/type";
+import type { UserFriendVo } from "@/api/friend/types";
 import { useChatStore } from "@/stores/chat";
 import { useFriendStore } from "@/stores/friend";
 import { getAvatarUrl, getSexString } from "@/utils/userUtils";
@@ -104,6 +105,8 @@ const remarkInputRef = ref<HTMLInputElement>();
 const handleUpdateFriendInfo = async () => {
   await updateFriendInfo(friendInfo.value);
   emit("onFriendInfoUpdate", friendInfo.value);
+  // 更新聊天列表的信息
+  chatStore.updateFriendConversation(friendInfo.value);
   // 更新好友列表的信息
   friendStore.updateFriendVo(friendInfo.value);
   ElMessage.success("修改成功");
@@ -111,7 +114,7 @@ const handleUpdateFriendInfo = async () => {
 };
 const handleSendMessage = () => {
   chatStore.chatId = friendInfo.value.friendId;
-  chatStore.chatType = "friend";
+  chatStore.chatType = ChatType.FRIEND;
   chatStore.isChatting = true;
   router.push({ name: "ChatList" });
   dialogShow.value = false;
@@ -126,7 +129,7 @@ const handleDeleteFriend = async () => {
     .then(async () => {
       await deleteFriend(friendInfo.value.friendId);
       ElMessage.success("删除成功");
-      chatStore.deleteFriendConversation(friendInfo.value.friendId);
+      chatStore.deleteConversation(friendInfo.value.friendId, ChatType.FRIEND);
       friendStore.deleteFriendVo(friendInfo.value.friendId);
       dialogShow.value = false;
     })

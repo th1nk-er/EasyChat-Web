@@ -1,4 +1,4 @@
-import type { UserFriendVo } from "@/api/friend/type";
+import type { UserFriendVo } from "@/api/friend/types";
 import { defineStore } from "pinia";
 export const useFriendStore = defineStore("friend", {
   state() {

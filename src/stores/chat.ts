@@ -1,17 +1,18 @@
 import {
+  ChatType,
   MessageType,
   type UserConversation,
   type WSMessage,
 } from "@/api/chat/types";
-import type { UserFriendVo } from "@/api/friend/type";
+import type { UserFriendVo } from "@/api/friend/types";
 import { defineStore } from "pinia";
 export const useChatStore = defineStore("chat", {
   state() {
     return {
       /** 当前聊天的用户ID */
-      chatId: undefined as number | undefined,
+      chatId: -1,
       isChatting: false,
-      chatType: "friend" as "friend" | "group",
+      chatType: ChatType.FRIEND,
       conversationList: [] as UserConversation[],
     };
   },
@@ -29,13 +30,17 @@ export const useChatStore = defineStore("chat", {
   },
   actions: {
     /**
-     * 清除指定好友对话的未读消息
-     * @param friendId 好友ID
+     * 清除指定话的未读消息
+     * @param senderId 发送者ID
      */
-    clearFriendUnread(friendId: number) {
+    clearConversationUnread(senderId: number) {
       const list = this.conversationList;
       for (let i = 0; i < list.length; i++) {
-        if (friendId != undefined && list[i].friendId === friendId) {
+        if (
+          list[i].chatType == ChatType.FRIEND &&
+          senderId != undefined &&
+          list[i].senderId === senderId
+        ) {
           this.conversationList[i].unreadCount = 0;
           break;
         }
@@ -44,10 +49,10 @@ export const useChatStore = defineStore("chat", {
     updateConversation(message: WSMessage) {
       const list = this.conversationList;
       for (let i = 0; i < list.length; i++) {
-        if (message.toId != undefined && list[i].friendId === message.toId) {
+        if (message.toId != undefined && list[i].senderId === message.toId) {
           // 用户发送的消息
           this.conversationList[i].lastMessage = message.content;
-          this.conversationList[i].messageType = message.type;
+          this.conversationList[i].messageType = message.messageType;
           this.conversationList[i].updateTime = new Date().toISOString();
           this.conversationList[i].unreadCount = 0;
           // 置顶消息
@@ -58,11 +63,11 @@ export const useChatStore = defineStore("chat", {
           break;
         } else if (
           message.fromId != undefined &&
-          list[i].friendId === message.fromId
+          list[i].senderId === message.fromId
         ) {
           // 用户接收的消息
           this.conversationList[i].lastMessage = message.content;
-          this.conversationList[i].messageType = message.type;
+          this.conversationList[i].messageType = message.messageType;
           this.conversationList[i].updateTime = new Date().toISOString();
           this.conversationList[i].unreadCount++;
         }
@@ -72,8 +77,9 @@ export const useChatStore = defineStore("chat", {
       const list = this.conversationList;
       for (let i = 0; i < list.length; i++) {
         if (
+          list[i].chatType == ChatType.FRIEND &&
           friendInfo.friendId != undefined &&
-          list[i].friendId === friendInfo.friendId
+          list[i].senderId === friendInfo.friendId
         ) {
           this.conversationList[i].remark = friendInfo.remark;
           this.conversationList[i].muted = friendInfo.muted;
@@ -83,7 +89,7 @@ export const useChatStore = defineStore("chat", {
       this.conversationList.unshift({
         id: 0,
         uid: 0,
-        friendId: friendInfo.friendId,
+        senderId: friendInfo.friendId,
         avatar: friendInfo.avatar,
         nickname: friendInfo.nickname,
         remark: friendInfo.remark,
@@ -92,12 +98,17 @@ export const useChatStore = defineStore("chat", {
         lastMessage: "",
         messageType: MessageType.TEXT,
         updateTime: new Date() + "",
+        chatType: ChatType.FRIEND,
       });
     },
-    deleteFriendConversation(friendId: number) {
+    deleteConversation(senderId: number, chatType: ChatType) {
       const list = this.conversationList;
       for (let i = 0; i < list.length; i++) {
-        if (friendId != undefined && list[i].friendId === friendId) {
+        if (
+          list[i].chatType == chatType &&
+          senderId != undefined &&
+          list[i].senderId === senderId
+        ) {
           this.conversationList.splice(i, 1);
           break;
         }

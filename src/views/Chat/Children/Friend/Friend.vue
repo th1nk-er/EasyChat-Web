@@ -51,7 +51,7 @@
 import { getUserFriendList } from "@/api/friend";
 import { ToolBar } from "../../components";
 import { FriendRequestDialog } from "./components";
-import type { FriendListVo, UserFriendVo } from "@/api/friend/type";
+import type { FriendListVo, UserFriendVo } from "@/api/friend/types";
 import { getAvatarUrl } from "@/utils/userUtils";
 import FriendInfoDialog from "@/components/friend/FriendInfoDialog.vue";
 import { UserSex } from "@/api/user/types";

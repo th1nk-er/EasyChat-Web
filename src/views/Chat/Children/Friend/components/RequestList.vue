@@ -57,7 +57,7 @@ import {
   AddType,
   type FriendRequestData,
   type RequestRecord,
-} from "@/api/friend/type";
+} from "@/api/friend/types";
 import { getAvatarUrl } from "@/utils/userUtils";
 import { agreeRequest } from "./request";
 const emit = defineEmits<{

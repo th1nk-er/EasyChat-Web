@@ -1,9 +1,9 @@
 export type WSMessage = {
-  type: MessageType;
+  messageType: MessageType;
   content: string;
   fromId: number;
-  toId?: number;
-  groupId?: number;
+  toId: number;
+  chatType: ChatType;
 };
 
 export enum MessageType {
@@ -15,12 +15,17 @@ export enum MessageType {
   COMMAND = "COMMAND",
 }
 
+export enum ChatType {
+  FRIEND = "FRIEND",
+  GROUP = "GROUP",
+}
+
 export type ChatMessage = {
   id?: number;
-  senderId?: number;
-  senderGroupId?: number;
+  senderId: number;
+  chatType: ChatType;
   receiverId: number;
-  type: MessageType;
+  messageType: MessageType;
   content: string;
   createTime: string;
 };
@@ -30,9 +35,9 @@ export type UserConversation = {
   uid: number;
   avatar: string;
   nickname: string;
-  remark:string;
-  friendId?: number;
-  groupId?: number;
+  remark: string;
+  senderId: number;
+  chatType: ChatType;
   muted: boolean;
   unreadCount: number;
   lastMessage: string;

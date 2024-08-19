@@ -1,6 +1,11 @@
 import { stompClient } from "@/utils/ws";
 import request from "@/utils/service";
-import type { ChatMessage, UserConversation, WSMessage } from "./types";
+import {
+  ChatType,
+  type ChatMessage,
+  type UserConversation,
+  type WSMessage,
+} from "./types";
 import { SHA256 } from "crypto-js";
 import { useUserStore } from "@/stores/user";
 import type { Result } from "../types";
@@ -52,11 +57,11 @@ export const sendConnect = () => {
 /**
  * 当打开某个对话时向服务器发送信息
  */
-export const publishOpenConversation = (toId: number) => {
+export const publishOpenConversation = (toId: number, chatType: ChatType) => {
   if (!stompClient.connected) return;
   stompClient.publish({
     destination: "/conversation/open",
-    body: JSON.stringify({ toId: toId } as WSMessage),
+    body: JSON.stringify({ toId: toId, chatType: chatType } as WSMessage),
   });
 };
 /**

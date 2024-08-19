@@ -1,5 +1,5 @@
 import { replyAddRequest } from "@/api/friend";
-import { AddStatus } from "@/api/friend/type";
+import { AddStatus } from "@/api/friend/types";
 
 export const agreeRequest = async (id: number) => {
   await replyAddRequest({ id, status: AddStatus.AGREED });

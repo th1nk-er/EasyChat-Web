@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import type { RequestRecord } from "@/api/friend/type";
+import type { RequestRecord } from "@/api/friend/types";
 import { RequestList, RequestDetails } from ".";
 const visible = defineModel("visible", { type: Boolean, default: false });
 const showList = ref(true);

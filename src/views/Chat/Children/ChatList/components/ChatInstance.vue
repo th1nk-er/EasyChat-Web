@@ -109,6 +109,7 @@ import {
   subscribeMessage,
 } from "@/api/chat";
 import {
+  ChatType,
   MessageType,
   type ChatMessage,
   type WSMessage,
@@ -120,7 +121,7 @@ import { getTimeString } from "@/utils/timeUtils";
 import { getAvatarUrl } from "@/utils/userUtils";
 import EmojiPicker from "vue3-emoji-picker";
 import "vue3-emoji-picker/css";
-import type { UserFriendVo } from "@/api/friend/type";
+import type { UserFriendVo } from "@/api/friend/types";
 import { UserSex } from "@/api/user/types";
 const emojiSelectorVisible = ref(false);
 
@@ -170,10 +171,11 @@ const handleSendMessage = () => {
     return;
   }
   const message: WSMessage = {
-    type: MessageType.TEXT,
+    messageType: MessageType.TEXT,
     content: inputMessage.value,
     fromId: userStore.userInfo.id,
     toId: chatStore.chatId,
+    chatType: chatStore.chatType,
   };
   if (!sendMessage(message)) {
     ElMessage.error("消息发送失败");
@@ -181,10 +183,11 @@ const handleSendMessage = () => {
   }
   messageData.value.push({
     senderId: userStore.userInfo.id,
-    receiverId: chatStore.chatId!,
-    type: MessageType.TEXT,
+    receiverId: chatStore.chatId,
+    messageType: MessageType.TEXT,
     content: inputMessage.value,
     createTime: new Date().toISOString(),
+    chatType: chatStore.chatType,
   });
   chatStore.updateConversation(message);
   inputMessage.value = "";
@@ -217,9 +220,9 @@ const chatInfo = ref({
 const initChatData = async () => {
   messageData.value = [];
   if (!chatStore.isChatting) return;
-  if (chatStore.chatType == "friend") {
-    publishOpenConversation(chatStore.chatId!);
-    const resp = await getFriendInfo(chatStore.chatId!);
+  publishOpenConversation(chatStore.chatId, chatStore.chatType);
+  if (chatStore.chatType == ChatType.FRIEND) {
+    const resp = await getFriendInfo(chatStore.chatId);
     friendInfo.value = resp.data;
     chatStore.updateFriendConversation(resp.data);
     chatInfo.value.chatId = resp.data.friendId;
@@ -234,13 +237,17 @@ const initChatData = async () => {
     scrollToBottom();
     // 订阅消息
     subscribeMessage((message: WSMessage) => {
-      if (message.fromId == chatStore.chatId) {
+      if (
+        message.fromId == chatStore.chatId &&
+        message.chatType == chatStore.chatType
+      ) {
         messageData.value.push({
           senderId: message.fromId,
           receiverId: userStore.userInfo.id,
-          type: message.type,
+          messageType: message.messageType,
           content: message.content,
           createTime: new Date().toISOString(),
+          chatType: message.chatType,
         });
         scrollToBottom();
       }

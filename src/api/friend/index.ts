@@ -5,7 +5,7 @@ import type {
   ReplyAddRequestData,
   FriendListVo,
   UserFriendVo,
-} from "./type";
+} from "./types";
 import type { Result } from "../types";
 
 /**
