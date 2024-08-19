@@ -14,7 +14,10 @@
           class="container__header__title__name"
           @click="friendInfoDialogShow = true"
         >
-          <span v-if="chatInfo.remark == undefined">{{ chatInfo.name }}</span>
+          <span
+            v-if="chatInfo.remark == undefined || chatInfo.remark.length == 0"
+            >{{ chatInfo.name }}</span
+          >
           <span v-else>{{ chatInfo.remark }}</span>
         </div>
         <IconNotificationOff

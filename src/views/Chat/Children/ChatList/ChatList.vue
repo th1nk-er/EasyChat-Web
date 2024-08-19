@@ -35,7 +35,10 @@
             <div class="user-item__content__text">
               <p
                 class="user-item__content__text-name"
-                v-if="conversation.remark == undefined"
+                v-if="
+                  conversation.remark == undefined ||
+                  conversation.remark.length == 0
+                "
               >
                 {{ conversation.nickname }}
               </p>

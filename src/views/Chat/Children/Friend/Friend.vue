@@ -26,12 +26,15 @@
             class="friend-item__img-avatar"
           />
           <div class="friend-item__content">
-            <span class="friend-item__title" v-if="item.remark != undefined">
+            <span
+              class="friend-item__title"
+              v-if="item.remark != undefined && item.remark.length > 0"
+            >
               {{ item.remark }}
             </span>
             <span
               :class="
-                item.remark == undefined
+                item.remark == undefined || item.remark.length == 0
                   ? 'friend-item__title'
                   : 'friend-item__subtitle'
               "
