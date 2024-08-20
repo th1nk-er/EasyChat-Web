@@ -27,7 +27,6 @@
     </el-form-item>
     <div class="login-options">
       <el-checkbox label="记住我" v-model="rememberMe" />
-      <el-link type="primary" @click="toRecoverPassword">忘记密码?</el-link>
     </div>
     <el-form-item class="login-form-item button-group">
       <el-button
@@ -92,12 +91,6 @@ const rules = reactive<FormRules<typeof formData>>({
 });
 // 记住我
 const rememberMe = ref(false);
-
-const toRecoverPassword = () => {
-  // TODO 指向找回密码页面
-  // router.push({name:"RecoverPassword"})
-};
-
 const toRegister = () => {
   router.push({ name: "Register" });
 };
