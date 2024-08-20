@@ -9,7 +9,7 @@
 
 <script setup lang="ts">
 import { sendConnect, subscribeMessage } from "@/api/chat";
-import { LeftNavigation } from "./components";
+import LeftNavigation from "@/components/common/LeftNavigation.vue";
 import { stompClient } from "@/utils/ws";
 import { MessageType, type WSMessage } from "@/api/chat/types";
 import { useUserStore } from "@/stores/user";

@@ -8,8 +8,10 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     AppTitle: typeof import('./src/components/common/AppTitle.vue')['default']
+    ChangePasswordDialog: typeof import('./src/components/user/ChangePasswordDialog.vue')['default']
     ElBadge: typeof import('element-plus/es')['ElBadge']
     ElButton: typeof import('element-plus/es')['ElButton']
+    ElCard: typeof import('element-plus/es')['ElCard']
     ElCheckbox: typeof import('element-plus/es')['ElCheckbox']
     ElDialog: typeof import('element-plus/es')['ElDialog']
     ElDivider: typeof import('element-plus/es')['ElDivider']
@@ -20,7 +22,11 @@ declare module 'vue' {
     ElOption: typeof import('element-plus/es')['ElOption']
     ElPagination: typeof import('element-plus/es')['ElPagination']
     ElSelect: typeof import('element-plus/es')['ElSelect']
+    ElStep: typeof import('element-plus/es')['ElStep']
+    ElSteps: typeof import('element-plus/es')['ElSteps']
     ElSwitch: typeof import('element-plus/es')['ElSwitch']
+    ElTabPane: typeof import('element-plus/es')['ElTabPane']
+    ElTabs: typeof import('element-plus/es')['ElTabs']
     FriendInfoDialog: typeof import('./src/components/friend/FriendInfoDialog.vue')['default']
     IconAccountCircle: typeof import('./src/components/icons/IconAccountCircle.vue')['default']
     IconAdd: typeof import('./src/components/icons/IconAdd.vue')['default']
@@ -43,8 +49,10 @@ declare module 'vue' {
     IconPersonFill: typeof import('./src/components/icons/IconPersonFill.vue')['default']
     IconSearch: typeof import('./src/components/icons/IconSearch.vue')['default']
     IconSettings: typeof import('./src/components/icons/IconSettings.vue')['default']
+    LeftNavigation: typeof import('./src/components/common/LeftNavigation.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    UserInfoDialog: typeof import('./src/components/user/UserInfoDialog.vue')['default']
     UserSexIcon: typeof import('./src/components/user/UserSexIcon.vue')['default']
   }
   export interface ComponentCustomProperties {

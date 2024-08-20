@@ -51,6 +51,14 @@ const router = createRouter({
         },
       ],
     },
+    {
+      path: "/setting",
+      name: "Setting",
+      component: () => import("@/views/Setting/Setting.vue"),
+      meta: {
+        title: "设置",
+      },
+    },
   ],
 });
 

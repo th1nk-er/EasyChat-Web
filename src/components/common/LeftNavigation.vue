@@ -23,13 +23,18 @@
     />
     <div class="divider" />
     <IconAccountCircle @click="userInfoShow = true" />
-    <IconSettings />
+    <IconSettings
+      :class="
+        router.currentRoute.value.name == 'Setting' ? 'icon-selected' : ''
+      "
+      @click="router.push({ name: 'Setting' })"
+    />
     <UserInfoDialog v-model="userInfoShow" />
   </div>
 </template>
 <script setup lang="ts">
 import { useChatStore } from "@/stores/chat";
-import { UserInfoDialog } from ".";
+import UserInfoDialog from "@/components/user/UserInfoDialog.vue";
 
 const router = useRouter();
 const chatStore = useChatStore();

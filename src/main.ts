@@ -10,7 +10,6 @@ import "./router/routerGuard";
 
 import "nprogress/nprogress.css";
 import "element-plus/theme-chalk/dark/css-vars.css";
-import "@/utils/theme.ts";
 
 const app = createApp(App);
 

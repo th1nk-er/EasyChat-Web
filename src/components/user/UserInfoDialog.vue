@@ -100,7 +100,7 @@
 import { changeAvatar, getUserInfo, updateUserInfo } from "@/api/user";
 import { useUserStore } from "@/stores/user";
 import { getAvatarUrl, getSexString } from "@/utils/userUtils";
-import { ChangePasswordDialog } from ".";
+import ChangePasswordDialog from "./ChangePasswordDialog.vue";
 import { UserSex } from "@/api/user/types";
 
 const userStore = useUserStore();
