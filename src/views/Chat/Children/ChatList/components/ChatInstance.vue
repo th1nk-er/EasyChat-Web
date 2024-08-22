@@ -59,11 +59,31 @@
               "
               class="message-container-item-avatar"
             />
-            <p class="message-container-item-content">
+            <p
+              class="message-container-item-content"
+              v-if="item.messageType == MessageType.TEXT"
+            >
               {{ item.content }}
             </p>
+            <div
+              class="message-container-item-img"
+              v-if="item.messageType == MessageType.IMAGE"
+              @click="
+                previewImgSrc = getChatImgUrl(item.content);
+                previewImgShow = true;
+              "
+            >
+              <img :src="getChatImgUrl(item.content)" />
+            </div>
           </div>
         </div>
+        <el-dialog
+          v-model="previewImgShow"
+          :align-center="true"
+          style="display: flex; justify-content: center"
+        >
+          <img w-full :src="previewImgSrc" style="max-width: 100%" />
+        </el-dialog>
       </div>
       <div class="toolbar-container">
         <div class="emoji-selector-container">
@@ -81,18 +101,41 @@
             @select="onSelectEmoji"
           />
         </div>
+        <div class="send-image-container">
+          <IconImage class="icon-image" @click="imageUploader?.click()" />
+          <input
+            type="file"
+            hidden
+            ref="imageUploader"
+            multiple="false"
+            accept="image/*"
+            @change="handleImageUpload"
+          />
+        </div>
       </div>
       <div class="input-container">
-        <el-input
-          v-model="inputMessage"
-          type="textarea"
-          resize="none"
-          :rows="4"
-          maxlength="1024"
-          class="input-container__textarea"
-          @keydown.enter.native="handleEnterDown"
-          ref="messageInputRef"
-        />
+        <div class="input-container__content">
+          <el-input
+            v-model="inputMessage"
+            type="textarea"
+            resize="none"
+            :rows="4"
+            maxlength="1024"
+            class="input-container__textarea"
+            @keydown.enter.native="handleEnterDown"
+            ref="messageInputRef"
+          />
+          <div class="upload-image" v-show="imageSrc != ''">
+            <img :src="imageSrc" />
+            <IconDelete
+              class="icon-delete"
+              @click="
+                imageSrc = '';
+                imgFile = undefined;
+              "
+            />
+          </div>
+        </div>
         <el-button
           class="input-container__button-send"
           type="primary"
@@ -110,6 +153,7 @@ import {
   publishOpenConversation,
   sendMessage,
   subscribeMessage,
+  uploadChatImage,
 } from "@/api/chat";
 import {
   ChatType,
@@ -126,13 +170,14 @@ import EmojiPicker from "vue3-emoji-picker";
 import "vue3-emoji-picker/css";
 import type { UserFriendVo } from "@/api/friend/types";
 import { UserSex } from "@/api/user/types";
+import { getChatImgUrl } from "@/utils/chat";
 const emojiSelectorVisible = ref(false);
 
 const chatStore = useChatStore();
 const userStore = useUserStore();
 const messageData = ref<ChatMessage[]>([]);
 const msgBox = ref<HTMLElement>();
-
+const imageUploader = ref<HTMLInputElement>();
 const friendInfoDialogShow = ref(false);
 const friendInfo = ref<UserFriendVo>({
   friendId: 0,
@@ -167,19 +212,7 @@ const handleEnterDown = (e: Event | KeyboardEvent) => {
     }
   }
 };
-/** 处理发送消息 */
-const handleSendMessage = () => {
-  if (inputMessage.value.trim() == "") {
-    inputMessage.value = "";
-    return;
-  }
-  const message: WSMessage = {
-    messageType: MessageType.TEXT,
-    content: inputMessage.value,
-    fromId: userStore.userInfo.id,
-    toId: chatStore.chatId,
-    chatType: chatStore.chatType,
-  };
+const _sendMessage = (message: WSMessage) => {
   if (!sendMessage(message)) {
     ElMessage.error("消息发送失败");
     return;
@@ -187,14 +220,38 @@ const handleSendMessage = () => {
   messageData.value.push({
     senderId: userStore.userInfo.id,
     receiverId: chatStore.chatId,
-    messageType: MessageType.TEXT,
-    content: inputMessage.value,
+    messageType: message.messageType,
+    content: message.content,
     createTime: new Date().toISOString(),
     chatType: chatStore.chatType,
   });
   chatStore.updateConversation(message);
   inputMessage.value = "";
   scrollToBottom();
+};
+/** 处理发送消息 */
+const handleSendMessage = async () => {
+  if (inputMessage.value.trim() != "") {
+    _sendMessage({
+      messageType: MessageType.TEXT,
+      content: inputMessage.value,
+      fromId: userStore.userInfo.id,
+      toId: chatStore.chatId,
+      chatType: chatStore.chatType,
+    });
+  }
+  if (imgFile.value) {
+    const resp = await uploadChatImage(imgFile.value);
+    _sendMessage({
+      messageType: MessageType.IMAGE,
+      content: resp.data,
+      fromId: userStore.userInfo.id,
+      toId: chatStore.chatId,
+      chatType: chatStore.chatType,
+    });
+    imgFile.value = undefined;
+    imageSrc.value = "";
+  }
 };
 
 /** 当用户选择表情 */
@@ -203,6 +260,22 @@ const onSelectEmoji = (emoji: any) => {
   inputMessage.value = inputMessage.value + emoji.i;
   messageInputRef.value?.focus();
 };
+const imageSrc = ref("");
+const imgFile = ref<File>();
+const handleImageUpload = async () => {
+  const file = imageUploader.value?.files?.[0];
+  if (file == undefined) return;
+  if (file.type.startsWith("image/")) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      imageSrc.value = e.target?.result as string;
+      imgFile.value = file;
+    };
+    reader.readAsDataURL(file);
+  }
+};
+const previewImgShow = ref(false);
+const previewImgSrc = ref("");
 /** 将对话框滚动到最底部 */
 const scrollToBottom = (delay: number = 200) => {
   setTimeout(() => {
@@ -371,6 +444,14 @@ onMounted(() => {
           white-space: pre-wrap; /* 保留空格，允许换行 */
           word-break: break-all; /* 允许单词内部断开 */
         }
+        &-img {
+          max-width: 15%;
+          position: relative;
+          img {
+            border-radius: 5px;
+            width: 100%;
+          }
+        }
         &-avatar {
           width: 40px;
           height: 40px;
@@ -391,6 +472,7 @@ onMounted(() => {
       height: 30px;
       border-bottom: 2px solid var(--color-border);
       padding-left: 10px;
+      display: flex;
       .emoji-selector-container {
         position: relative;
         .icon-mood {
@@ -404,6 +486,14 @@ onMounted(() => {
           bottom: 110%;
         }
       }
+      .send-image-container {
+        .icon-image {
+          cursor: pointer;
+          &:hover {
+            fill: dodgerblue;
+          }
+        }
+      }
     }
     .input-container {
       flex-grow: 1;
@@ -411,11 +501,43 @@ onMounted(() => {
       display: flex;
       flex-direction: column;
       gap: 5px;
-      &__textarea {
-        width: 100%;
-        font-size: 1.2rem;
+      &__content {
+        display: flex;
+        gap: 5px;
+        .upload-image {
+          position: relative;
+          height: 120px;
+          width: 120px;
+          border-radius: 10px;
+          &:hover {
+            background-color: var(--color-text);
+            img {
+              opacity: 0.5;
+            }
+            .icon-delete {
+              opacity: 1;
+              fill: var(--color-background-mute);
+            }
+          }
+          img {
+            height: 100%;
+            border-radius: 10px;
+          }
+          .icon-delete {
+            cursor: pointer;
+            position: absolute;
+            top: 45%;
+            left: 45%;
+            opacity: 0;
+          }
+        }
+        &__textarea {
+          // width: 100%;
+          font-size: 1.2rem;
+        }
       }
     }
   }
 }
 </style>
+<style></style>

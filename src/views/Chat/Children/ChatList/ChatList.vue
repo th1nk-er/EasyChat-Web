@@ -46,7 +46,12 @@
                 {{ conversation.remark }}
               </p>
               <p class="user-item__content__text-part-message">
-                {{ conversation.lastMessage }}
+                <span v-if="conversation.messageType == MessageType.TEXT">
+                  {{ conversation.lastMessage }}
+                </span>
+                <span v-if="conversation.messageType == MessageType.IMAGE">
+                  [图片]
+                </span>
               </p>
             </div>
             <div class="user-item__content__info">
@@ -70,12 +75,11 @@ import { ToolBar } from "../../components";
 import { useChatStore } from "@/stores/chat";
 import { ChatInstance } from "./components";
 import { getUserConversationList } from "@/api/chat";
-import { ChatType, type UserConversation } from "@/api/chat/types";
+import { ChatType, MessageType, type UserConversation } from "@/api/chat/types";
 import { getTimeString } from "@/utils/timeUtils";
 import { getAvatarUrl } from "@/utils/userUtils";
 
 const chatStore = useChatStore();
-
 const data = reactive([] as UserConversation[]);
 const currentPage = ref(1);
 const scrollDisabled = ref(false);

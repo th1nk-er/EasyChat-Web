@@ -86,3 +86,17 @@ export const getUserConversationList = (pageNum: number) => {
     method: "get",
   });
 };
+
+/**
+ * 上传聊天图片
+ * @param file 图片文件
+ */
+export const uploadChatImage = (file: File) => {
+  const formData = new FormData();
+  formData.append("file", file);
+  return request.post<Result<string>>({
+    url: "/upload/chat/image",
+    method: "post",
+    data: formData,
+  });
+};
