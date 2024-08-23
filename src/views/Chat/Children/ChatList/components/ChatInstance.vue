@@ -28,6 +28,11 @@
     </div>
     <div class="container__main">
       <div class="message-container" ref="msgBox">
+        <div class="message-container-item">
+          <p class="message-container-item-history">
+            <span @click="getMoreMessage"><IconHistory />查看更多消息</span>
+          </p>
+        </div>
         <div
           class="message-container-item"
           v-for="(item, index) in messageData"
@@ -308,7 +313,8 @@ const initChatData = async () => {
     chatInfo.value.muted = resp.data.muted;
     // 获取最近的消息
     messageData.value.push(
-      ...(await getMessageHistory(chatInfo.value.chatId, 1)).data
+      ...(await getMessageHistory(chatInfo.value.chatId, msgPageIndex.value))
+        .data
     );
     scrollToBottom();
     // 订阅消息
@@ -334,6 +340,13 @@ const isChatting = computed(() => chatStore.isChatting);
 watch(isChatting, (value) => {
   if (value) initChatData();
 });
+const msgPageIndex = ref(0);
+const getMoreMessage = async () => {
+  messageData.value.unshift(
+    ...(await getMessageHistory(chatInfo.value.chatId, ++msgPageIndex.value))
+      .data
+  );
+};
 onMounted(() => {
   initChatData();
 });
@@ -433,6 +446,21 @@ onMounted(() => {
         &-time {
           text-align: center;
           color: var(--color-subtitle);
+        }
+        &-history {
+          color: var(--el-color-primary);
+          text-align: center;
+          span {
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            font-size: 0.8rem;
+            svg {
+              fill: var(--el-color-primary);
+              width: 18px;
+              height: 18px;
+            }
+          }
         }
         &-content {
           border-radius: 5px;
