@@ -39,10 +39,7 @@
       </div>
     </div>
   </div>
-  <FriendInfoDialog
-    v-model="friendInfoShow"
-    :friend-info="selectedFriendInfo"
-  />
+  <FriendInfoDialog v-model="friendInfoShow" :friend-id="selectedFriendId" />
 </template>
 <script setup lang="ts">
 import type { FriendListVo, UserFriendVo } from "@/api/friend/types";
@@ -62,16 +59,7 @@ const friendListVo = ref<FriendListVo>({
   records: [],
 });
 const friendInfoShow = ref(false);
-const selectedFriendInfo = ref<UserFriendVo>({
-  friendId: 0,
-  nickname: "",
-  username: "",
-  avatar: "",
-  sex: UserSex.SECRET,
-  createTime: "",
-  remark: "",
-  muted: false,
-});
+const selectedFriendId = ref(0);
 const loadFriendList = async () => {
   const resp = await getUserFriendList(currentPage.value);
   if (resp.data.records.length > 0) {
@@ -87,7 +75,7 @@ const loadFriendList = async () => {
   }
 };
 const handleFriendClick = (index: number) => {
-  selectedFriendInfo.value = friendStore.friendList[index];
+  selectedFriendId.value = friendStore.friendList[index].friendId;
   friendInfoShow.value = true;
 };
 </script>

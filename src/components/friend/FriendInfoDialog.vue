@@ -81,7 +81,7 @@
 </template>
 <script setup lang="ts">
 import { ChatType } from "@/api/chat/types";
-import { deleteFriend, updateFriendInfo } from "@/api/friend";
+import { deleteFriend, getFriendInfo, updateFriendInfo } from "@/api/friend";
 import type { UserFriendVo } from "@/api/friend/types";
 import { useChatStore } from "@/stores/chat";
 import { useFriendStore } from "@/stores/friend";
@@ -91,13 +91,17 @@ const chatStore = useChatStore();
 const friendStore = useFriendStore();
 const dialogShow = defineModel({ type: Boolean, default: false });
 const props = defineProps({
-  friendInfo: { type: Object as PropType<UserFriendVo>, required: true },
+  friendId: {
+    type: Number,
+    required: true,
+  },
 });
 const emit = defineEmits(["onFriendInfoUpdate"]);
-const friendInfo = ref<UserFriendVo>({ ...props.friendInfo });
-watch(dialogShow, (value) => {
+const friendInfo = ref<UserFriendVo>({} as UserFriendVo);
+watch(dialogShow, async (value) => {
   if (value) {
-    friendInfo.value = { ...props.friendInfo };
+    const resp = await getFriendInfo(props.friendId);
+    friendInfo.value = resp.data;
   }
 });
 const editRemarkShow = ref(false);

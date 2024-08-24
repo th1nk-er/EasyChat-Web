@@ -3,156 +3,29 @@
     <IconForum class="icon-forum" />
   </div>
   <div class="container" v-if="chatStore.isChatting">
-    <div class="container__header">
-      <div class="container__header__title">
-        <FriendInfoDialog
-          v-model="friendInfoDialogShow"
-          :friend-info="friendInfo"
-          @on-friend-info-update="onFriendInfoUpdate"
-        />
-        <div
-          class="container__header__title__name"
-          @click="friendInfoDialogShow = true"
-        >
-          <span
-            v-if="chatInfo.remark == undefined || chatInfo.remark.length == 0"
-            >{{ chatInfo.name }}</span
-          >
-          <span v-else>{{ chatInfo.remark }}</span>
-        </div>
-        <IconNotificationOff
-          class="container__header__title__muted"
-          v-if="chatInfo.muted"
-        />
-      </div>
-    </div>
+    <ChatHeader :chat-info="chatInfo" />
     <div class="container__main">
-      <div class="message-container" ref="msgBox">
-        <div class="message-container-item">
-          <p class="message-container-item-history">
-            <span @click="getMoreMessage"><IconHistory />查看更多消息</span>
-          </p>
-        </div>
-        <div
-          class="message-container-item"
-          v-for="(item, index) in messageData"
-          :key="index"
-        >
-          <p
-            class="message-container-item-time"
-            v-if="
-              index != 0 &&
-              new Date(item.createTime).getTime() -
-                new Date(messageData[index - 1].createTime).getTime() >
-                1000 * 60 * 3
-            "
-          >
-            {{ getTimeString(item.createTime) }}
-          </p>
-          <div
-            :class="
-              item.senderId == userStore.userInfo.id
-                ? 'item-right'
-                : 'item-left'
-            "
-          >
-            <img
-              :src="
-                item.senderId == userStore.userInfo.id
-                  ? getAvatarUrl(userStore.userInfo.avatar)
-                  : getAvatarUrl(chatInfo.avatar)
-              "
-              class="message-container-item-avatar"
-            />
-            <p
-              class="message-container-item-content"
-              v-if="item.messageType == MessageType.TEXT"
-            >
-              {{ item.content }}
-            </p>
-            <div
-              class="message-container-item-img"
-              v-if="item.messageType == MessageType.IMAGE"
-              @click="
-                previewImgSrc = getChatImgUrl(item.content);
-                previewImgShow = true;
-              "
-            >
-              <img :src="getChatImgUrl(item.content)" />
-            </div>
-          </div>
-        </div>
-        <el-dialog
-          v-model="previewImgShow"
-          :align-center="true"
-          style="display: flex; justify-content: center"
-        >
-          <img w-full :src="previewImgSrc" style="max-width: 100%" />
-        </el-dialog>
-      </div>
-      <div class="toolbar-container">
-        <div class="emoji-selector-container">
-          <IconMood
-            class="icon-mood"
-            @click="emojiSelectorVisible = !emojiSelectorVisible"
-          />
-          <EmojiPicker
-            :native="true"
-            theme="auto"
-            class="emoji-picker"
-            :display-recent="true"
-            :hide-group-names="true"
-            v-show="emojiSelectorVisible"
-            @select="onSelectEmoji"
-          />
-        </div>
-        <div class="send-image-container">
-          <IconImage class="icon-image" @click="imageUploader?.click()" />
-          <input
-            type="file"
-            hidden
-            ref="imageUploader"
-            multiple="false"
-            accept="image/*"
-            @change="handleImageUpload"
-          />
-        </div>
-      </div>
-      <div class="input-container">
-        <div class="input-container__content">
-          <el-input
-            v-model="inputMessage"
-            type="textarea"
-            resize="none"
-            :rows="4"
-            maxlength="1024"
-            class="input-container__textarea"
-            @keydown.enter.native="handleEnterDown"
-            ref="messageInputRef"
-          />
-          <div class="upload-image" v-show="imageSrc != ''">
-            <img :src="imageSrc" />
-            <IconDelete
-              class="icon-delete"
-              @click="
-                imageSrc = '';
-                imgFile = undefined;
-              "
-            />
-          </div>
-        </div>
-        <el-button
-          class="input-container__button-send"
-          type="primary"
-          @click="handleSendMessage"
-          >发送</el-button
-        >
-      </div>
+      <ChatMessageBox
+        ref="msgBox"
+        :message-data="messageData"
+        :chat-info="chatInfo"
+        @on-get-more-message="getMoreMessage"
+      />
+      <ChatToolBar
+        @on-emoji-selected="handleEmojiSelected"
+        @on-image-upload="handleImageUpload"
+      />
+      <ChatInputBox
+        v-model:message="inputMessage"
+        v-model:image-src="imageSrc"
+        v-model:image-file="imgFile"
+        @on-send-message="handleSendMessage"
+        ref="inputBox"
+      />
     </div>
   </div>
 </template>
 <script setup lang="ts">
-import FriendInfoDialog from "@/components/friend/FriendInfoDialog.vue";
 import {
   getMessageHistory,
   publishOpenConversation,
@@ -169,21 +42,13 @@ import {
 import { getFriendInfo } from "@/api/friend";
 import { useChatStore } from "@/stores/chat";
 import { useUserStore } from "@/stores/user";
-import { getTimeString } from "@/utils/timeUtils";
-import { getAvatarUrl } from "@/utils/userUtils";
-import EmojiPicker from "vue3-emoji-picker";
-import "vue3-emoji-picker/css";
-import type { UserFriendVo } from "@/api/friend/types";
 import { UserSex } from "@/api/user/types";
-import { getChatImgUrl } from "@/utils/chat";
-const emojiSelectorVisible = ref(false);
-
+import { ChatHeader, ChatInputBox, ChatMessageBox, ChatToolBar } from ".";
+import type { UserFriendVo } from "@/api/friend/types";
 const chatStore = useChatStore();
 const userStore = useUserStore();
 const messageData = ref<ChatMessage[]>([]);
-const msgBox = ref<HTMLElement>();
-const imageUploader = ref<HTMLInputElement>();
-const friendInfoDialogShow = ref(false);
+const msgBox = ref();
 const friendInfo = ref<UserFriendVo>({
   friendId: 0,
   nickname: "",
@@ -194,29 +59,10 @@ const friendInfo = ref<UserFriendVo>({
   remark: "",
   muted: false,
 });
-const onFriendInfoUpdate = (data: UserFriendVo) => {
-  friendInfo.value = data;
-  chatInfo.value.chatId = data.friendId;
-  chatInfo.value.name = data.nickname;
-  chatInfo.value.remark = data.remark;
-  chatInfo.value.avatar = data.avatar;
-  chatInfo.value.muted = data.muted;
-};
 /** 用户输入的消息 */
 const inputMessage = ref("");
 /** 消息输入框 */
-const messageInputRef = ref<HTMLElement>();
-/** 处理用户按下回车 */
-const handleEnterDown = (e: Event | KeyboardEvent) => {
-  if (e instanceof KeyboardEvent) {
-    if (e.shiftKey) {
-      inputMessage.value += "\n";
-    } else {
-      e.preventDefault();
-      handleSendMessage();
-    }
-  }
-};
+const inputBox = ref();
 const _sendMessage = (message: WSMessage) => {
   if (!sendMessage(message)) {
     ElMessage.error("消息发送失败");
@@ -224,11 +70,11 @@ const _sendMessage = (message: WSMessage) => {
   }
   messageData.value.push({
     senderId: userStore.userInfo.id,
-    receiverId: chatStore.chatId,
+    receiverId: chatInfo.value.chatId,
     messageType: message.messageType,
     content: message.content,
     createTime: new Date().toISOString(),
-    chatType: chatStore.chatType,
+    chatType: chatInfo.value.chatType,
   });
   chatStore.updateConversation(message);
   inputMessage.value = "";
@@ -241,8 +87,8 @@ const handleSendMessage = async () => {
       messageType: MessageType.TEXT,
       content: inputMessage.value,
       fromId: userStore.userInfo.id,
-      toId: chatStore.chatId,
-      chatType: chatStore.chatType,
+      toId: chatInfo.value.chatId,
+      chatType: chatInfo.value.chatType,
     });
   }
   if (imgFile.value) {
@@ -251,47 +97,33 @@ const handleSendMessage = async () => {
       messageType: MessageType.IMAGE,
       content: resp.data,
       fromId: userStore.userInfo.id,
-      toId: chatStore.chatId,
-      chatType: chatStore.chatType,
+      toId: chatInfo.value.chatId,
+      chatType: chatInfo.value.chatType,
     });
     imgFile.value = undefined;
     imageSrc.value = "";
   }
 };
-
 /** 当用户选择表情 */
-const onSelectEmoji = (emoji: any) => {
-  emojiSelectorVisible.value = false;
-  inputMessage.value = inputMessage.value + emoji.i;
-  messageInputRef.value?.focus();
+const handleEmojiSelected = (emoji: string) => {
+  inputMessage.value = inputMessage.value + emoji;
+  inputBox.value.input.focus();
 };
 const imageSrc = ref("");
 const imgFile = ref<File>();
-const handleImageUpload = async () => {
-  const file = imageUploader.value?.files?.[0];
-  if (file == undefined) return;
-  if (file.type.startsWith("image/")) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      imageSrc.value = e.target?.result as string;
-      imgFile.value = file;
-    };
-    reader.readAsDataURL(file);
-  }
+const handleImageUpload = (file: File, imgUrl: string) => {
+  imgFile.value = file;
+  imageSrc.value = imgUrl;
 };
-const previewImgShow = ref(false);
-const previewImgSrc = ref("");
 /** 将对话框滚动到最底部 */
 const scrollToBottom = (delay: number = 200) => {
   setTimeout(() => {
-    msgBox.value?.scrollTo({
-      top: msgBox.value?.scrollHeight,
-      behavior: "smooth",
-    });
+    msgBox.value?.scrollToBottom();
   }, delay);
 };
 const chatInfo = ref({
   chatId: 0,
+  chatType: ChatType.FRIEND,
   name: "",
   remark: "",
   avatar: "",
@@ -301,6 +133,7 @@ const chatInfo = ref({
 const initChatData = async () => {
   messageData.value = [];
   if (!chatStore.isChatting) return;
+  chatInfo.value.chatType = chatStore.chatType;
   publishOpenConversation(chatStore.chatId, chatStore.chatType);
   if (chatStore.chatType == ChatType.FRIEND) {
     const resp = await getFriendInfo(chatStore.chatId);
@@ -319,21 +152,24 @@ const initChatData = async () => {
     scrollToBottom();
     // 订阅消息
     subscribeMessage((message: WSMessage) => {
-      if (
-        message.fromId == chatStore.chatId &&
-        message.chatType == chatStore.chatType
-      ) {
-        messageData.value.push({
-          senderId: message.fromId,
-          receiverId: userStore.userInfo.id,
-          messageType: message.messageType,
-          content: message.content,
-          createTime: new Date().toISOString(),
-          chatType: message.chatType,
-        });
-        scrollToBottom();
-      }
+      onReceiveMessage(message);
     });
+  }
+};
+const onReceiveMessage = (message: WSMessage) => {
+  if (
+    message.fromId == chatStore.chatId &&
+    message.chatType == chatStore.chatType
+  ) {
+    messageData.value.push({
+      senderId: message.fromId,
+      receiverId: userStore.userInfo.id,
+      messageType: message.messageType,
+      content: message.content,
+      createTime: new Date().toISOString(),
+      chatType: message.chatType,
+    });
+    scrollToBottom();
   }
 };
 const isChatting = computed(() => chatStore.isChatting);
@@ -347,21 +183,8 @@ const getMoreMessage = async () => {
       .data
   );
 };
-onMounted(() => {
-  initChatData();
-});
 </script>
 <style scoped lang="scss">
-@keyframes appear {
-  from {
-    opacity: 0;
-    transform: translateX(-100px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0px);
-  }
-}
 .no-user {
   flex-grow: 1;
   background-color: var(--color-background-soft);
@@ -382,190 +205,12 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   border-left: 2px solid var(--color-border);
-
-  &__header {
-    width: 100%;
-    height: 65px;
-    display: flex;
-    align-items: center;
-    padding-right: 20px;
-    border-bottom: 2px solid var(--color-border);
-
-    &__title {
-      width: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-
-      &__name {
-        font-weight: bolder;
-        font-size: 20px;
-        cursor: pointer;
-        &:hover {
-          // 添加下划线
-          text-decoration: underline;
-        }
-      }
-      &__muted {
-        width: 20px;
-        height: 20px;
-        fill: var(--color-subtitle);
-      }
-    }
-  }
-
   &__main {
     flex-grow: 1;
     background-color: var(--color-background-soft);
     display: flex;
     flex-direction: column;
     gap: 3px;
-
-    .message-container {
-      height: 65vh;
-      overflow-y: scroll;
-      display: flex;
-      flex-direction: column;
-      padding: 20px;
-      gap: 15px;
-      border-bottom: 2px solid var(--color-border);
-
-      &-item {
-        display: flex;
-        gap: 3px;
-        flex-direction: column;
-        animation: appear linear;
-        animation-timeline: view();
-        animation-range: entry 0% cover 10%;
-        .item-right,
-        .item-left {
-          display: flex;
-          gap: 8px;
-        }
-        &-time {
-          text-align: center;
-          color: var(--color-subtitle);
-        }
-        &-history {
-          color: var(--el-color-primary);
-          text-align: center;
-          span {
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            font-size: 0.8rem;
-            svg {
-              fill: var(--el-color-primary);
-              width: 18px;
-              height: 18px;
-            }
-          }
-        }
-        &-content {
-          border-radius: 5px;
-          padding: 3px 8px;
-          font-size: 1.2rem;
-          background-color: var(--color-background-mute);
-          max-width: 55%;
-          text-wrap: wrap;
-          white-space: pre-wrap; /* 保留空格，允许换行 */
-          word-break: break-all; /* 允许单词内部断开 */
-        }
-        &-img {
-          max-width: 15%;
-          position: relative;
-          img {
-            border-radius: 5px;
-            width: 100%;
-          }
-        }
-        &-avatar {
-          width: 40px;
-          height: 40px;
-          border-radius: 10px;
-        }
-
-        .item-right {
-          flex-direction: row-reverse;
-
-          .message-container-item-content {
-            color: black;
-            background-color: rgb(149, 236, 105);
-          }
-        }
-      }
-    }
-    .toolbar-container {
-      height: 30px;
-      border-bottom: 2px solid var(--color-border);
-      padding-left: 10px;
-      display: flex;
-      .emoji-selector-container {
-        position: relative;
-        .icon-mood {
-          cursor: pointer;
-          &:hover {
-            fill: dodgerblue;
-          }
-        }
-        .emoji-picker {
-          position: absolute;
-          bottom: 110%;
-        }
-      }
-      .send-image-container {
-        .icon-image {
-          cursor: pointer;
-          &:hover {
-            fill: dodgerblue;
-          }
-        }
-      }
-    }
-    .input-container {
-      flex-grow: 1;
-      padding: 3px 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-      &__content {
-        display: flex;
-        gap: 5px;
-        .upload-image {
-          position: relative;
-          height: 120px;
-          width: 120px;
-          border-radius: 10px;
-          &:hover {
-            background-color: var(--color-text);
-            img {
-              opacity: 0.5;
-            }
-            .icon-delete {
-              opacity: 1;
-              fill: var(--color-background-mute);
-            }
-          }
-          img {
-            height: 100%;
-            border-radius: 10px;
-          }
-          .icon-delete {
-            cursor: pointer;
-            position: absolute;
-            top: 45%;
-            left: 45%;
-            opacity: 0;
-          }
-        }
-        &__textarea {
-          // width: 100%;
-          font-size: 1.2rem;
-        }
-      }
-    }
   }
 }
 </style>
-<style></style>
