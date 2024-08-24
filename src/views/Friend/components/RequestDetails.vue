@@ -74,7 +74,6 @@
 <script setup lang="ts">
 import { getAvatarUrl } from "@/utils/userUtils";
 import { getTimeString } from "@/utils/timeUtils";
-import { replyAddRequest } from "@/api/friend";
 import { AddStatus, AddType, type RequestRecord } from "@/api/friend/types";
 import { agreeRequest, refuseRequest, ignoreRequest } from "./request";
 const visible = defineModel("visible", { type: Boolean, default: false });

@@ -8,10 +8,8 @@
       :offset="[-10, 10]"
     >
       <IconChat
-        :class="
-          router.currentRoute.value.name == 'ChatList' ? 'icon-selected' : ''
-        "
-        @click="router.push({ name: 'ChatList' })"
+        :class="router.currentRoute.value.name == 'Chat' ? 'icon-selected' : ''"
+        @click="router.push({ name: 'Chat' })"
       />
     </el-badge>
     <IconPerson

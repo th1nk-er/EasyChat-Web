@@ -116,7 +116,7 @@ const handleSendMessage = () => {
   chatStore.chatId = friendInfo.value.friendId;
   chatStore.chatType = ChatType.FRIEND;
   chatStore.isChatting = true;
-  router.push({ name: "ChatList" });
+  router.push({ name: "Chat" });
   dialogShow.value = false;
 };
 

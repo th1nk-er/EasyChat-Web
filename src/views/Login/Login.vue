@@ -19,7 +19,7 @@ onMounted(() => {
   }
   if (userStore.getUserToken) {
     if (redirectUrl) window.location.href = redirectUrl;
-    else router.push({ name: "ChatList" });
+    else router.push({ name: "Chat" });
   }
 });
 </script>

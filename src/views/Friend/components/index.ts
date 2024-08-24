@@ -1,4 +1,5 @@
 import FriendRequestDialog from "./FriendRequestDialog.vue";
 import RequestList from "./RequestList.vue";
 import RequestDetails from "./RequestDetails.vue";
-export { FriendRequestDialog, RequestList, RequestDetails };
+import FriendList from "./FriendList.vue";
+export { FriendRequestDialog, RequestList, RequestDetails, FriendList };

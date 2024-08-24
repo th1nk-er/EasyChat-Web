@@ -1,79 +1,75 @@
 <template>
-  <div class="container">
-    <div class="chat-list">
-      <ToolBar />
+  <div class="chat-list">
+    <TopSearchBar />
+    <div
+      class="chat-list-box"
+      v-infinite-scroll="loadConversations"
+      :infinite-scroll-disabled="scrollDisabled"
+    >
       <div
-        class="chat-list-box"
-        v-infinite-scroll="loadConversations"
-        :infinite-scroll-disabled="scrollDisabled"
+        v-for="(conversation, key) in chatStore.conversationList"
+        :key="key"
+        class="user-item"
+        @click="handleClickConversation(conversation)"
       >
-        <div
-          v-for="(conversation, key) in chatStore.conversationList"
-          :key="key"
-          class="user-item"
-          @click="handleClickConversation(conversation)"
-        >
-          <div class="user-item__avatar-box">
-            <el-badge
-              :value="conversation.unreadCount"
-              :max="99"
-              class="item"
-              :show-zero="false"
-              :is-dot="conversation.muted && conversation.unreadCount > 0"
-              :offset="[-3, 3]"
-              :badge-style="
-                conversation.muted ? { width: '13px', height: '13px' } : ''
+        <div class="user-item__avatar-box">
+          <el-badge
+            :value="conversation.unreadCount"
+            :max="99"
+            class="item"
+            :show-zero="false"
+            :is-dot="conversation.muted && conversation.unreadCount > 0"
+            :offset="[-3, 3]"
+            :badge-style="
+              conversation.muted ? { width: '13px', height: '13px' } : ''
+            "
+          >
+            <img
+              :src="getAvatarUrl(conversation.avatar)"
+              class="user-item__avatar-box__img-avatar"
+            />
+          </el-badge>
+        </div>
+        <div class="user-item__content">
+          <div class="user-item__content__text">
+            <p
+              class="user-item__content__text-name"
+              v-if="
+                conversation.remark == undefined ||
+                conversation.remark.length == 0
               "
             >
-              <img
-                :src="getAvatarUrl(conversation.avatar)"
-                class="user-item__avatar-box__img-avatar"
-              />
-            </el-badge>
+              {{ conversation.nickname }}
+            </p>
+            <p class="user-item__content__text-name" v-else>
+              {{ conversation.remark }}
+            </p>
+            <p class="user-item__content__text-part-message">
+              <span v-if="conversation.messageType == MessageType.TEXT">
+                {{ conversation.lastMessage }}
+              </span>
+              <span v-if="conversation.messageType == MessageType.IMAGE">
+                [图片]
+              </span>
+            </p>
           </div>
-          <div class="user-item__content">
-            <div class="user-item__content__text">
-              <p
-                class="user-item__content__text-name"
-                v-if="
-                  conversation.remark == undefined ||
-                  conversation.remark.length == 0
-                "
-              >
-                {{ conversation.nickname }}
-              </p>
-              <p class="user-item__content__text-name" v-else>
-                {{ conversation.remark }}
-              </p>
-              <p class="user-item__content__text-part-message">
-                <span v-if="conversation.messageType == MessageType.TEXT">
-                  {{ conversation.lastMessage }}
-                </span>
-                <span v-if="conversation.messageType == MessageType.IMAGE">
-                  [图片]
-                </span>
-              </p>
-            </div>
-            <div class="user-item__content__info">
-              <p class="user-item__content__info-time">
-                {{ getTimeString(conversation.updateTime) }}
-              </p>
-              <IconNotificationOff
-                class="user-item__content__info-muted"
-                v-if="conversation.muted"
-              />
-            </div>
+          <div class="user-item__content__info">
+            <p class="user-item__content__info-time">
+              {{ getTimeString(conversation.updateTime) }}
+            </p>
+            <IconNotificationOff
+              class="user-item__content__info-muted"
+              v-if="conversation.muted"
+            />
           </div>
         </div>
       </div>
     </div>
-    <ChatInstance />
   </div>
 </template>
 <script setup lang="ts">
-import { ToolBar } from "../../components";
+import TopSearchBar from "@/components/common/TopSearchBar.vue";
 import { useChatStore } from "@/stores/chat";
-import { ChatInstance } from "./components";
 import { getUserConversationList } from "@/api/chat";
 import { ChatType, MessageType, type UserConversation } from "@/api/chat/types";
 import { getTimeString } from "@/utils/timeUtils";
@@ -108,11 +104,6 @@ const handleClickConversation = (conversation: UserConversation) => {
 };
 </script>
 <style scoped lang="scss">
-.container {
-  width: 100%;
-  height: 100%;
-  display: flex;
-}
 .chat-list {
   display: flex;
   flex-direction: column;

@@ -2,11 +2,11 @@
   <div class="main">
     <LeftNavigation />
     <div class="center-box">
-      <RouterView />
+      <ChatList />
+      <ChatInstance />
     </div>
   </div>
 </template>
-
 <script setup lang="ts">
 import { sendConnect, subscribeMessage } from "@/api/chat";
 import LeftNavigation from "@/components/common/LeftNavigation.vue";
@@ -15,6 +15,7 @@ import { MessageType, type WSMessage } from "@/api/chat/types";
 import { useUserStore } from "@/stores/user";
 import { getUserInfo } from "@/api/user";
 import { useChatStore } from "@/stores/chat";
+import { ChatList, ChatInstance } from "./components";
 const userStore = useUserStore();
 const chatStore = useChatStore();
 const router = useRouter();
@@ -72,5 +73,6 @@ const handleUserMessage = (message: WSMessage) => {
 .center-box {
   flex-grow: 1;
   height: 100%;
+  display: flex;
 }
 </style>

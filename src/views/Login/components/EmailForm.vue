@@ -133,7 +133,7 @@ const handleLogin = async (formEl: FormInstance | undefined) => {
       const resp = await login(userLoginVo);
       userStore.userToken = resp.data;
       ElMessage.success("登录成功");
-      router.push({ name: "ChatList" });
+      router.push({ name: "Chat" });
     }
   });
 };

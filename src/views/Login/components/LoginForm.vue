@@ -108,7 +108,7 @@ const handleLogin = async (formEl: FormInstance | undefined) => {
         userStore.setLoginForm(formData.username, formData.password);
       else userStore.removeLoginForm();
       ElMessage.success("登录成功");
-      router.push({ name: "ChatList" });
+      router.push({ name: "Chat" });
     }
   });
 };

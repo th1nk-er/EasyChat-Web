@@ -1,2 +1,3 @@
-import ToolBar from "./ToolBar.vue";
-export { ToolBar };
+import ChatInstance from "./ChatInstance.vue";
+import ChatList from "./ChatList.vue";
+export { ChatInstance, ChatList };
