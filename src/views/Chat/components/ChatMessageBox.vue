@@ -35,6 +35,7 @@
               : getUserAvatarUrl(item.senderId)
           "
           class="message-container-item-avatar"
+          @click="showUserInfo(item.senderId)"
         />
         <p
           class="message-container-item-content"
@@ -61,6 +62,8 @@
     >
       <img w-full :src="previewImgSrc" style="max-width: 100%" />
     </el-dialog>
+    <UserInfoDialog v-model="userInfoDialogShow" />
+    <FriendInfoDialog v-model="friendInfoDialogShow" :friend-id="userInfoId" />
   </div>
 </template>
 
@@ -71,6 +74,8 @@ import { getChatImgUrl } from "@/utils/chat";
 import { getTimeString } from "@/utils/timeUtils";
 import { getAvatarUrl } from "@/utils/userUtils";
 import type { ChatInfo } from ".";
+import UserInfoDialog from "@/components/user/UserInfoDialog.vue";
+import FriendInfoDialog from "@/components/friend/FriendInfoDialog.vue";
 
 const msgBox = ref<HTMLElement>();
 const props = defineProps({
@@ -95,15 +100,32 @@ const messageData = ref(props.messageData);
 const chatInfo = ref(props.chatInfo);
 const userStore = useUserStore();
 
-const avatarUrlArr = ref<Map<number, string>>(new Map());
+//TODO 群组成员信息
+const groupUserInfo = ref([]);
 const getUserAvatarUrl = (userId: number) => {
   if (chatInfo.value.chatType == ChatType.FRIEND) {
     return getAvatarUrl(chatInfo.value.avatar);
   } else if (chatInfo.value.chatType == ChatType.GROUP) {
-    let avatar = avatarUrlArr.value.get(userId);
+    //TODO 从groupUserInfo中获取头像
+    let avatar;
     if (avatar) return avatar;
     else {
       //TODO 获取用户头像，添加到avatarUrlArr
+    }
+  }
+};
+const userInfoId = ref(0);
+const userInfoDialogShow = ref(false);
+const friendInfoDialogShow = ref(false);
+const showUserInfo = (id: number) => {
+  userInfoId.value = id;
+  if (id == userStore.userInfo.id) {
+    userInfoDialogShow.value = true;
+  } else {
+    if (chatInfo.value.chatType == ChatType.FRIEND) {
+      friendInfoDialogShow.value = true;
+    } else if (chatInfo.value.chatType == ChatType.GROUP) {
+      //TODO 获取群成员信息
     }
   }
 };
@@ -189,6 +211,7 @@ defineExpose({
       width: 40px;
       height: 40px;
       border-radius: 10px;
+      cursor: pointer;
     }
 
     .item-right {
