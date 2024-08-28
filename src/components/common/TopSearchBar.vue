@@ -3,9 +3,19 @@
     <div class="tool-bar-item search-bar">
       <IconSearch />
     </div>
-    <div class="tool-bar-item" @click="addDialogVisible = true">
+    <el-dropdown class="tool-bar-item" trigger="click">
       <IconAdd />
-    </div>
+      <template #dropdown>
+        <el-dropdown-menu>
+          <el-dropdown-item @click="addDialogVisible = true"
+            ><IconPersonAdd /><span>添加好友</span></el-dropdown-item
+          >
+          <el-dropdown-item
+            ><IconGroupAdd /><span>创建群组</span></el-dropdown-item
+          >
+        </el-dropdown-menu>
+      </template>
+    </el-dropdown>
     <el-dialog v-model="addDialogVisible" title="添加好友" top="5px">
       <div class="add-dialog">
         <div class="add-dialog__search-bar">
