@@ -10,18 +10,21 @@
           <el-dropdown-item @click="addDialogVisible = true"
             ><IconPersonAdd /><span>添加好友</span></el-dropdown-item
           >
-          <el-dropdown-item
+          <el-dropdown-item @click="createGroupVisible = true"
             ><IconGroupAdd /><span>创建群组</span></el-dropdown-item
           >
         </el-dropdown-menu>
       </template>
     </el-dropdown>
     <AddFriendDialog v-model="addDialogVisible" />
+    <CreateGroupDialog v-model="createGroupVisible" />
   </div>
 </template>
 <script setup lang="ts">
 import AddFriendDialog from "./AddFriendDialog.vue";
+import CreateGroupDialog from "./CreateGroupDialog.vue";
 const addDialogVisible = ref(false);
+const createGroupVisible = ref(false);
 </script>
 
 <style lang="scss" scoped>
