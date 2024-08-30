@@ -29,7 +29,7 @@
         </div>
         <el-input v-model="groupName" placeholder="填写群名称" maxlength="20" />
         <div class="button-group">
-          <el-button type="primary">确认</el-button>
+          <el-button type="primary" @click="handleCreateGroup">确认</el-button>
           <el-button @click="dialogVisible = false">取消</el-button>
         </div>
       </div>
@@ -44,7 +44,10 @@ const dialogVisible = defineModel({ type: Boolean, default: false });
 const componentKey = ref(0);
 watch(dialogVisible, (value) => {
   if (value) {
+    //初始化数据
     componentKey.value++;
+    selectedFriend.value = [];
+    groupName.value = "";
   }
 });
 const friendSelectList = ref();
@@ -62,6 +65,16 @@ const handleRemoveMember = (friend: UserFriendVo) => {
   onFriendSelectedCancel(friend);
 };
 const groupName = ref("");
+const handleCreateGroup = () => {
+  if (groupName.value.trim().length == 0) {
+    ElMessage.error("群名称不能为空");
+    return;
+  }
+  if (selectedFriend.value.length == 0) {
+    ElMessage.error("群成员不能为空");
+  }
+  //TODO 发送请求，创建群聊
+};
 </script>
 <style lang="scss" scoped>
 .container {
