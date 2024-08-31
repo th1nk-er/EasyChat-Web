@@ -15,6 +15,11 @@ export enum UserSex {
   FEMALE = "FEMALE",
   SECRET = "SECRET",
 }
+export enum UserRole {
+  USER = "USER",
+  ADMIN = "ADMIN",
+  LEADER = "LEADER",
+}
 export type UserVo = {
   id: number;
   username: string;

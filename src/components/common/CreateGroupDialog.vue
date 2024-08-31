@@ -40,6 +40,8 @@
 import type { UserFriendVo } from "@/api/friend/types";
 import FriendSelectList from "../friend/FriendSelectList.vue";
 import { getAvatarUrl } from "@/utils/userUtils";
+import { createGroup } from "@/api/group";
+import { useGroupStore } from "@/stores/group";
 const dialogVisible = defineModel({ type: Boolean, default: false });
 const componentKey = ref(0);
 watch(dialogVisible, (value) => {
@@ -50,6 +52,7 @@ watch(dialogVisible, (value) => {
     groupName.value = "";
   }
 });
+const groupStore = useGroupStore();
 const friendSelectList = ref();
 const selectedFriend = ref([] as UserFriendVo[]);
 const onFriendSelected = (friend: UserFriendVo) => {
@@ -65,7 +68,7 @@ const handleRemoveMember = (friend: UserFriendVo) => {
   onFriendSelectedCancel(friend);
 };
 const groupName = ref("");
-const handleCreateGroup = () => {
+const handleCreateGroup = async () => {
   if (groupName.value.trim().length == 0) {
     ElMessage.error("群名称不能为空");
     return;
@@ -73,7 +76,11 @@ const handleCreateGroup = () => {
   if (selectedFriend.value.length == 0) {
     ElMessage.error("群成员不能为空");
   }
-  //TODO 发送请求，创建群聊
+  const ids = selectedFriend.value.map((item) => item.friendId);
+  await createGroup(groupName.value, ids);
+  ElMessage.success("群聊创建成功");
+  dialogVisible.value = false;
+  groupStore.loadGroupList();
 };
 </script>
 <style lang="scss" scoped>
