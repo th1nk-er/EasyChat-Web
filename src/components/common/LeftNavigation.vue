@@ -18,6 +18,7 @@
     />
     <IconGroup
       :class="router.currentRoute.value.name == 'Group' ? 'icon-selected' : ''"
+      @click="router.push({ name: 'Group' })"
     />
     <div class="divider" />
     <IconAccountCircle @click="userInfoShow = true" />

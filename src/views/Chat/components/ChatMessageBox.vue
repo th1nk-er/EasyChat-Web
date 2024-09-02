@@ -31,7 +31,7 @@
         <img
           :src="
             item.senderId == userStore.userInfo.id
-              ? getAvatarUrl(userStore.userInfo.avatar)
+              ? getFileUrl(userStore.userInfo.avatar)
               : getUserAvatarUrl(item.senderId)
           "
           class="message-container-item-avatar"
@@ -47,11 +47,11 @@
           class="message-container-item-img"
           v-if="item.messageType == MessageType.IMAGE"
           @click="
-            previewImgSrc = getChatImgUrl(item.content);
+            previewImgSrc = getFileUrl(item.content);
             previewImgShow = true;
           "
         >
-          <img :src="getChatImgUrl(item.content)" />
+          <img :src="getFileUrl(item.content)" />
         </div>
       </div>
     </div>
@@ -70,12 +70,11 @@
 <script setup lang="ts">
 import { ChatType, type ChatMessage, MessageType } from "@/api/chat/types";
 import { useUserStore } from "@/stores/user";
-import { getChatImgUrl } from "@/utils/chat";
+import { getFileUrl } from "@/utils/file";
 import { getTimeString } from "@/utils/timeUtils";
-import { getAvatarUrl } from "@/utils/userUtils";
-import type { ChatInfo } from ".";
 import UserInfoDialog from "@/components/user/UserInfoDialog.vue";
 import FriendInfoDialog from "@/components/friend/FriendInfoDialog.vue";
+import type { ChatInfo } from ".";
 
 const msgBox = ref<HTMLElement>();
 const props = defineProps({
@@ -104,7 +103,7 @@ const userStore = useUserStore();
 const groupUserInfo = ref([]);
 const getUserAvatarUrl = (userId: number) => {
   if (chatInfo.value.chatType == ChatType.FRIEND) {
-    return getAvatarUrl(chatInfo.value.avatar);
+    return getFileUrl(chatInfo.value.avatar);
   } else if (chatInfo.value.chatType == ChatType.GROUP) {
     //TODO 从groupUserInfo中获取头像
     let avatar;

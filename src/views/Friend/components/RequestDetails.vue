@@ -2,7 +2,7 @@
   <div class="request-details" v-show="visible">
     <div class="request-details-content">
       <img
-        :src="getAvatarUrl(item.avatar)"
+        :src="getFileUrl(item.avatar)"
         class="request-details-content__img-avatar"
       />
       <div class="content-info">
@@ -72,7 +72,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { getAvatarUrl } from "@/utils/userUtils";
+import { getFileUrl } from "@/utils/file";
 import { getTimeString } from "@/utils/timeUtils";
 import { AddStatus, AddType, type RequestRecord } from "@/api/friend/types";
 import { agreeRequest, refuseRequest, ignoreRequest } from "./request";

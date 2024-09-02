@@ -16,7 +16,7 @@
             v-for="(item, index) in selectedFriend"
             :key="index"
           >
-            <img :src="getAvatarUrl(item.avatar)" class="member-item__avatar" />
+            <img :src="getFileUrl(item.avatar)" class="member-item__avatar" />
             <div class="member-item__name">
               <span v-if="item.remark != undefined && item.remark.length > 0">{{
                 item.remark
@@ -39,7 +39,7 @@
 <script setup lang="ts">
 import type { UserFriendVo } from "@/api/friend/types";
 import FriendSelectList from "../friend/FriendSelectList.vue";
-import { getAvatarUrl } from "@/utils/userUtils";
+import { getFileUrl } from "@/utils/file";
 import { createGroup } from "@/api/group";
 import { useGroupStore } from "@/stores/group";
 const dialogVisible = defineModel({ type: Boolean, default: false });

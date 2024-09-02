@@ -2,7 +2,7 @@
   <el-dialog v-model="dialogShow" width="35%">
     <div class="container">
       <div class="avatar">
-        <img :src="getAvatarUrl(friendInfo.avatar)" class="img-avatar" />
+        <img :src="getFileUrl(friendInfo.avatar)" class="img-avatar" />
       </div>
       <el-divider />
       <div class="info-container">
@@ -85,7 +85,8 @@ import { deleteFriend, getFriendInfo, updateFriendInfo } from "@/api/friend";
 import type { UserFriendVo } from "@/api/friend/types";
 import { useChatStore } from "@/stores/chat";
 import { useFriendStore } from "@/stores/friend";
-import { getAvatarUrl, getSexString } from "@/utils/userUtils";
+import { getSexString } from "@/utils/userUtils";
+import { getFileUrl } from "@/utils/file";
 const router = useRouter();
 const chatStore = useChatStore();
 const friendStore = useFriendStore();

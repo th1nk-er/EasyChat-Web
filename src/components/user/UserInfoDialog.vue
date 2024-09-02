@@ -2,10 +2,7 @@
   <el-dialog v-model="dialogShow" width="35%">
     <div class="container">
       <div class="avatar">
-        <img
-          :src="getAvatarUrl(userStore.userInfo.avatar)"
-          class="img-avatar"
-        />
+        <img :src="getFileUrl(userStore.userInfo.avatar)" class="img-avatar" />
         <IconAddAPhoto
           class="icon-add-a-photo"
           @click="avatarUploader?.click()"
@@ -99,7 +96,8 @@
 <script setup lang="ts">
 import { changeAvatar, getUserInfo, updateUserInfo } from "@/api/user";
 import { useUserStore } from "@/stores/user";
-import { getAvatarUrl, getSexString } from "@/utils/userUtils";
+import { getSexString } from "@/utils/userUtils";
+import { getFileUrl } from "@/utils/file";
 import ChangePasswordDialog from "./ChangePasswordDialog.vue";
 import { UserSex } from "@/api/user/types";
 

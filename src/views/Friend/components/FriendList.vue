@@ -19,7 +19,7 @@
         :key="index"
         @click="handleFriendClick(index)"
       >
-        <img :src="getAvatarUrl(item.avatar)" class="friend-item__img-avatar" />
+        <img :src="getFileUrl(item.avatar)" class="friend-item__img-avatar" />
         <div class="friend-item__content">
           <span
             class="friend-item__title"
@@ -42,11 +42,10 @@
   <FriendInfoDialog v-model="friendInfoShow" :friend-id="selectedFriendId" />
 </template>
 <script setup lang="ts">
-import type { FriendListVo, UserFriendVo } from "@/api/friend/types";
-import { UserSex } from "@/api/user/types";
+import type { FriendListVo } from "@/api/friend/types";
 import { useFriendStore } from "@/stores/friend";
 import { getUserFriendList } from "@/api/friend";
-import { getAvatarUrl } from "@/utils/userUtils";
+import { getFileUrl } from "@/utils/file";
 import { FriendRequestDialog } from ".";
 import FriendInfoDialog from "@/components/friend/FriendInfoDialog.vue";
 const friendStore = useFriendStore();
@@ -81,7 +80,7 @@ const handleFriendClick = (index: number) => {
 </script>
 <style lang="scss" scoped>
 .main {
-  flex-grow: 1;
+  height: 100%;
   width: 100%;
   background-color: var(--color-background-mute);
   display: flex;

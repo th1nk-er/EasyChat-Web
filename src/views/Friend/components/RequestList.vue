@@ -11,7 +11,7 @@
       :key="key"
     >
       <img
-        :src="getAvatarUrl(item.avatar)"
+        :src="getFileUrl(item.avatar)"
         class="request-list-item__img-avatar"
       />
       <div class="request-list-item__content">
@@ -58,7 +58,7 @@ import {
   type FriendRequestData,
   type RequestRecord,
 } from "@/api/friend/types";
-import { getAvatarUrl } from "@/utils/userUtils";
+import { getFileUrl } from "@/utils/file";
 import { agreeRequest } from "./request";
 const emit = defineEmits<{
   (event: "onSelected", value: RequestRecord): void;

@@ -25,7 +25,7 @@
             "
           >
             <img
-              :src="getAvatarUrl(conversation.avatar)"
+              :src="getFileUrl(conversation.avatar)"
               class="user-item__avatar-box__img-avatar"
             />
           </el-badge>
@@ -73,7 +73,7 @@ import { useChatStore } from "@/stores/chat";
 import { getUserConversationList } from "@/api/chat";
 import { ChatType, MessageType, type UserConversation } from "@/api/chat/types";
 import { getTimeString } from "@/utils/timeUtils";
-import { getAvatarUrl } from "@/utils/userUtils";
+import { getFileUrl } from "@/utils/file";
 
 const chatStore = useChatStore();
 const data = reactive([] as UserConversation[]);

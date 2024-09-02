@@ -20,10 +20,7 @@
             :key="key"
             class="user-item"
           >
-            <img
-              class="user-item__img-avatar"
-              :src="getAvatarUrl(user.avatar)"
-            />
+            <img class="user-item__img-avatar" :src="getFileUrl(user.avatar)" />
             <div class="user-item__content">
               <div class="user-item__content__text">
                 <p class="user-item__content__text-nickname">
@@ -75,7 +72,7 @@ import { sendAddRequest } from "@/api/friend";
 import { searchUser } from "@/api/user";
 import { type SearchResult } from "@/api/user/types";
 import { useUserStore } from "@/stores/user";
-import { getAvatarUrl } from "@/utils/userUtils";
+import { getFileUrl } from "@/utils/file";
 const dialogVisible = defineModel({ type: Boolean, default: false });
 const userStore = useUserStore();
 const searchContent = ref("");

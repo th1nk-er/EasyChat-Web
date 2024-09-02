@@ -19,7 +19,7 @@
           :key="index"
           @click="handleFriendSelect(friendList.indexOf(item))"
         >
-          <img class="friend-item__avatar" :src="getAvatarUrl(item.avatar)" />
+          <img class="friend-item__avatar" :src="getFileUrl(item.avatar)" />
           <div class="friend-item__name">
             <span v-if="item.remark != undefined && item.remark.length > 0">{{
               item.remark
@@ -40,7 +40,7 @@
 <script setup lang="ts">
 import { getUserFriendList } from "@/api/friend";
 import type { UserFriendVo } from "@/api/friend/types";
-import { getAvatarUrl } from "@/utils/userUtils";
+import { getFileUrl } from "@/utils/file";
 const emit = defineEmits<{
   onFriendSelected: [UserFriendVo];
   onFriendSelectedCancel: [UserFriendVo];

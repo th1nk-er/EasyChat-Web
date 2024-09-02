@@ -41,6 +41,14 @@ const router = createRouter({
       },
     },
     {
+      path: "/group",
+      name: "Group",
+      component: () => import("@/views/Group/Group.vue"),
+      meta: {
+        title: "群组",
+      },
+    },
+    {
       path: "/setting",
       name: "Setting",
       component: () => import("@/views/Setting/Setting.vue"),
