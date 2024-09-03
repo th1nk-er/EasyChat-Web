@@ -9,7 +9,7 @@
     </div>
     <div
       class="message-container-item"
-      v-for="(item, index) in messageData"
+      v-for="(item, index) in props.messageData"
       :key="index"
     >
       <p
@@ -95,16 +95,14 @@ const scrollToBottom = () => {
     behavior: "smooth",
   });
 };
-const messageData = ref(props.messageData);
-const chatInfo = ref(props.chatInfo);
 const userStore = useUserStore();
 
 //TODO 群组成员信息
 const groupUserInfo = ref([]);
 const getUserAvatarUrl = (userId: number) => {
-  if (chatInfo.value.chatType == ChatType.FRIEND) {
-    return getFileUrl(chatInfo.value.avatar);
-  } else if (chatInfo.value.chatType == ChatType.GROUP) {
+  if (props.chatInfo.chatType == ChatType.FRIEND) {
+    return getFileUrl(props.chatInfo.avatar);
+  } else if (props.chatInfo.chatType == ChatType.GROUP) {
     //TODO 从groupUserInfo中获取头像
     let avatar;
     if (avatar) return avatar;
@@ -121,9 +119,9 @@ const showUserInfo = (id: number) => {
   if (id == userStore.userInfo.id) {
     userInfoDialogShow.value = true;
   } else {
-    if (chatInfo.value.chatType == ChatType.FRIEND) {
+    if (props.chatInfo.chatType == ChatType.FRIEND) {
       friendInfoDialogShow.value = true;
-    } else if (chatInfo.value.chatType == ChatType.GROUP) {
+    } else if (props.chatInfo.chatType == ChatType.GROUP) {
       //TODO 获取群成员信息
     }
   }

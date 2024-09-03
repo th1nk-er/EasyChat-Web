@@ -3,17 +3,19 @@
     <IconForum class="icon-forum" />
   </div>
   <div class="container" v-if="chatStore.isChatting">
-    <ChatHeader :chat-info="chatInfo" />
+    <ChatHeader :chat-info="chatInfo" :key="componentKey" />
     <div class="container__main">
       <ChatMessageBox
         ref="msgBox"
         :message-data="messageData"
         :chat-info="chatInfo"
         @on-get-more-message="getMoreMessage"
+        :key="componentKey"
       />
       <ChatToolBar
         @on-emoji-selected="handleEmojiSelected"
         @on-image-upload="handleImageUpload"
+        :key="componentKey"
       />
       <ChatInputBox
         v-model:message="inputMessage"
@@ -21,6 +23,7 @@
         v-model:image-file="imgFile"
         @on-send-message="handleSendMessage"
         ref="inputBox"
+        :key="componentKey"
       />
     </div>
   </div>
@@ -45,6 +48,7 @@ import { useUserStore } from "@/stores/user";
 import { UserSex } from "@/api/user/types";
 import { ChatHeader, ChatInputBox, ChatMessageBox, ChatToolBar } from ".";
 import type { UserFriendVo } from "@/api/friend/types";
+const componentKey = ref(0);
 const chatStore = useChatStore();
 const userStore = useUserStore();
 const messageData = ref<ChatMessage[]>([]);
@@ -131,6 +135,8 @@ const chatInfo = ref({
 });
 /** 初始化数据 */
 const initChatData = async () => {
+  componentKey.value++;
+  msgPageIndex.value = 0;
   messageData.value = [];
   if (!chatStore.isChatting) return;
   chatInfo.value.chatType = chatStore.chatType;
@@ -172,10 +178,12 @@ const onReceiveMessage = (message: WSMessage) => {
     scrollToBottom();
   }
 };
-const isChatting = computed(() => chatStore.isChatting);
-watch(isChatting, (value) => {
-  if (value) initChatData();
-});
+watch(
+  () => chatStore.chatId,
+  (value) => {
+    if (value > 0) initChatData();
+  }
+);
 const msgPageIndex = ref(0);
 const getMoreMessage = async () => {
   messageData.value.unshift(
@@ -183,6 +191,9 @@ const getMoreMessage = async () => {
       .data
   );
 };
+onMounted(() => {
+  if (chatStore.isChatting) initChatData();
+});
 </script>
 <style scoped lang="scss">
 .no-user {

@@ -10,7 +10,7 @@
 <script setup lang="ts">
 import { sendConnect, subscribeMessage } from "@/api/chat";
 import LeftNavigation from "@/components/common/LeftNavigation.vue";
-import { stompClient } from "@/utils/ws";
+import { useWSStore } from "@/stores/ws";
 import { MessageType, type WSMessage } from "@/api/chat/types";
 import { useUserStore } from "@/stores/user";
 import { getUserInfo } from "@/api/user";
@@ -18,14 +18,15 @@ import { useChatStore } from "@/stores/chat";
 import { ChatList, ChatInstance } from "./components";
 const userStore = useUserStore();
 const chatStore = useChatStore();
+const wsStore = useWSStore();
 const router = useRouter();
 const wsConnect = () => {
   const userToken = userStore.getUserToken?.token;
   if (userToken == undefined) {
     router.push({ name: "Login" });
   } else {
-    stompClient.activate();
-    stompClient.onConnect = () => {
+    wsStore.stompClient.activate();
+    wsStore.stompClient.onConnect = () => {
       if (!subscribeMessage((msg) => handleWsMessage(msg))) {
         ElMessage.error("无法连接到通信服务器");
         return;

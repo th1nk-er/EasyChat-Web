@@ -1,3 +1,4 @@
+import { getUserConversationList } from "@/api/chat";
 import {
   ChatType,
   MessageType,
@@ -29,15 +30,21 @@ export const useChatStore = defineStore("chat", {
     },
   },
   actions: {
+    async loadConversations() {
+      const resp = await getUserConversationList();
+      if (resp.data.length > 0) {
+        this.conversationList = resp.data;
+      }
+    },
     /**
      * 清除指定话的未读消息
      * @param senderId 发送者ID
      */
-    clearConversationUnread(senderId: number) {
+    clearConversationUnread(senderId: number, chatType: ChatType) {
       const list = this.conversationList;
       for (let i = 0; i < list.length; i++) {
         if (
-          list[i].chatType == ChatType.FRIEND &&
+          list[i].chatType == chatType &&
           senderId != undefined &&
           list[i].senderId === senderId
         ) {
@@ -46,6 +53,11 @@ export const useChatStore = defineStore("chat", {
         }
       }
     },
+    /**
+     * 根据消息更新对话列表
+     * 若存在则更新，不存在则添加
+     * @param message 消息
+     */
     updateConversation(message: WSMessage) {
       const list = this.conversationList;
       for (let i = 0; i < list.length; i++) {
@@ -70,9 +82,19 @@ export const useChatStore = defineStore("chat", {
           this.conversationList[i].messageType = message.messageType;
           this.conversationList[i].updateTime = new Date().toISOString();
           this.conversationList[i].unreadCount++;
+          // 置顶消息
+          [this.conversationList[0], this.conversationList[i]] = [
+            this.conversationList[i],
+            this.conversationList[0],
+          ];
         }
       }
     },
+    /**
+     * 当好友信息更新时，调用该方法更新对话列表
+     * @param friendInfo 好友信息
+     * @returns
+     */
     updateFriendConversation(friendInfo: UserFriendVo) {
       const list = this.conversationList;
       for (let i = 0; i < list.length; i++) {
@@ -101,6 +123,11 @@ export const useChatStore = defineStore("chat", {
         chatType: ChatType.FRIEND,
       });
     },
+    /**
+     * 删除指定对话
+     * @param senderId 发送者ID
+     * @param chatType 对话类型
+     */
     deleteConversation(senderId: number, chatType: ChatType) {
       const list = this.conversationList;
       for (let i = 0; i < list.length; i++) {

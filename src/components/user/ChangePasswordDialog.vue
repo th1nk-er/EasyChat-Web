@@ -11,7 +11,9 @@
               type="primary"
               @click="handleSendEmail"
               :disabled="sendDisabled"
-              >获取验证码<span v-show="sendDisabled">({{ sendSeconds }})</span></el-button
+              >获取验证码<span v-show="sendDisabled"
+                >({{ sendSeconds }})</span
+              ></el-button
             >
           </template>
         </el-input>
@@ -42,11 +44,12 @@
 <script setup lang="ts">
 import { changePassword, sendChangePasswordEmail } from "@/api/user";
 import { useUserStore } from "@/stores/user";
-import { stompClient } from "@/utils/ws";
+import { useWSStore } from "@/stores/ws";
 import type { FormInstance, FormRules } from "element-plus";
 
 const router = useRouter();
 const userStore = useUserStore();
+const wsStore = useWSStore();
 const dialogShow = defineModel({
   type: Boolean,
   default: false,
@@ -106,7 +109,7 @@ const handleChangePassword = async (formEl: FormInstance | undefined) => {
     if (valid) {
       await changePassword(formData.code, formData.newPassword);
       ElMessage.success("密码修改成功");
-      stompClient.deactivate();
+      wsStore.stompClient.deactivate();
       userStore.removeToken();
       router.push({ name: "Login" });
     }

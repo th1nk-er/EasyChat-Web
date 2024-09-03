@@ -1,4 +1,3 @@
-import { stompClient } from "@/utils/ws";
 import request from "@/utils/service";
 import {
   ChatType,
@@ -9,13 +8,14 @@ import {
 import { SHA256 } from "crypto-js";
 import { useUserStore } from "@/stores/user";
 import type { Result } from "../types";
-const userStore = useUserStore();
+import { useWSStore } from "@/stores/ws";
 
 /**
  * 订阅消息
  */
 export const subscribeMessage = (callback: (message: WSMessage) => void) => {
-  const userToken = userStore.getUserToken?.token;
+  const stompClient = useWSStore().stompClient;
+  const userToken = useUserStore().getUserToken?.token;
   if (userToken == undefined) {
     return false;
   }
@@ -32,7 +32,8 @@ export const subscribeMessage = (callback: (message: WSMessage) => void) => {
  * 发送消息
  */
 export const sendMessage = (message: WSMessage) => {
-  const userToken = userStore.getUserToken?.token;
+  const stompClient = useWSStore().stompClient;
+  const userToken = useUserStore().getUserToken?.token;
   if (userToken == undefined) {
     return false;
   }
@@ -48,6 +49,7 @@ export const sendMessage = (message: WSMessage) => {
  * 发送连接消息
  */
 export const sendConnect = () => {
+  const stompClient = useWSStore().stompClient;
   if (!stompClient.connected) return;
   stompClient.publish({
     destination: "/notify/connect",
@@ -58,6 +60,7 @@ export const sendConnect = () => {
  * 当打开某个对话时向服务器发送信息
  */
 export const publishOpenConversation = (toId: number, chatType: ChatType) => {
+  const stompClient = useWSStore().stompClient;
   if (!stompClient.connected) return;
   stompClient.publish({
     destination: "/conversation/open",
@@ -80,9 +83,9 @@ export const getMessageHistory = (userId: number, currentPage: number) => {
 /**
  * 获取用户对话列表
  */
-export const getUserConversationList = (pageNum: number) => {
+export const getUserConversationList = () => {
   return request.get<Result<UserConversation[]>>({
-    url: `/conversation/list/${pageNum}`,
+    url: `/conversation/list`,
     method: "get",
   });
 };

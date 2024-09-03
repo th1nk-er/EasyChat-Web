@@ -1,11 +1,7 @@
 <template>
   <div class="chat-list">
     <TopSearchBar />
-    <div
-      class="chat-list-box"
-      v-infinite-scroll="loadConversations"
-      :infinite-scroll-disabled="scrollDisabled"
-    >
+    <div class="chat-list-box">
       <div
         v-for="(conversation, key) in chatStore.conversationList"
         :key="key"
@@ -70,38 +66,25 @@
 <script setup lang="ts">
 import TopSearchBar from "@/components/common/TopSearchBar.vue";
 import { useChatStore } from "@/stores/chat";
-import { getUserConversationList } from "@/api/chat";
 import { ChatType, MessageType, type UserConversation } from "@/api/chat/types";
 import { getTimeString } from "@/utils/timeUtils";
 import { getFileUrl } from "@/utils/file";
 
 const chatStore = useChatStore();
-const data = reactive([] as UserConversation[]);
-const currentPage = ref(1);
-const scrollDisabled = ref(false);
-const lastCallArg = ref(0);
-const loadConversations = async () => {
-  if (lastCallArg.value == currentPage.value) return;
-  else lastCallArg.value = currentPage.value;
-  if (scrollDisabled.value) return;
-  const resp = await getUserConversationList(currentPage.value);
-  if (resp.data.length == 0) {
-    scrollDisabled.value = true;
-    return;
-  }
-  currentPage.value++;
-  data.push(...resp.data);
-  chatStore.conversationList = data;
-};
-
 const handleClickConversation = (conversation: UserConversation) => {
+  chatStore.clearConversationUnread(
+    conversation.senderId,
+    conversation.chatType
+  );
   if (conversation.chatType == ChatType.FRIEND) {
-    chatStore.clearConversationUnread(conversation.senderId);
     chatStore.chatId = conversation.senderId;
     chatStore.chatType = ChatType.FRIEND;
     chatStore.isChatting = true;
   }
 };
+onMounted(() => {
+  chatStore.loadConversations();
+});
 </script>
 <style scoped lang="scss">
 .chat-list {

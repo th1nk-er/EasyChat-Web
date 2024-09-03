@@ -7,12 +7,14 @@ import {
   type StompSubscription,
 } from "@stomp/stompjs";
 import SockJs from "sockjs-client/dist/sockjs.min.js";
-const userStore = useUserStore();
-const tokenString = userStore.getUserToken ? userStore.getUserToken.token : "";
-class StompClient extends Client {
+export class StompClient extends Client {
+  private getTokenString() {
+    const userStore = useUserStore();
+    return userStore.getUserToken ? userStore.getUserToken.token : "";
+  }
   PUB_PREFIX: string = "/app";
   connectHeaders: StompHeaders = {
-    Authentication: tokenString,
+    Authentication: this.getTokenString(),
   };
   webSocketFactory = () => new SockJs(import.meta.env.VITE_WEBSOCKET_ENDPOINT);
   subscribe(
@@ -31,5 +33,3 @@ class StompClient extends Client {
     });
   }
 }
-
-export const stompClient = new StompClient();
