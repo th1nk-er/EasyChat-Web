@@ -36,6 +36,9 @@
             >{{ item.nickname }}</span
           >
         </div>
+        <div class="friend-item__muted" v-if="item.muted">
+          <IconNotificationOff />
+        </div>
       </div>
     </div>
   </div>
@@ -105,7 +108,9 @@ const handleFriendClick = (index: number) => {
         padding: 8px;
       }
     }
-
+    &__content {
+      flex-grow: 1;
+    }
     &__title {
       flex-grow: 1;
       font-weight: bolder;
@@ -117,6 +122,14 @@ const handleFriendClick = (index: number) => {
     &__subtitle {
       margin-left: 5px;
       color: var(--color-subtitle);
+    }
+    &__muted {
+      margin-right: 10px;
+      svg {
+        fill: var(--color-subtitle);
+        width: 18px;
+        height: 18px;
+      }
     }
   }
 

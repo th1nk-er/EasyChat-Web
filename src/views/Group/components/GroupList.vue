@@ -13,6 +13,9 @@
         >
         <span v-else>{{ item.groupRemark }}</span>
       </div>
+      <div class="group-item__muted" v-if="item.muted">
+        <IconNotificationOff />
+      </div>
     </div>
   </div>
 </template>
@@ -57,6 +60,14 @@ onMounted(() => {
         text-wrap: nowrap;
         text-overflow: ellipsis;
         overflow: hidden;
+      }
+    }
+    &__muted {
+      margin-right: 10px;
+      svg {
+        fill: var(--color-subtitle);
+        width: 18px;
+        height: 18px;
       }
     }
   }

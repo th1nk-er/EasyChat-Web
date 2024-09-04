@@ -6,5 +6,6 @@ export type UserGroupVo = {
   groupDesc?: string;
   avatar: string;
   role: UserRole;
+  muted: boolean;
   groupRemark?: string;
 };
