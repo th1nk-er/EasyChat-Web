@@ -1,5 +1,11 @@
 <template>
   <div class="container">
+    <div class="group-item" @click="groupInvitationDialogVisible = true">
+      <IconGroup class="group-item__avatar svg" />
+      <div class="group-item__name">
+        <span>邀请列表</span>
+      </div>
+    </div>
     <div
       class="group-item"
       v-for="(item, index) in groupStore.groupList"
@@ -17,13 +23,15 @@
         <IconNotificationOff />
       </div>
     </div>
+    <GroupInvitationDialog v-model="groupInvitationDialogVisible" />
   </div>
 </template>
 <script setup lang="ts">
 import { useGroupStore } from "@/stores/group";
 import { getFileUrl } from "@/utils/file";
+import { GroupInvitationDialog } from ".";
 const groupStore = useGroupStore();
-
+const groupInvitationDialogVisible = ref(false);
 onMounted(() => {
   groupStore.loadGroupList();
 });
@@ -50,6 +58,8 @@ onMounted(() => {
       margin: 10px 7px;
       &.svg {
         padding: 8px;
+        fill: white;
+        background-color: rgb(13, 187, 13);
       }
     }
     &__name {

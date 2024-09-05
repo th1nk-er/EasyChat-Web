@@ -1,6 +1,6 @@
 import service from "@/utils/service";
 import type { Result } from "../types";
-import type { UserGroupVo } from "./types";
+import type { GroupInvitationVo, UserGroupVo } from "./types";
 /**
  * 创建群聊
  * @param groupName 群聊名称
@@ -21,5 +21,15 @@ export const createGroup = (groupName: string, friendIds: number[]) => {
 export const getGroupList = (page: number) => {
   return service.get<Result<UserGroupVo[]>>({
     url: `/group/list/${page}`,
+  });
+};
+
+/**
+ * 获取用户的群聊邀请列表
+ * @param page 页码
+ */
+export const getGroupInvitationList = (page: number) => {
+  return service.get<Result<GroupInvitationVo[]>>({
+    url: `/group/invitation/list/${page}`,
   });
 };

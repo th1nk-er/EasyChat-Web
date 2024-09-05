@@ -1,2 +1,3 @@
 import GroupList from "./GroupList.vue";
-export { GroupList };
+import GroupInvitationDialog from "./GroupInvitationDialog.vue";
+export { GroupList, GroupInvitationDialog };
