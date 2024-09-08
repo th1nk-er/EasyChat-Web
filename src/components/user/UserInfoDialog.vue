@@ -95,11 +95,11 @@
 </template>
 <script setup lang="ts">
 import { changeAvatar, getUserInfo, updateUserInfo } from "@/api/user";
+import { UserSex, type UpdateUserInfoParams } from "@/api/user/types";
 import { useUserStore } from "@/stores/user";
-import { getSexString } from "@/utils/userUtils";
 import { getFileUrl } from "@/utils/file";
+import { getSexString } from "@/utils/userUtils";
 import ChangePasswordDialog from "./ChangePasswordDialog.vue";
-import { UserSex } from "@/api/user/types";
 
 const userStore = useUserStore();
 const dialogShow = defineModel({
@@ -116,7 +116,7 @@ const handleAvatarUpload = async () => {
     ElMessage.error("头像图片过大,请更换其他图片");
     return;
   }
-  const resp = await changeAvatar(file);
+  const resp = await changeAvatar(userStore.userInfo.id, file);
   userStore.userInfo.avatar = resp.data;
   ElMessage.success("头像上传成功");
 };
@@ -140,7 +140,8 @@ const handleUpdateUserInfo = async () => {
     await updateUserInfo({
       nickname: userNickname.value,
       sex: selectedSex.value,
-    });
+      userId: userStore.userInfo.id,
+    } as UpdateUserInfoParams);
     ElMessage.success("修改成功");
     dialogShow.value = false;
     // 获取新数据

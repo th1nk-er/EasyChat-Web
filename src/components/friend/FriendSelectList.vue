@@ -40,11 +40,13 @@
 <script setup lang="ts">
 import { getUserFriendList } from "@/api/friend";
 import type { UserFriendVo } from "@/api/friend/types";
+import { useUserStore } from "@/stores/user";
 import { getFileUrl } from "@/utils/file";
 const emit = defineEmits<{
   onFriendSelected: [UserFriendVo];
   onFriendSelectedCancel: [UserFriendVo];
 }>();
+const userStore = useUserStore();
 const page = ref(1);
 const friendList = ref([] as UserFriendVo[]);
 const dataList = ref([] as UserFriendVo[]);
@@ -65,13 +67,17 @@ const handleFriendSelect = (index: number) => {
 };
 const loadData = () => {
   const intervalId = setInterval(async () => {
-    const resp = await getUserFriendList(page.value++);
-    if (resp.data.records.length < resp.data.pageSize) {
+    try {
+      const resp = await getUserFriendList(userStore.userInfo.id, page.value++);
+      if (resp.data.records.length < resp.data.pageSize) {
+        clearInterval(intervalId);
+        dataList.value = friendList.value;
+        checkList.value = friendList.value.map(() => false);
+      }
+      friendList.value.push(...resp.data.records);
+    } catch (e) {
       clearInterval(intervalId);
-      dataList.value = friendList.value;
-      checkList.value = friendList.value.map(() => false);
     }
-    friendList.value.push(...resp.data.records);
   }, 300);
 };
 onMounted(() => {

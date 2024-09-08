@@ -69,6 +69,7 @@
 </template>
 <script setup lang="ts">
 import { sendAddRequest } from "@/api/friend";
+import type { AddFriendParams } from "@/api/friend/types";
 import { searchUser } from "@/api/user";
 import { type SearchResult } from "@/api/user/types";
 import { useUserStore } from "@/stores/user";
@@ -102,9 +103,10 @@ const openAddDialog = (id: number) => {
 };
 const handleAddFriend = async () => {
   await sendAddRequest({
+    userId: userStore.userInfo.id,
     addId: addStrangerId.value,
     addInfo: addInfoText.value,
-  });
+  } as AddFriendParams);
   ElMessage.success("好友申请已发送");
   addInfoDialogVisible.value = false;
   addInfoText.value = "";

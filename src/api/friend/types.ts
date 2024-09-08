@@ -1,6 +1,7 @@
 import type { UserSex } from "../user/types";
 
-export type AddFriendVo = {
+export type AddFriendParams = {
+  userId: number;
   addId: number;
   addInfo: string;
 };
@@ -41,6 +42,7 @@ export type RequestRecord = {
   uid: number;
 };
 export type ReplyAddRequestData = {
+  userId: number;
   id: number;
   status: AddStatus;
   remark?: string;

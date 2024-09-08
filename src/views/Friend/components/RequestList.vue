@@ -60,10 +60,12 @@ import {
 } from "@/api/friend/types";
 import { getFileUrl } from "@/utils/file";
 import { agreeRequest } from "./request";
+import { useUserStore } from "@/stores/user";
 const emit = defineEmits<{
   (event: "onSelected", value: RequestRecord): void;
 }>();
 const visible = defineModel("visible", { type: Boolean, default: false });
+const userStore = useUserStore();
 const currentPage = ref(0);
 const scrollDisabled = ref(false);
 const loadedData = ref<FriendRequestData>({
@@ -73,7 +75,10 @@ const loadedData = ref<FriendRequestData>({
 });
 const loadRequestList = async () => {
   currentPage.value++;
-  const resp = await getAddRequestList(currentPage.value);
+  const resp = await getAddRequestList(
+    userStore.userInfo.id,
+    currentPage.value
+  );
   if (resp.data.records.length < resp.data.pageSize)
     scrollDisabled.value = true;
   loadedData.value.records.push(...resp.data.records);

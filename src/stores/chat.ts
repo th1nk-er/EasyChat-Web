@@ -7,6 +7,7 @@ import {
 } from "@/api/chat/types";
 import type { UserFriendVo } from "@/api/friend/types";
 import { defineStore } from "pinia";
+import { useUserStore } from "./user";
 export const useChatStore = defineStore("chat", {
   state() {
     return {
@@ -31,7 +32,8 @@ export const useChatStore = defineStore("chat", {
   },
   actions: {
     async loadConversations() {
-      const resp = await getUserConversationList();
+      const userStore = useUserStore();
+      const resp = await getUserConversationList(userStore.userInfo.id);
       if (resp.data.length > 0) {
         this.conversationList = resp.data;
       }

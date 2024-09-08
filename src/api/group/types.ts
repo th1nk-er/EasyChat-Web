@@ -2,7 +2,6 @@ import type { UserRole } from "../user/types";
 
 export enum GroupInvitationStatus {
   PENDING = "PENDING", // 待处理
-  ACCEPTED = "ACCEPTED", // 已同意
   REJECTED = "REJECTED", // 已拒绝
   EXPIRED = "EXPIRED", // 已过期
   ADMIN_PENDING = "ADMIN_PENDING", // 等待管理员处理

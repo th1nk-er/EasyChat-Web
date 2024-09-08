@@ -1,14 +1,14 @@
+import { useUserStore } from "@/stores/user";
+import { useWSStore } from "@/stores/ws";
 import request from "@/utils/service";
+import { SHA256 } from "crypto-js";
+import type { Result } from "../types";
 import {
   ChatType,
   type ChatMessage,
   type UserConversation,
   type WSMessage,
 } from "./types";
-import { SHA256 } from "crypto-js";
-import { useUserStore } from "@/stores/user";
-import type { Result } from "../types";
-import { useWSStore } from "@/stores/ws";
 
 /**
  * 订阅消息
@@ -69,23 +69,29 @@ export const publishOpenConversation = (toId: number, chatType: ChatType) => {
 };
 /**
  * 获取消息历史记录
- * @param userId 对方用户ID
+ * @param userId 用户ID
+ * @param receiverId 对方用户ID
  * @param currentPage 页码
  * @returns
  */
-export const getMessageHistory = (userId: number, currentPage: number) => {
+export const getMessageHistory = (
+  userId: number,
+  receiverId: number,
+  currentPage: number
+) => {
   return request.get<Result<ChatMessage[]>>({
-    url: `/message/history/${userId}/${currentPage}`,
+    url: `/message/history/${userId}/${receiverId}/${currentPage}`,
     method: "get",
   });
 };
 
 /**
  * 获取用户对话列表
+ * @param userId 用户ID
  */
-export const getUserConversationList = () => {
+export const getUserConversationList = (userId: number) => {
   return request.get<Result<UserConversation[]>>({
-    url: `/conversation/list`,
+    url: `/conversation/list/${userId}`,
     method: "get",
   });
 };

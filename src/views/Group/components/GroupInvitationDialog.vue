@@ -54,9 +54,11 @@ import {
   GroupInvitationStatus,
   type GroupInvitationVo,
 } from "@/api/group/types";
+import { useUserStore } from "@/stores/user";
 import { getFileUrl } from "@/utils/file";
 
 const dialogVisible = defineModel({ type: Boolean, default: false });
+const userStore = useUserStore();
 watch(dialogVisible, (value) => {
   if (value) {
     invitationList.value = [];
@@ -70,7 +72,10 @@ const hasMoreData = ref(true);
 const invitationList = ref([] as GroupInvitationVo[]);
 const loadData = async () => {
   if (!hasMoreData.value) return;
-  const resp = await getGroupInvitationList(currentPage.value++);
+  const resp = await getGroupInvitationList(
+    userStore.userInfo.id,
+    currentPage.value++
+  );
   if (resp.data.length > 0) invitationList.value.push(...resp.data);
   else hasMoreData.value = false;
 };

@@ -38,11 +38,13 @@
 </template>
 <script setup lang="ts">
 import type { UserFriendVo } from "@/api/friend/types";
-import FriendSelectList from "../friend/FriendSelectList.vue";
-import { getFileUrl } from "@/utils/file";
 import { createGroup } from "@/api/group";
 import { useGroupStore } from "@/stores/group";
+import { useUserStore } from "@/stores/user";
+import { getFileUrl } from "@/utils/file";
+import FriendSelectList from "../friend/FriendSelectList.vue";
 const dialogVisible = defineModel({ type: Boolean, default: false });
+const userStore = useUserStore();
 const componentKey = ref(0);
 watch(dialogVisible, (value) => {
   if (value) {
@@ -77,7 +79,7 @@ const handleCreateGroup = async () => {
     ElMessage.error("群成员不能为空");
   }
   const ids = selectedFriend.value.map((item) => item.friendId);
-  await createGroup(groupName.value, ids);
+  await createGroup(userStore.userInfo.id, groupName.value, ids);
   ElMessage.success("群聊创建成功");
   dialogVisible.value = false;
   groupStore.loadGroupList();

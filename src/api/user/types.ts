@@ -32,8 +32,13 @@ export type UserVo = {
   createTime: string;
   updateTime: string;
 };
-
+export type UpdatePasswordParams = {
+  userId: number;
+  code: string;
+  newPassword: string;
+};
 export type UpdateUserInfoParams = {
+  userId: number;
   nickname: string;
   sex: UserSex;
 };

@@ -51,7 +51,9 @@ import { getUserFriendList } from "@/api/friend";
 import { getFileUrl } from "@/utils/file";
 import { FriendRequestDialog } from ".";
 import FriendInfoDialog from "@/components/friend/FriendInfoDialog.vue";
+import { useUserStore } from "@/stores/user";
 const friendStore = useFriendStore();
+const userStore = useUserStore();
 const requestDialogShow = ref(false);
 const currentPage = ref(1);
 const scrollDisabled = ref(false);
@@ -63,7 +65,10 @@ const friendListVo = ref<FriendListVo>({
 const friendInfoShow = ref(false);
 const selectedFriendId = ref(0);
 const loadFriendList = async () => {
-  const resp = await getUserFriendList(currentPage.value);
+  const resp = await getUserFriendList(
+    userStore.userInfo.id,
+    currentPage.value
+  );
   if (resp.data.records.length > 0) {
     friendListVo.value.total = resp.data.total;
     friendListVo.value.pageSize = resp.data.pageSize;

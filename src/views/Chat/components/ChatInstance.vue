@@ -43,11 +43,11 @@ import {
   type WSMessage,
 } from "@/api/chat/types";
 import { getFriendInfo } from "@/api/friend";
+import type { UserFriendVo } from "@/api/friend/types";
+import { UserSex } from "@/api/user/types";
 import { useChatStore } from "@/stores/chat";
 import { useUserStore } from "@/stores/user";
-import { UserSex } from "@/api/user/types";
 import { ChatHeader, ChatInputBox, ChatMessageBox, ChatToolBar } from ".";
-import type { UserFriendVo } from "@/api/friend/types";
 const componentKey = ref(0);
 const chatStore = useChatStore();
 const userStore = useUserStore();
@@ -142,7 +142,7 @@ const initChatData = async () => {
   chatInfo.value.chatType = chatStore.chatType;
   publishOpenConversation(chatStore.chatId, chatStore.chatType);
   if (chatStore.chatType == ChatType.FRIEND) {
-    const resp = await getFriendInfo(chatStore.chatId);
+    const resp = await getFriendInfo(userStore.userInfo.id, chatStore.chatId);
     friendInfo.value = resp.data;
     chatStore.updateFriendConversation(resp.data);
     chatInfo.value.chatId = resp.data.friendId;
@@ -152,8 +152,13 @@ const initChatData = async () => {
     chatInfo.value.muted = resp.data.muted;
     // 获取最近的消息
     messageData.value.push(
-      ...(await getMessageHistory(chatInfo.value.chatId, msgPageIndex.value))
-        .data
+      ...(
+        await getMessageHistory(
+          userStore.userInfo.id,
+          chatInfo.value.chatId,
+          msgPageIndex.value
+        )
+      ).data
     );
     scrollToBottom();
     // 订阅消息
@@ -187,8 +192,13 @@ watch(
 const msgPageIndex = ref(0);
 const getMoreMessage = async () => {
   messageData.value.unshift(
-    ...(await getMessageHistory(chatInfo.value.chatId, ++msgPageIndex.value))
-      .data
+    ...(
+      await getMessageHistory(
+        userStore.userInfo.id,
+        chatInfo.value.chatId,
+        ++msgPageIndex.value
+      )
+    ).data
   );
 };
 onMounted(() => {

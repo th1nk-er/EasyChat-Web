@@ -85,11 +85,13 @@ import { deleteFriend, getFriendInfo, updateFriendInfo } from "@/api/friend";
 import type { UserFriendVo } from "@/api/friend/types";
 import { useChatStore } from "@/stores/chat";
 import { useFriendStore } from "@/stores/friend";
-import { getSexString } from "@/utils/userUtils";
+import { useUserStore } from "@/stores/user";
 import { getFileUrl } from "@/utils/file";
+import { getSexString } from "@/utils/userUtils";
 const router = useRouter();
 const chatStore = useChatStore();
 const friendStore = useFriendStore();
+const userStore = useUserStore();
 const dialogShow = defineModel({ type: Boolean, default: false });
 const props = defineProps({
   friendId: {
@@ -101,14 +103,14 @@ const emit = defineEmits(["onFriendInfoUpdate"]);
 const friendInfo = ref<UserFriendVo>({} as UserFriendVo);
 watch(dialogShow, async (value) => {
   if (value) {
-    const resp = await getFriendInfo(props.friendId);
+    const resp = await getFriendInfo(userStore.userInfo.id, props.friendId);
     friendInfo.value = resp.data;
   }
 });
 const editRemarkShow = ref(false);
 const remarkInputRef = ref<HTMLInputElement>();
 const handleUpdateFriendInfo = async () => {
-  await updateFriendInfo(friendInfo.value);
+  await updateFriendInfo(userStore.userInfo.id, friendInfo.value);
   emit("onFriendInfoUpdate", friendInfo.value);
   // 更新聊天列表的信息
   chatStore.updateFriendConversation(friendInfo.value);
@@ -132,7 +134,7 @@ const handleDeleteFriend = async () => {
     type: "warning",
   })
     .then(async () => {
-      await deleteFriend(friendInfo.value.friendId);
+      await deleteFriend(userStore.userInfo.id, friendInfo.value.friendId);
       ElMessage.success("删除成功");
       chatStore.deleteConversation(friendInfo.value.friendId, ChatType.FRIEND);
       friendStore.deleteFriendVo(friendInfo.value.friendId);

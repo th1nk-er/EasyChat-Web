@@ -43,6 +43,7 @@
 </template>
 <script setup lang="ts">
 import { changePassword, sendChangePasswordEmail } from "@/api/user";
+import type { UpdatePasswordParams } from "@/api/user/types";
 import { useUserStore } from "@/stores/user";
 import { useWSStore } from "@/stores/ws";
 import type { FormInstance, FormRules } from "element-plus";
@@ -107,7 +108,11 @@ const handleChangePassword = async (formEl: FormInstance | undefined) => {
   if (!formEl) return;
   await formEl.validate(async (valid) => {
     if (valid) {
-      await changePassword(formData.code, formData.newPassword);
+      await changePassword({
+        userId: userStore.userInfo.id,
+        code: formData.code,
+        newPassword: formData.newPassword,
+      } as UpdatePasswordParams);
       ElMessage.success("密码修改成功");
       wsStore.stompClient.deactivate();
       userStore.removeToken();

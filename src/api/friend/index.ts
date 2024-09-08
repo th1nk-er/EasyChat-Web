@@ -1,17 +1,17 @@
 import request from "@/utils/service";
+import type { Result } from "../types";
 import type {
-  FriendRequestData,
-  AddFriendVo,
-  ReplyAddRequestData,
+  AddFriendParams,
   FriendListVo,
+  FriendRequestData,
+  ReplyAddRequestData,
   UserFriendVo,
 } from "./types";
-import type { Result } from "../types";
 
 /**
  * 发送好友申请
  */
-export const sendAddRequest = (data: AddFriendVo) => {
+export const sendAddRequest = (data: AddFriendParams) => {
   return request.post<Result<null>>({
     url: "/friend/request",
     method: "post",
@@ -21,10 +21,12 @@ export const sendAddRequest = (data: AddFriendVo) => {
 
 /**
  * 获取好友申请列表
+ * @param userId 用户ID
+ * @param page  页码
  */
-export const getAddRequestList = (page: number) => {
+export const getAddRequestList = (userId: number, page: number) => {
   return request.get<Result<FriendRequestData>>({
-    url: `/friend/request/${page}`,
+    url: `/friend/request/${userId}/${page}`,
     method: "get",
   });
 };
@@ -42,10 +44,12 @@ export const replyAddRequest = (data: ReplyAddRequestData) => {
 
 /**
  * 获取用户好友列表
+ * @param userId 用户ID
+ * @param page 页码
  */
-export const getUserFriendList = (page: number) => {
+export const getUserFriendList = (userId: number, page: number) => {
   return request.get<Result<FriendListVo>>({
-    url: `/friend/list/${page}`,
+    url: `/friend/list/${userId}/${page}`,
     method: "get",
   });
 };
@@ -53,20 +57,21 @@ export const getUserFriendList = (page: number) => {
 /**
  * 获取好友信息
  */
-export const getFriendInfo = (friendId: number) => {
+export const getFriendInfo = (userId: number, friendId: number) => {
   return request.get<Result<UserFriendVo>>({
-    url: `/friend/info/${friendId}`,
+    url: `/friend/info/${userId}/${friendId}`,
     method: "get",
   });
 };
 
 /**
  * 修改好友的信息
- * @param data 修改后的信息
+ * @param userId 用户ID
+ * @param data 修改后的好友信息
  */
-export const updateFriendInfo = (data: UserFriendVo) => {
+export const updateFriendInfo = (userId: number, data: UserFriendVo) => {
   return request.put<Result<null>>({
-    url: `/friend/info`,
+    url: `/friend/info/${userId}`,
     method: "put",
     data,
   });
@@ -74,11 +79,12 @@ export const updateFriendInfo = (data: UserFriendVo) => {
 
 /**
  * 删除好友
+ * @param userId 用户ID
  * @param friendId 好友ID
  */
-export const deleteFriend = (friendId: number) => {
+export const deleteFriend = (userId: number, friendId: number) => {
   return request.delete<Result<null>>({
-    url: `/friend/${friendId}`,
+    url: `/friend/${userId}/${friendId}`,
     method: "delete",
   });
 };
