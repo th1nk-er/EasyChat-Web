@@ -11,9 +11,9 @@
   </div>
 </template>
 <script setup lang="ts">
-import LeftNavigation from "@/components/common/LeftNavigation.vue";
-import { CommonSetting } from "./components";
-const tabIndex = ref("common");
+import LeftNavigation from '@/components/common/LeftNavigation.vue';
+import { CommonSetting } from './components';
+const tabIndex = ref('common');
 </script>
 <style scoped lang="scss">
 .main {

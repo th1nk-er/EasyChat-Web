@@ -1,6 +1,6 @@
-import service from "@/utils/service";
-import type { Result } from "../types";
-import type { GroupInvitationVo, UserGroupVo } from "./types";
+import service from '@/utils/service';
+import type { Result } from '../types';
+import type { GroupInvitationVo, UserGroupVo } from './types';
 /**
  * 创建群聊
  * @param userId 用户ID
@@ -14,7 +14,7 @@ export const createGroup = (
   friendIds: number[]
 ) => {
   return service.post<Result<null>>({
-    url: "/group/create",
+    url: '/group/create',
     data: { userId, groupName, friendIds },
   });
 };

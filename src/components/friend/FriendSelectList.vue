@@ -38,10 +38,10 @@
   </div>
 </template>
 <script setup lang="ts">
-import { getUserFriendList } from "@/api/friend";
-import type { UserFriendVo } from "@/api/friend/types";
-import { useUserStore } from "@/stores/user";
-import { getFileUrl } from "@/utils/file";
+import { getUserFriendList } from '@/api/friend';
+import type { UserFriendVo } from '@/api/friend/types';
+import { useUserStore } from '@/stores/user';
+import { getFileUrl } from '@/utils/file';
 const emit = defineEmits<{
   onFriendSelected: [UserFriendVo];
   onFriendSelectedCancel: [UserFriendVo];
@@ -50,7 +50,7 @@ const userStore = useUserStore();
 const page = ref(1);
 const friendList = ref([] as UserFriendVo[]);
 const dataList = ref([] as UserFriendVo[]);
-const searchContent = ref("");
+const searchContent = ref('');
 watch(searchContent, (value) => {
   dataList.value = friendList.value.filter(
     (item) =>
@@ -62,8 +62,8 @@ watch(searchContent, (value) => {
 const checkList = ref<Array<boolean>>([]);
 const handleFriendSelect = (index: number) => {
   checkList.value[index] = !checkList.value[index];
-  if (checkList.value[index]) emit("onFriendSelected", dataList.value[index]);
-  else emit("onFriendSelectedCancel", dataList.value[index]);
+  if (checkList.value[index]) emit('onFriendSelected', dataList.value[index]);
+  else emit('onFriendSelectedCancel', dataList.value[index]);
 };
 const loadData = () => {
   const intervalId = setInterval(async () => {

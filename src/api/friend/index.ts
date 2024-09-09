@@ -1,20 +1,20 @@
-import request from "@/utils/service";
-import type { Result } from "../types";
+import request from '@/utils/service';
+import type { Result } from '../types';
 import type {
   AddFriendParams,
   FriendListVo,
   FriendRequestData,
   ReplyAddRequestData,
   UserFriendVo,
-} from "./types";
+} from './types';
 
 /**
  * 发送好友申请
  */
 export const sendAddRequest = (data: AddFriendParams) => {
   return request.post<Result<null>>({
-    url: "/friend/request",
-    method: "post",
+    url: '/friend/request',
+    method: 'post',
     data,
   });
 };
@@ -27,7 +27,7 @@ export const sendAddRequest = (data: AddFriendParams) => {
 export const getAddRequestList = (userId: number, page: number) => {
   return request.get<Result<FriendRequestData>>({
     url: `/friend/request/${userId}/${page}`,
-    method: "get",
+    method: 'get',
   });
 };
 
@@ -36,8 +36,8 @@ export const getAddRequestList = (userId: number, page: number) => {
  */
 export const replyAddRequest = (data: ReplyAddRequestData) => {
   return request.put<Result<null>>({
-    url: "/friend/request",
-    method: "put",
+    url: '/friend/request',
+    method: 'put',
     data,
   });
 };
@@ -50,7 +50,7 @@ export const replyAddRequest = (data: ReplyAddRequestData) => {
 export const getUserFriendList = (userId: number, page: number) => {
   return request.get<Result<FriendListVo>>({
     url: `/friend/list/${userId}/${page}`,
-    method: "get",
+    method: 'get',
   });
 };
 
@@ -60,7 +60,7 @@ export const getUserFriendList = (userId: number, page: number) => {
 export const getFriendInfo = (userId: number, friendId: number) => {
   return request.get<Result<UserFriendVo>>({
     url: `/friend/info/${userId}/${friendId}`,
-    method: "get",
+    method: 'get',
   });
 };
 
@@ -72,7 +72,7 @@ export const getFriendInfo = (userId: number, friendId: number) => {
 export const updateFriendInfo = (userId: number, data: UserFriendVo) => {
   return request.put<Result<null>>({
     url: `/friend/info/${userId}`,
-    method: "put",
+    method: 'put',
     data,
   });
 };
@@ -85,6 +85,6 @@ export const updateFriendInfo = (userId: number, data: UserFriendVo) => {
 export const deleteFriend = (userId: number, friendId: number) => {
   return request.delete<Result<null>>({
     url: `/friend/${userId}/${friendId}`,
-    method: "delete",
+    method: 'delete',
   });
 };

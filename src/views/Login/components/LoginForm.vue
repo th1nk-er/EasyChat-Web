@@ -43,13 +43,13 @@
   </el-form>
 </template>
 <script setup lang="ts">
-import IconPerson from "@/components/icons/IconPerson.vue";
-import IconLock from "@/components/icons/IconLock.vue";
-import { LoginType, useLoginState } from "./userLogin";
-import { login } from "@/api/login";
-import type { UserLoginVo } from "@/api/login/types";
-import { useUserStore } from "@/stores/user";
-import type { FormInstance, FormRules } from "element-plus";
+import IconPerson from '@/components/icons/IconPerson.vue';
+import IconLock from '@/components/icons/IconLock.vue';
+import { LoginType, useLoginState } from './userLogin';
+import { login } from '@/api/login';
+import type { UserLoginVo } from '@/api/login/types';
+import { useUserStore } from '@/stores/user';
+import type { FormInstance, FormRules } from 'element-plus';
 const router = useRouter();
 const loginState = useLoginState();
 const userStore = useUserStore();
@@ -60,39 +60,39 @@ const getShow = computed(
 const formRef = ref<FormInstance>();
 // 表单数据
 const formData = reactive({
-  username: "",
-  password: "",
+  username: '',
+  password: '',
 } as UserLoginVo);
 
 const rules = reactive<FormRules<typeof formData>>({
   username: [
     {
       required: true,
-      message: "请输入用户名",
-      trigger: "blur",
+      message: '请输入用户名',
+      trigger: 'blur',
     },
     {
       pattern: /^[a-zA-Z0-9_-]{3,20}$/,
-      message: "只能包含字母、数字、下划线、减号, 长度在3-20个字符之间",
+      message: '只能包含字母、数字、下划线、减号, 长度在3-20个字符之间',
     },
   ],
   password: [
     {
       required: true,
-      message: "请输入密码",
-      trigger: "blur",
+      message: '请输入密码',
+      trigger: 'blur',
     },
     {
       min: 6,
       max: 20,
-      message: "密码长度在6-20个字符之间",
+      message: '密码长度在6-20个字符之间',
     },
   ],
 });
 // 记住我
 const rememberMe = ref(false);
 const toRegister = () => {
-  router.push({ name: "Register" });
+  router.push({ name: 'Register' });
 };
 
 const toEmailLogin = () => {
@@ -107,8 +107,8 @@ const handleLogin = async (formEl: FormInstance | undefined) => {
       if (rememberMe.value)
         userStore.setLoginForm(formData.username, formData.password);
       else userStore.removeLoginForm();
-      ElMessage.success("登录成功");
-      router.push({ name: "Chat" });
+      ElMessage.success('登录成功');
+      router.push({ name: 'Chat' });
     }
   });
 };

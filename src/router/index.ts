@@ -1,59 +1,59 @@
-import { createRouter, createWebHistory } from "vue-router";
+import { createRouter, createWebHistory } from 'vue-router';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: "/",
-      name: "Home",
-      redirect: "/login",
+      path: '/',
+      name: 'Home',
+      redirect: '/login',
     },
     {
-      path: "/login",
-      name: "Login",
-      component: () => import("@/views/Login/Login.vue"),
+      path: '/login',
+      name: 'Login',
+      component: () => import('@/views/Login/Login.vue'),
       meta: {
-        title: "登录",
+        title: '登录',
       },
     },
     {
-      path: "/register",
-      name: "Register",
-      component: () => import("@/views/Register/Register.vue"),
+      path: '/register',
+      name: 'Register',
+      component: () => import('@/views/Register/Register.vue'),
       meta: {
-        title: "注册",
+        title: '注册',
       },
     },
     {
-      path: "/chat",
-      name: "Chat",
-      component: () => import("@/views/Chat/Chat.vue"),
+      path: '/chat',
+      name: 'Chat',
+      component: () => import('@/views/Chat/Chat.vue'),
       meta: {
-        title: "聊天",
+        title: '聊天',
       },
     },
     {
-      path: "/friend",
-      name: "Friend",
-      component: () => import("@/views/Friend/Friend.vue"),
+      path: '/friend',
+      name: 'Friend',
+      component: () => import('@/views/Friend/Friend.vue'),
       meta: {
-        title: "好友",
+        title: '好友',
       },
     },
     {
-      path: "/group",
-      name: "Group",
-      component: () => import("@/views/Group/Group.vue"),
+      path: '/group',
+      name: 'Group',
+      component: () => import('@/views/Group/Group.vue'),
       meta: {
-        title: "群组",
+        title: '群组',
       },
     },
     {
-      path: "/setting",
-      name: "Setting",
-      component: () => import("@/views/Setting/Setting.vue"),
+      path: '/setting',
+      name: 'Setting',
+      component: () => import('@/views/Setting/Setting.vue'),
       meta: {
-        title: "设置",
+        title: '设置',
       },
     },
   ],

@@ -47,14 +47,14 @@
   </el-form>
 </template>
 <script setup lang="ts">
-import IconKey from "@/components/icons/IconKey.vue";
-import IconEmail from "@/components/icons/IconEmail.vue";
-import { LoginType, useLoginState } from "@/views/Login/components/userLogin";
-import type { FormInstance, FormRules } from "element-plus";
-import { login, sendVerifyCode } from "@/api/login";
-import type { UserLoginVo } from "@/api/login/types";
-import { useUserStore } from "@/stores/user";
-import { isValidEmail } from "@/utils/validate";
+import IconKey from '@/components/icons/IconKey.vue';
+import IconEmail from '@/components/icons/IconEmail.vue';
+import { LoginType, useLoginState } from '@/views/Login/components/userLogin';
+import type { FormInstance, FormRules } from 'element-plus';
+import { login, sendVerifyCode } from '@/api/login';
+import type { UserLoginVo } from '@/api/login/types';
+import { useUserStore } from '@/stores/user';
+import { isValidEmail } from '@/utils/validate';
 const loginState = useLoginState();
 const userStore = useUserStore();
 const router = useRouter();
@@ -63,8 +63,8 @@ const getShow = computed(
 );
 const formRef = ref<FormInstance>();
 const formData = reactive({
-  email: "",
-  verifyCode: "",
+  email: '',
+  verifyCode: '',
 });
 
 const toPasswordLogin = () => {
@@ -74,24 +74,24 @@ const rules = reactive<FormRules<typeof formData>>({
   email: [
     {
       required: true,
-      message: "请输入邮箱",
-      trigger: "blur",
+      message: '请输入邮箱',
+      trigger: 'blur',
     },
     {
-      type: "email",
-      message: "请输入正确的邮箱",
+      type: 'email',
+      message: '请输入正确的邮箱',
     },
   ],
   verifyCode: [
     {
       required: true,
-      message: "请输入验证码",
-      trigger: "blur",
+      message: '请输入验证码',
+      trigger: 'blur',
     },
     {
       min: 4,
       max: 6,
-      message: "请输入正确的验证码",
+      message: '请输入正确的验证码',
     },
   ],
 });
@@ -102,12 +102,12 @@ const sendSeconds = ref(0);
 const sendEmail = async () => {
   sendDisabled.value = true;
   if (!isValidEmail(formData.email)) {
-    ElMessage.error("请输入正确的邮箱");
+    ElMessage.error('请输入正确的邮箱');
     sendDisabled.value = false;
     return;
   }
   await sendVerifyCode({ email: formData.email });
-  ElMessage.success("验证码发送成功");
+  ElMessage.success('验证码发送成功');
   sendSeconds.value = 60;
 };
 
@@ -132,8 +132,8 @@ const handleLogin = async (formEl: FormInstance | undefined) => {
       } as UserLoginVo;
       const resp = await login(userLoginVo);
       userStore.userToken = resp.data;
-      ElMessage.success("登录成功");
-      router.push({ name: "Chat" });
+      ElMessage.success('登录成功');
+      router.push({ name: 'Chat' });
     }
   });
 };

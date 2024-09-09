@@ -32,8 +32,8 @@
   </div>
 </template>
 <script setup lang="ts">
-import { useChatStore } from "@/stores/chat";
-import UserInfoDialog from "@/components/user/UserInfoDialog.vue";
+import { useChatStore } from '@/stores/chat';
+import UserInfoDialog from '@/components/user/UserInfoDialog.vue';
 
 const router = useRouter();
 const chatStore = useChatStore();

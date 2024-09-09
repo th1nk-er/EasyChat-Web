@@ -1,18 +1,18 @@
-import request from "@/utils/service";
-import type { Result } from "../types";
+import request from '@/utils/service';
+import type { Result } from '../types';
 import type {
   SearchResult,
   UpdatePasswordParams,
   UpdateUserInfoParams,
   UserVo,
-} from "./types";
+} from './types';
 
 /**
  * 根据关键词搜索用户
  */
 export const searchUser = (keyword: string, page: number) => {
   return request.get<Result<SearchResult>>({
-    url: "/user/search",
+    url: '/user/search',
     params: { keyword, page },
   });
 };
@@ -22,7 +22,7 @@ export const searchUser = (keyword: string, page: number) => {
  */
 export const getUserInfo = () => {
   return request.get<Result<UserVo>>({
-    url: "/user/info",
+    url: '/user/info',
   });
 };
 
@@ -41,7 +41,7 @@ export const changePassword = (updatePasswordParams: UpdatePasswordParams) => {
  */
 export const sendChangePasswordEmail = () => {
   return request.post<Result<null>>({
-    url: "/user/email/change-password",
+    url: '/user/email/change-password',
   });
 };
 /**
@@ -52,7 +52,7 @@ export const sendChangePasswordEmail = () => {
  */
 export const changeAvatar = (userId: number, file: File) => {
   const formData = new FormData();
-  formData.append("file", file, file.name);
+  formData.append('file', file, file.name);
   return request.upload<Result<string>>({
     url: `/user/avatar/${userId}`,
     data: formData,
@@ -65,7 +65,7 @@ export const changeAvatar = (userId: number, file: File) => {
  */
 export const updateUserInfo = (updateUserInfo: UpdateUserInfoParams) => {
   return request.put<Result<null>>({
-    url: "/user/info",
+    url: '/user/info',
     data: updateUserInfo,
   });
 };

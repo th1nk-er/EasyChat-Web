@@ -1,6 +1,6 @@
-import { replyAddRequest } from "@/api/friend";
-import { AddStatus } from "@/api/friend/types";
-import { useUserStore } from "@/stores/user";
+import { replyAddRequest } from '@/api/friend';
+import { AddStatus } from '@/api/friend/types';
+import { useUserStore } from '@/stores/user';
 
 const userStore = useUserStore();
 export const agreeRequest = async (id: number) => {

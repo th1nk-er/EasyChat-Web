@@ -51,20 +51,20 @@
   </div>
 </template>
 <script setup lang="ts">
-import { getAddRequestList } from "@/api/friend";
+import { getAddRequestList } from '@/api/friend';
 import {
   AddStatus,
   AddType,
   type FriendRequestData,
   type RequestRecord,
-} from "@/api/friend/types";
-import { getFileUrl } from "@/utils/file";
-import { agreeRequest } from "./request";
-import { useUserStore } from "@/stores/user";
+} from '@/api/friend/types';
+import { getFileUrl } from '@/utils/file';
+import { agreeRequest } from './request';
+import { useUserStore } from '@/stores/user';
 const emit = defineEmits<{
-  (event: "onSelected", value: RequestRecord): void;
+  (event: 'onSelected', value: RequestRecord): void;
 }>();
-const visible = defineModel("visible", { type: Boolean, default: false });
+const visible = defineModel('visible', { type: Boolean, default: false });
 const userStore = useUserStore();
 const currentPage = ref(0);
 const scrollDisabled = ref(false);
@@ -94,7 +94,7 @@ watch(visible, (value) => {
 const handleAgreeRequest = async (key: number) => {
   await agreeRequest(loadedData.value.records[key].id);
   loadedData.value.records[key].status = AddStatus.AGREED;
-  ElMessage.success("您已同意该好友申请");
+  ElMessage.success('您已同意该好友申请');
 };
 </script>
 <style scoped lang="scss">

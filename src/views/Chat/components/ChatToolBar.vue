@@ -29,8 +29,8 @@
   </div>
 </template>
 <script setup lang="ts">
-import EmojiPicker from "vue3-emoji-picker";
-import "vue3-emoji-picker/css";
+import EmojiPicker from 'vue3-emoji-picker';
+import 'vue3-emoji-picker/css';
 const emit = defineEmits<{
   onEmojiSelected: [emoji: string];
   onImageUpload: [file: File, imgUrl: string];
@@ -40,15 +40,15 @@ const emojiSelectorVisible = ref(false);
 const imageUploader = ref<HTMLInputElement>();
 const onEmojiSelected = (emoji: any) => {
   emojiSelectorVisible.value = false;
-  emit("onEmojiSelected", emoji.i);
+  emit('onEmojiSelected', emoji.i);
 };
 const handleImageUpload = () => {
   const file = imageUploader.value?.files?.[0];
   if (file == undefined) return;
-  if (file.type.startsWith("image/")) {
+  if (file.type.startsWith('image/')) {
     const reader = new FileReader();
     reader.onload = (e) => {
-      emit("onImageUpload", file, e.target?.result as string);
+      emit('onImageUpload', file, e.target?.result as string);
     };
     reader.readAsDataURL(file);
   }

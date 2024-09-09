@@ -1,6 +1,6 @@
-import type { UserFriendVo } from "@/api/friend/types";
-import { defineStore } from "pinia";
-export const useFriendStore = defineStore("friend", {
+import type { UserFriendVo } from '@/api/friend/types';
+import { defineStore } from 'pinia';
+export const useFriendStore = defineStore('friend', {
   state() {
     return {
       friendList: [] as UserFriendVo[],

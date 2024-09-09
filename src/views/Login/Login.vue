@@ -6,9 +6,9 @@
   </div>
 </template>
 <script setup lang="ts">
-import AppTitle from "@/components/common/AppTitle.vue";
-import { EmailForm, LoginFrom } from "./components";
-import { useUserStore } from "@/stores/user";
+import AppTitle from '@/components/common/AppTitle.vue';
+import { EmailForm, LoginFrom } from './components';
+import { useUserStore } from '@/stores/user';
 const router = useRouter();
 const userStore = useUserStore();
 onMounted(() => {
@@ -19,7 +19,7 @@ onMounted(() => {
   }
   if (userStore.getUserToken) {
     if (redirectUrl) window.location.href = redirectUrl;
-    else router.push({ name: "Chat" });
+    else router.push({ name: 'Chat' });
   }
 });
 </script>
@@ -27,7 +27,7 @@ onMounted(() => {
 .login-box {
   height: 100vh;
   width: 100%;
-  background-image: url("https://cdn.pixabay.com/photo/2024/06/21/15/18/road-8844555_1280.jpg");
+  background-image: url('https://cdn.pixabay.com/photo/2024/06/21/15/18/road-8844555_1280.jpg');
   background-size: cover;
   display: flex;
   flex-direction: column;

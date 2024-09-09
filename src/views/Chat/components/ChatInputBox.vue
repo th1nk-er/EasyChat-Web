@@ -31,9 +31,9 @@
   </div>
 </template>
 <script setup lang="ts">
-const message = defineModel("message", { type: String, required: true });
-const imgSrc = defineModel("imageSrc", { type: String });
-const imgFile = defineModel("imageFile", { type: File });
+const message = defineModel('message', { type: String, required: true });
+const imgSrc = defineModel('imageSrc', { type: String });
+const imgFile = defineModel('imageFile', { type: File });
 const emit = defineEmits<{
   onSendMessage: [];
 }>();
@@ -42,10 +42,10 @@ const messageInputRef = ref<HTMLInputElement>();
 const handleEnterDown = (e: Event | KeyboardEvent) => {
   if (e instanceof KeyboardEvent) {
     if (e.shiftKey) {
-      message.value += "\n";
+      message.value += '\n';
     } else {
       e.preventDefault();
-      emit("onSendMessage");
+      emit('onSendMessage');
     }
   }
 };

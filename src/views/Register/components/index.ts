@@ -1,3 +1,3 @@
-import RegisterForm from "./RegisterForm.vue";
+import RegisterForm from './RegisterForm.vue';
 
 export { RegisterForm };

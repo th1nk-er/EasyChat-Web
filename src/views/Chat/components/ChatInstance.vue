@@ -35,19 +35,19 @@ import {
   sendMessage,
   subscribeMessage,
   uploadChatImage,
-} from "@/api/chat";
+} from '@/api/chat';
 import {
   ChatType,
   MessageType,
   type ChatMessage,
   type WSMessage,
-} from "@/api/chat/types";
-import { getFriendInfo } from "@/api/friend";
-import type { UserFriendVo } from "@/api/friend/types";
-import { UserSex } from "@/api/user/types";
-import { useChatStore } from "@/stores/chat";
-import { useUserStore } from "@/stores/user";
-import { ChatHeader, ChatInputBox, ChatMessageBox, ChatToolBar } from ".";
+} from '@/api/chat/types';
+import { getFriendInfo } from '@/api/friend';
+import type { UserFriendVo } from '@/api/friend/types';
+import { UserSex } from '@/api/user/types';
+import { useChatStore } from '@/stores/chat';
+import { useUserStore } from '@/stores/user';
+import { ChatHeader, ChatInputBox, ChatMessageBox, ChatToolBar } from '.';
 const componentKey = ref(0);
 const chatStore = useChatStore();
 const userStore = useUserStore();
@@ -55,21 +55,21 @@ const messageData = ref<ChatMessage[]>([]);
 const msgBox = ref();
 const friendInfo = ref<UserFriendVo>({
   friendId: 0,
-  nickname: "",
-  username: "",
-  avatar: "",
+  nickname: '',
+  username: '',
+  avatar: '',
   sex: UserSex.SECRET,
-  createTime: "",
-  remark: "",
+  createTime: '',
+  remark: '',
   muted: false,
 });
 /** 用户输入的消息 */
-const inputMessage = ref("");
+const inputMessage = ref('');
 /** 消息输入框 */
 const inputBox = ref();
 const _sendMessage = (message: WSMessage) => {
   if (!sendMessage(message)) {
-    ElMessage.error("消息发送失败");
+    ElMessage.error('消息发送失败');
     return;
   }
   messageData.value.push({
@@ -81,12 +81,12 @@ const _sendMessage = (message: WSMessage) => {
     chatType: chatInfo.value.chatType,
   });
   chatStore.updateConversation(message);
-  inputMessage.value = "";
+  inputMessage.value = '';
   scrollToBottom();
 };
 /** 处理发送消息 */
 const handleSendMessage = async () => {
-  if (inputMessage.value.trim() != "") {
+  if (inputMessage.value.trim() != '') {
     _sendMessage({
       messageType: MessageType.TEXT,
       content: inputMessage.value,
@@ -105,7 +105,7 @@ const handleSendMessage = async () => {
       chatType: chatInfo.value.chatType,
     });
     imgFile.value = undefined;
-    imageSrc.value = "";
+    imageSrc.value = '';
   }
 };
 /** 当用户选择表情 */
@@ -113,7 +113,7 @@ const handleEmojiSelected = (emoji: string) => {
   inputMessage.value = inputMessage.value + emoji;
   inputBox.value.input.focus();
 };
-const imageSrc = ref("");
+const imageSrc = ref('');
 const imgFile = ref<File>();
 const handleImageUpload = (file: File, imgUrl: string) => {
   imgFile.value = file;
@@ -128,9 +128,9 @@ const scrollToBottom = (delay: number = 200) => {
 const chatInfo = ref({
   chatId: 0,
   chatType: ChatType.FRIEND,
-  name: "",
-  remark: "",
-  avatar: "",
+  name: '',
+  remark: '',
+  avatar: '',
   muted: false,
 });
 /** 初始化数据 */

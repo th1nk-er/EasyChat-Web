@@ -37,12 +37,12 @@
   </el-dialog>
 </template>
 <script setup lang="ts">
-import type { UserFriendVo } from "@/api/friend/types";
-import { createGroup } from "@/api/group";
-import { useGroupStore } from "@/stores/group";
-import { useUserStore } from "@/stores/user";
-import { getFileUrl } from "@/utils/file";
-import FriendSelectList from "../friend/FriendSelectList.vue";
+import type { UserFriendVo } from '@/api/friend/types';
+import { createGroup } from '@/api/group';
+import { useGroupStore } from '@/stores/group';
+import { useUserStore } from '@/stores/user';
+import { getFileUrl } from '@/utils/file';
+import FriendSelectList from '../friend/FriendSelectList.vue';
 const dialogVisible = defineModel({ type: Boolean, default: false });
 const userStore = useUserStore();
 const componentKey = ref(0);
@@ -51,7 +51,7 @@ watch(dialogVisible, (value) => {
     //初始化数据
     componentKey.value++;
     selectedFriend.value = [];
-    groupName.value = "";
+    groupName.value = '';
   }
 });
 const groupStore = useGroupStore();
@@ -69,18 +69,18 @@ const handleRemoveMember = (friend: UserFriendVo) => {
   friendSelectList.value.selectCancel(friend);
   onFriendSelectedCancel(friend);
 };
-const groupName = ref("");
+const groupName = ref('');
 const handleCreateGroup = async () => {
   if (groupName.value.trim().length == 0) {
-    ElMessage.error("群名称不能为空");
+    ElMessage.error('群名称不能为空');
     return;
   }
   if (selectedFriend.value.length == 0) {
-    ElMessage.error("群成员不能为空");
+    ElMessage.error('群成员不能为空');
   }
   const ids = selectedFriend.value.map((item) => item.friendId);
   await createGroup(userStore.userInfo.id, groupName.value, ids);
-  ElMessage.success("群聊创建成功");
+  ElMessage.success('群聊创建成功');
   dialogVisible.value = false;
   groupStore.loadGroupList();
 };

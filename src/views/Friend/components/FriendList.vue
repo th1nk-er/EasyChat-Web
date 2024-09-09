@@ -45,13 +45,13 @@
   <FriendInfoDialog v-model="friendInfoShow" :friend-id="selectedFriendId" />
 </template>
 <script setup lang="ts">
-import type { FriendListVo } from "@/api/friend/types";
-import { useFriendStore } from "@/stores/friend";
-import { getUserFriendList } from "@/api/friend";
-import { getFileUrl } from "@/utils/file";
-import { FriendRequestDialog } from ".";
-import FriendInfoDialog from "@/components/friend/FriendInfoDialog.vue";
-import { useUserStore } from "@/stores/user";
+import type { FriendListVo } from '@/api/friend/types';
+import { useFriendStore } from '@/stores/friend';
+import { getUserFriendList } from '@/api/friend';
+import { getFileUrl } from '@/utils/file';
+import { FriendRequestDialog } from '.';
+import FriendInfoDialog from '@/components/friend/FriendInfoDialog.vue';
+import { useUserStore } from '@/stores/user';
 const friendStore = useFriendStore();
 const userStore = useUserStore();
 const requestDialogShow = ref(false);

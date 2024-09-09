@@ -94,12 +94,12 @@
   </el-dialog>
 </template>
 <script setup lang="ts">
-import { changeAvatar, getUserInfo, updateUserInfo } from "@/api/user";
-import { UserSex, type UpdateUserInfoParams } from "@/api/user/types";
-import { useUserStore } from "@/stores/user";
-import { getFileUrl } from "@/utils/file";
-import { getSexString } from "@/utils/userUtils";
-import ChangePasswordDialog from "./ChangePasswordDialog.vue";
+import { changeAvatar, getUserInfo, updateUserInfo } from '@/api/user';
+import { UserSex, type UpdateUserInfoParams } from '@/api/user/types';
+import { useUserStore } from '@/stores/user';
+import { getFileUrl } from '@/utils/file';
+import { getSexString } from '@/utils/userUtils';
+import ChangePasswordDialog from './ChangePasswordDialog.vue';
 
 const userStore = useUserStore();
 const dialogShow = defineModel({
@@ -113,28 +113,28 @@ const handleAvatarUpload = async () => {
   const file = avatarUploader.value?.files?.[0];
   if (file == undefined) return;
   if (file.size > 1024 * 1024 * 5) {
-    ElMessage.error("头像图片过大,请更换其他图片");
+    ElMessage.error('头像图片过大,请更换其他图片');
     return;
   }
   const resp = await changeAvatar(userStore.userInfo.id, file);
   userStore.userInfo.avatar = resp.data;
-  ElMessage.success("头像上传成功");
+  ElMessage.success('头像上传成功');
 };
 
 const selectedSex = ref<UserSex>(UserSex.SECRET);
-const userNickname = ref("");
+const userNickname = ref('');
 const nicknameInputRef = ref<HTMLInputElement>();
 const editNicknameShow = ref(false);
 const handleUpdateUserInfo = async () => {
   if (userNickname.value.length < 3 || userNickname.value.length > 20) {
-    ElMessage.error("昵称长度在3-20个字符之间");
+    ElMessage.error('昵称长度在3-20个字符之间');
     return;
   }
   if (
     userNickname.value == userStore.userInfo.nickname &&
     selectedSex.value == userStore.userInfo.sex
   ) {
-    ElMessage.success("修改成功");
+    ElMessage.success('修改成功');
   } else {
     // 发送请求修改
     await updateUserInfo({
@@ -142,7 +142,7 @@ const handleUpdateUserInfo = async () => {
       sex: selectedSex.value,
       userId: userStore.userInfo.id,
     } as UpdateUserInfoParams);
-    ElMessage.success("修改成功");
+    ElMessage.success('修改成功');
     dialogShow.value = false;
     // 获取新数据
     userStore.userInfo = (await getUserInfo()).data;

@@ -15,7 +15,7 @@ build-job:
     untracked: false
     when: on_success
     access: all
-    expire_in: "10 minutes"
+    expire_in: '10 minutes'
 
 push-job:
   stage: push

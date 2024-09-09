@@ -1,14 +1,14 @@
-import { useUserStore } from "@/stores/user";
-import { useWSStore } from "@/stores/ws";
-import request from "@/utils/service";
-import { SHA256 } from "crypto-js";
-import type { Result } from "../types";
+import { useUserStore } from '@/stores/user';
+import { useWSStore } from '@/stores/ws';
+import request from '@/utils/service';
+import { SHA256 } from 'crypto-js';
+import type { Result } from '../types';
 import {
   ChatType,
   type ChatMessage,
   type UserConversation,
   type WSMessage,
-} from "./types";
+} from './types';
 
 /**
  * 订阅消息
@@ -21,7 +21,7 @@ export const subscribeMessage = (callback: (message: WSMessage) => void) => {
   }
   if (!stompClient.connected) return;
   stompClient.subscribe(
-    "/notify/message/" + SHA256(userToken).toString(),
+    '/notify/message/' + SHA256(userToken).toString(),
     (message) => {
       callback(JSON.parse(message.body));
     }
@@ -39,7 +39,7 @@ export const sendMessage = (message: WSMessage) => {
   }
   if (!stompClient.connected) return;
   stompClient.publish({
-    destination: "/message/chat.send",
+    destination: '/message/chat.send',
     body: JSON.stringify(message),
   });
   return true;
@@ -52,8 +52,8 @@ export const sendConnect = () => {
   const stompClient = useWSStore().stompClient;
   if (!stompClient.connected) return;
   stompClient.publish({
-    destination: "/notify/connect",
-    body: "",
+    destination: '/notify/connect',
+    body: '',
   });
 };
 /**
@@ -63,7 +63,7 @@ export const publishOpenConversation = (toId: number, chatType: ChatType) => {
   const stompClient = useWSStore().stompClient;
   if (!stompClient.connected) return;
   stompClient.publish({
-    destination: "/conversation/open",
+    destination: '/conversation/open',
     body: JSON.stringify({ toId: toId, chatType: chatType } as WSMessage),
   });
 };
@@ -81,7 +81,7 @@ export const getMessageHistory = (
 ) => {
   return request.get<Result<ChatMessage[]>>({
     url: `/message/history/${userId}/${receiverId}/${currentPage}`,
-    method: "get",
+    method: 'get',
   });
 };
 
@@ -92,7 +92,7 @@ export const getMessageHistory = (
 export const getUserConversationList = (userId: number) => {
   return request.get<Result<UserConversation[]>>({
     url: `/conversation/list/${userId}`,
-    method: "get",
+    method: 'get',
   });
 };
 
@@ -102,10 +102,10 @@ export const getUserConversationList = (userId: number) => {
  */
 export const uploadChatImage = (file: File) => {
   const formData = new FormData();
-  formData.append("file", file);
+  formData.append('file', file);
   return request.post<Result<string>>({
-    url: "/upload/chat/image",
-    method: "post",
+    url: '/upload/chat/image',
+    method: 'post',
     data: formData,
   });
 };

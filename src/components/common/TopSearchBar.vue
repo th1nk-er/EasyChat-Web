@@ -21,8 +21,8 @@
   </div>
 </template>
 <script setup lang="ts">
-import AddFriendDialog from "./AddFriendDialog.vue";
-import CreateGroupDialog from "./CreateGroupDialog.vue";
+import AddFriendDialog from './AddFriendDialog.vue';
+import CreateGroupDialog from './CreateGroupDialog.vue';
 const addDialogVisible = ref(false);
 const createGroupVisible = ref(false);
 </script>

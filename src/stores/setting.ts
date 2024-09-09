@@ -1,8 +1,8 @@
-import { addAutoThemeListener, removeAutoThemeListener } from "@/utils/theme";
-import { ThemePrefer } from "@/views/Setting/components/types";
-import { defineStore } from "pinia";
+import { addAutoThemeListener, removeAutoThemeListener } from '@/utils/theme';
+import { ThemePrefer } from '@/views/Setting/components/types';
+import { defineStore } from 'pinia';
 
-export const useSettingStore = defineStore("Setting", {
+export const useSettingStore = defineStore('Setting', {
   state: () => ({
     themePreference: ThemePrefer.SYSTEM,
   }),
@@ -12,11 +12,11 @@ export const useSettingStore = defineStore("Setting", {
       switch (this.themePreference) {
         case ThemePrefer.DARK:
           removeAutoThemeListener();
-          document.documentElement.classList.add("dark");
+          document.documentElement.classList.add('dark');
           break;
         case ThemePrefer.LIGHT:
           removeAutoThemeListener();
-          document.documentElement.classList.remove("dark");
+          document.documentElement.classList.remove('dark');
           break;
         case ThemePrefer.SYSTEM:
           addAutoThemeListener();

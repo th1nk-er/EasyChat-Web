@@ -42,11 +42,11 @@
   </el-dialog>
 </template>
 <script setup lang="ts">
-import { changePassword, sendChangePasswordEmail } from "@/api/user";
-import type { UpdatePasswordParams } from "@/api/user/types";
-import { useUserStore } from "@/stores/user";
-import { useWSStore } from "@/stores/ws";
-import type { FormInstance, FormRules } from "element-plus";
+import { changePassword, sendChangePasswordEmail } from '@/api/user';
+import type { UpdatePasswordParams } from '@/api/user/types';
+import { useUserStore } from '@/stores/user';
+import { useWSStore } from '@/stores/ws';
+import type { FormInstance, FormRules } from 'element-plus';
 
 const router = useRouter();
 const userStore = useUserStore();
@@ -57,24 +57,24 @@ const dialogShow = defineModel({
 });
 const formRef = ref<FormInstance>();
 const formData = reactive({
-  email: "",
-  code: "",
-  newPassword: "",
-  repeatPassword: "",
+  email: '',
+  code: '',
+  newPassword: '',
+  repeatPassword: '',
 });
 const rules = reactive<FormRules<typeof formData>>({
-  code: [{ required: true, message: "请输入验证码", trigger: "blur" }],
+  code: [{ required: true, message: '请输入验证码', trigger: 'blur' }],
   newPassword: [
-    { required: true, message: "请输入新密码", trigger: "blur" },
-    { min: 6, max: 20, message: "长度在 6 到 20 个字符", trigger: "blur" },
+    { required: true, message: '请输入新密码', trigger: 'blur' },
+    { min: 6, max: 20, message: '长度在 6 到 20 个字符', trigger: 'blur' },
   ],
   repeatPassword: [
-    { required: true, message: "请输入重复密码", trigger: "blur" },
-    { min: 6, max: 20, message: "长度在 6 到 20 个字符", trigger: "blur" },
+    { required: true, message: '请输入重复密码', trigger: 'blur' },
+    { min: 6, max: 20, message: '长度在 6 到 20 个字符', trigger: 'blur' },
     {
       validator: (rule: any, value: any, callback: any) => {
         if (value !== formData.newPassword) {
-          callback(new Error("两次输入密码不一致"));
+          callback(new Error('两次输入密码不一致'));
         }
         callback();
       },
@@ -94,7 +94,7 @@ watch(sendSeconds, (newValue) => {
 });
 const handleSendEmail = async () => {
   await sendChangePasswordEmail();
-  ElMessage.success("验证码发送成功");
+  ElMessage.success('验证码发送成功');
   sendSeconds.value = 60;
   sendDisabled.value = true;
 };
@@ -113,10 +113,10 @@ const handleChangePassword = async (formEl: FormInstance | undefined) => {
         code: formData.code,
         newPassword: formData.newPassword,
       } as UpdatePasswordParams);
-      ElMessage.success("密码修改成功");
+      ElMessage.success('密码修改成功');
       wsStore.stompClient.deactivate();
       userStore.removeToken();
-      router.push({ name: "Login" });
+      router.push({ name: 'Login' });
     }
   });
 };

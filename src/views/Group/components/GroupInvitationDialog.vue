@@ -49,13 +49,13 @@
   </el-dialog>
 </template>
 <script setup lang="ts">
-import { getGroupInvitationList } from "@/api/group";
+import { getGroupInvitationList } from '@/api/group';
 import {
   GroupInvitationStatus,
   type GroupInvitationVo,
-} from "@/api/group/types";
-import { useUserStore } from "@/stores/user";
-import { getFileUrl } from "@/utils/file";
+} from '@/api/group/types';
+import { useUserStore } from '@/stores/user';
+import { getFileUrl } from '@/utils/file';
 
 const dialogVisible = defineModel({ type: Boolean, default: false });
 const userStore = useUserStore();

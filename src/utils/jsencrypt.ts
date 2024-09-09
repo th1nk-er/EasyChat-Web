@@ -1,4 +1,4 @@
-import { JSEncrypt } from "jsencrypt";
+import { JSEncrypt } from 'jsencrypt';
 
 const publicKey = `MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0oTxqCTPKgE4OkxudSvz
 ic+MyGQL6bOEsQG+FgmsIgXAx/yokL5Nz9HjNWpBD1iI9s9kAHwi7bJQIONtoCE/

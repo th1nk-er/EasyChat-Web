@@ -15,8 +15,8 @@
   </div>
 </template>
 <script setup lang="ts">
-import { useSettingStore } from "@/stores/setting";
-import { ThemePrefer } from "./types";
+import { useSettingStore } from '@/stores/setting';
+import { ThemePrefer } from './types';
 const settingStore = useSettingStore();
 const theme = ref(settingStore.themePreference);
 </script>

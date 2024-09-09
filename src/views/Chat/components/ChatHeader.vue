@@ -25,10 +25,10 @@
   </div>
 </template>
 <script setup lang="ts">
-import FriendInfoDialog from "@/components/friend/FriendInfoDialog.vue";
-import type { UserFriendVo } from "@/api/friend/types";
-import { ChatType } from "@/api/chat/types";
-import type { ChatInfo } from ".";
+import FriendInfoDialog from '@/components/friend/FriendInfoDialog.vue';
+import type { UserFriendVo } from '@/api/friend/types';
+import { ChatType } from '@/api/chat/types';
+import type { ChatInfo } from '.';
 const friendInfoDialogShow = ref(false);
 const props = defineProps({
   chatInfo: {

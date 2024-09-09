@@ -11,14 +11,14 @@ export type SearchResult = {
 };
 
 export enum UserSex {
-  MALE = "MALE",
-  FEMALE = "FEMALE",
-  SECRET = "SECRET",
+  MALE = 'MALE',
+  FEMALE = 'FEMALE',
+  SECRET = 'SECRET',
 }
 export enum UserRole {
-  USER = "USER",
-  ADMIN = "ADMIN",
-  LEADER = "LEADER",
+  USER = 'USER',
+  ADMIN = 'ADMIN',
+  LEADER = 'LEADER',
 }
 export type UserVo = {
   id: number;

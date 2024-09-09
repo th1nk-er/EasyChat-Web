@@ -68,13 +68,13 @@
 </template>
 
 <script setup lang="ts">
-import { ChatType, type ChatMessage, MessageType } from "@/api/chat/types";
-import { useUserStore } from "@/stores/user";
-import { getFileUrl } from "@/utils/file";
-import { getTimeString } from "@/utils/timeUtils";
-import UserInfoDialog from "@/components/user/UserInfoDialog.vue";
-import FriendInfoDialog from "@/components/friend/FriendInfoDialog.vue";
-import type { ChatInfo } from ".";
+import { ChatType, type ChatMessage, MessageType } from '@/api/chat/types';
+import { useUserStore } from '@/stores/user';
+import { getFileUrl } from '@/utils/file';
+import { getTimeString } from '@/utils/timeUtils';
+import UserInfoDialog from '@/components/user/UserInfoDialog.vue';
+import FriendInfoDialog from '@/components/friend/FriendInfoDialog.vue';
+import type { ChatInfo } from '.';
 
 const msgBox = ref<HTMLElement>();
 const props = defineProps({
@@ -87,12 +87,12 @@ const props = defineProps({
     required: true,
   },
 });
-defineEmits(["onGetMoreMessage"]);
+defineEmits(['onGetMoreMessage']);
 
 const scrollToBottom = () => {
   msgBox.value?.scrollTo({
     top: msgBox.value?.scrollHeight,
-    behavior: "smooth",
+    behavior: 'smooth',
   });
 };
 const userStore = useUserStore();
@@ -127,7 +127,7 @@ const showUserInfo = (id: number) => {
   }
 };
 const previewImgShow = ref(false);
-const previewImgSrc = ref("");
+const previewImgSrc = ref('');
 defineExpose({
   /**
    * 将聊天框滚动到底部

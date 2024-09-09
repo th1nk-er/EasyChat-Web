@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useSettingStore } from "@/stores/setting";
+import { useSettingStore } from '@/stores/setting';
 const settingStore = useSettingStore();
 onMounted(() => {
   settingStore.updateTheme();

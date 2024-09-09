@@ -27,9 +27,9 @@
   </div>
 </template>
 <script setup lang="ts">
-import { useGroupStore } from "@/stores/group";
-import { getFileUrl } from "@/utils/file";
-import { GroupInvitationDialog } from ".";
+import { useGroupStore } from '@/stores/group';
+import { getFileUrl } from '@/utils/file';
+import { GroupInvitationDialog } from '.';
 const groupStore = useGroupStore();
 const groupInvitationDialogVisible = ref(false);
 onMounted(() => {

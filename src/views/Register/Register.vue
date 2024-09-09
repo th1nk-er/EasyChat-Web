@@ -6,8 +6,8 @@
 </template>
 
 <script setup lang="ts">
-import AppTitle from "@/components/common/AppTitle.vue";
-import { RegisterForm } from "./components";
+import AppTitle from '@/components/common/AppTitle.vue';
+import { RegisterForm } from './components';
 </script>
 <style scoped lang="scss">
 .chat-list-box {
@@ -17,7 +17,7 @@ import { RegisterForm } from "./components";
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-image: url("https://cdn.pixabay.com/photo/2015/06/02/00/54/pink-794507_1280.jpg");
+  background-image: url('https://cdn.pixabay.com/photo/2015/06/02/00/54/pink-794507_1280.jpg');
   background-size: cover;
 }
 </style>

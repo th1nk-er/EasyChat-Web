@@ -1,4 +1,4 @@
-import type { UserSex } from "../user/types";
+import type { UserSex } from '../user/types';
 
 export type AddFriendParams = {
   userId: number;
@@ -49,12 +49,12 @@ export type ReplyAddRequestData = {
 };
 
 export enum AddType {
-  ADD_OTHER = "ADD_OTHER",
-  ADD_BY_OTHER = "ADD_BY_OTHER",
+  ADD_OTHER = 'ADD_OTHER',
+  ADD_BY_OTHER = 'ADD_BY_OTHER',
 }
 export enum AddStatus {
-  PENDING = "PENDING",
-  AGREED = "AGREED",
-  REFUSED = "REFUSED",
-  IGNORED = "IGNORED",
+  PENDING = 'PENDING',
+  AGREED = 'AGREED',
+  REFUSED = 'REFUSED',
+  IGNORED = 'IGNORED',
 }

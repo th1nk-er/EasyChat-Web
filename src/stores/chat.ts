@@ -1,14 +1,14 @@
-import { getUserConversationList } from "@/api/chat";
+import { getUserConversationList } from '@/api/chat';
 import {
   ChatType,
   MessageType,
   type UserConversation,
   type WSMessage,
-} from "@/api/chat/types";
-import type { UserFriendVo } from "@/api/friend/types";
-import { defineStore } from "pinia";
-import { useUserStore } from "./user";
-export const useChatStore = defineStore("chat", {
+} from '@/api/chat/types';
+import type { UserFriendVo } from '@/api/friend/types';
+import { defineStore } from 'pinia';
+import { useUserStore } from './user';
+export const useChatStore = defineStore('chat', {
   state() {
     return {
       /** 当前聊天的用户ID */
@@ -119,9 +119,9 @@ export const useChatStore = defineStore("chat", {
         remark: friendInfo.remark,
         muted: friendInfo.muted,
         unreadCount: 0,
-        lastMessage: "",
+        lastMessage: '',
         messageType: MessageType.TEXT,
-        updateTime: new Date() + "",
+        updateTime: new Date() + '',
         chatType: ChatType.FRIEND,
       });
     },
@@ -145,6 +145,6 @@ export const useChatStore = defineStore("chat", {
     },
   },
   persist: {
-    paths: ["conversationList"],
+    paths: ['conversationList'],
   },
 });

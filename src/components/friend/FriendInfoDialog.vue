@@ -80,14 +80,14 @@
   </el-dialog>
 </template>
 <script setup lang="ts">
-import { ChatType } from "@/api/chat/types";
-import { deleteFriend, getFriendInfo, updateFriendInfo } from "@/api/friend";
-import type { UserFriendVo } from "@/api/friend/types";
-import { useChatStore } from "@/stores/chat";
-import { useFriendStore } from "@/stores/friend";
-import { useUserStore } from "@/stores/user";
-import { getFileUrl } from "@/utils/file";
-import { getSexString } from "@/utils/userUtils";
+import { ChatType } from '@/api/chat/types';
+import { deleteFriend, getFriendInfo, updateFriendInfo } from '@/api/friend';
+import type { UserFriendVo } from '@/api/friend/types';
+import { useChatStore } from '@/stores/chat';
+import { useFriendStore } from '@/stores/friend';
+import { useUserStore } from '@/stores/user';
+import { getFileUrl } from '@/utils/file';
+import { getSexString } from '@/utils/userUtils';
 const router = useRouter();
 const chatStore = useChatStore();
 const friendStore = useFriendStore();
@@ -99,7 +99,7 @@ const props = defineProps({
     required: true,
   },
 });
-const emit = defineEmits(["onFriendInfoUpdate"]);
+const emit = defineEmits(['onFriendInfoUpdate']);
 const friendInfo = ref<UserFriendVo>({} as UserFriendVo);
 watch(dialogShow, async (value) => {
   if (value) {
@@ -111,31 +111,31 @@ const editRemarkShow = ref(false);
 const remarkInputRef = ref<HTMLInputElement>();
 const handleUpdateFriendInfo = async () => {
   await updateFriendInfo(userStore.userInfo.id, friendInfo.value);
-  emit("onFriendInfoUpdate", friendInfo.value);
+  emit('onFriendInfoUpdate', friendInfo.value);
   // 更新聊天列表的信息
   chatStore.updateFriendConversation(friendInfo.value);
   // 更新好友列表的信息
   friendStore.updateFriendVo(friendInfo.value);
-  ElMessage.success("修改成功");
+  ElMessage.success('修改成功');
   dialogShow.value = false;
 };
 const handleSendMessage = () => {
   chatStore.chatId = friendInfo.value.friendId;
   chatStore.chatType = ChatType.FRIEND;
   chatStore.isChatting = true;
-  router.push({ name: "Chat" });
+  router.push({ name: 'Chat' });
   dialogShow.value = false;
 };
 
 const handleDeleteFriend = async () => {
-  ElMessageBox.confirm("删除操作将无法恢复,确认删除好友?", "警告", {
-    confirmButtonText: "确认删除",
-    cancelButtonText: "取消",
-    type: "warning",
+  ElMessageBox.confirm('删除操作将无法恢复,确认删除好友?', '警告', {
+    confirmButtonText: '确认删除',
+    cancelButtonText: '取消',
+    type: 'warning',
   })
     .then(async () => {
       await deleteFriend(userStore.userInfo.id, friendInfo.value.friendId);
-      ElMessage.success("删除成功");
+      ElMessage.success('删除成功');
       chatStore.deleteConversation(friendInfo.value.friendId, ChatType.FRIEND);
       friendStore.deleteFriendVo(friendInfo.value.friendId);
       dialogShow.value = false;

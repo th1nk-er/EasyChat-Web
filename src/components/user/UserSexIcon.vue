@@ -4,7 +4,7 @@
   <IconAgender v-if="sex == UserSex.SECRET" :style="style" class="sex-secret" />
 </template>
 <script setup lang="ts">
-import { UserSex } from "@/api/user/types";
+import { UserSex } from '@/api/user/types';
 
 const props = defineProps({
   sex: {
@@ -17,7 +17,7 @@ const props = defineProps({
     required: false,
   },
 });
-const style = ref("");
+const style = ref('');
 
 onMounted(() => {
   style.value = `width: ${props.size}px; height: ${props.size}px;`;

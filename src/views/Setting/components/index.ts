@@ -1,2 +1,2 @@
-import CommonSetting from "./CommonSetting.vue";
+import CommonSetting from './CommonSetting.vue';
 export { CommonSetting };

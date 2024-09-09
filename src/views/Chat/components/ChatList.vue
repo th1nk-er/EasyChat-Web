@@ -64,11 +64,11 @@
   </div>
 </template>
 <script setup lang="ts">
-import TopSearchBar from "@/components/common/TopSearchBar.vue";
-import { useChatStore } from "@/stores/chat";
-import { ChatType, MessageType, type UserConversation } from "@/api/chat/types";
-import { getTimeString } from "@/utils/timeUtils";
-import { getFileUrl } from "@/utils/file";
+import TopSearchBar from '@/components/common/TopSearchBar.vue';
+import { useChatStore } from '@/stores/chat';
+import { ChatType, MessageType, type UserConversation } from '@/api/chat/types';
+import { getTimeString } from '@/utils/timeUtils';
+import { getFileUrl } from '@/utils/file';
 
 const chatStore = useChatStore();
 const handleClickConversation = (conversation: UserConversation) => {

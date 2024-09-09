@@ -1,9 +1,9 @@
-import type { UserToken } from "@/api/login/types";
-import type { UserVo } from "@/api/user/types";
-import { decrypt, encrypt } from "@/utils/jsencrypt";
-import { defineStore } from "pinia";
+import type { UserToken } from '@/api/login/types';
+import type { UserVo } from '@/api/user/types';
+import { decrypt, encrypt } from '@/utils/jsencrypt';
+import { defineStore } from 'pinia';
 
-export const useUserStore = defineStore("user", {
+export const useUserStore = defineStore('user', {
   state: () => {
     return {
       userToken: {} as UserToken,
@@ -11,8 +11,8 @@ export const useUserStore = defineStore("user", {
        * 登录表单，务必用 getter 和 setter 获取和设置
        */
       loginForm: {
-        username: "",
-        password: "",
+        username: '',
+        password: '',
         rememberMe: false,
       },
       userInfo: {} as UserVo,
@@ -45,8 +45,8 @@ export const useUserStore = defineStore("user", {
       this.loginForm.rememberMe = true;
     },
     removeLoginForm() {
-      this.loginForm.username = "";
-      this.loginForm.password = "";
+      this.loginForm.username = '';
+      this.loginForm.password = '';
       this.loginForm.rememberMe = false;
     },
     removeToken() {
@@ -54,6 +54,6 @@ export const useUserStore = defineStore("user", {
     },
   },
   persist: {
-    paths: ["userToken", "loginForm", "userInfo"],
+    paths: ['userToken', 'loginForm', 'userInfo'],
   },
 });

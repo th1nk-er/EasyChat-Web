@@ -65,10 +65,10 @@
 </template>
 
 <script setup lang="ts">
-import { register, sendVerifyCode } from "@/api/register";
-import type { RegisterVo } from "@/api/register/types";
-import type { FormInstance, FormRules } from "element-plus";
-import { isValidEmail } from "@/utils/validate";
+import { register, sendVerifyCode } from '@/api/register';
+import type { RegisterVo } from '@/api/register/types';
+import type { FormInstance, FormRules } from 'element-plus';
+import { isValidEmail } from '@/utils/validate';
 
 const router = useRouter();
 
@@ -77,36 +77,36 @@ const rules = reactive<FormRules<typeof formData>>({
   username: [
     {
       required: true,
-      message: "请输入用户名",
-      trigger: "blur",
+      message: '请输入用户名',
+      trigger: 'blur',
     },
     {
       pattern: /^[a-zA-Z0-9_-]{3,20}$/,
-      message: "只能包含字母、数字、下划线、减号, 长度在3-20个字符之间",
+      message: '只能包含字母、数字、下划线、减号, 长度在3-20个字符之间',
     },
   ],
   password: [
     {
       required: true,
-      message: "请输入密码",
-      trigger: "blur",
+      message: '请输入密码',
+      trigger: 'blur',
     },
     {
       min: 6,
       max: 20,
-      message: "密码长度在6-20个字符之间",
+      message: '密码长度在6-20个字符之间',
     },
   ],
   repeatPassword: [
     {
       required: true,
-      message: "请再次输入密码",
-      trigger: "blur",
+      message: '请再次输入密码',
+      trigger: 'blur',
     },
     {
       validator: (rule, value, callback) => {
         if (value !== formData.password) {
-          callback(new Error("两次输入的密码不一致"));
+          callback(new Error('两次输入的密码不一致'));
         } else {
           callback();
         }
@@ -116,37 +116,37 @@ const rules = reactive<FormRules<typeof formData>>({
   email: [
     {
       required: true,
-      message: "请输入邮箱",
-      trigger: "blur",
+      message: '请输入邮箱',
+      trigger: 'blur',
     },
     {
-      type: "email",
-      message: "请输入正确的邮箱",
+      type: 'email',
+      message: '请输入正确的邮箱',
     },
   ],
   verifyCode: [
     {
       required: true,
-      message: "请输入验证码",
-      trigger: "blur",
+      message: '请输入验证码',
+      trigger: 'blur',
     },
     {
       min: 4,
       max: 6,
-      message: "请输入正确的验证码",
+      message: '请输入正确的验证码',
     },
   ],
 });
 const formData = reactive({
-  username: "",
-  password: "",
-  repeatPassword: "",
-  email: "",
-  verifyCode: "",
+  username: '',
+  password: '',
+  repeatPassword: '',
+  email: '',
+  verifyCode: '',
 });
 
 const toLogin = () => {
-  router.push({ name: "Login" });
+  router.push({ name: 'Login' });
 };
 
 const sendDisabled = ref(false);
@@ -155,10 +155,10 @@ const getVerifyCode = async () => {
   sendDisabled.value = true;
   if (isValidEmail(formData.email)) {
     await sendVerifyCode(formData.email);
-    ElMessage.success("验证码已发送");
+    ElMessage.success('验证码已发送');
     sendSeconds.value = 60;
   } else {
-    ElMessage.error("请输入正确的邮箱");
+    ElMessage.error('请输入正确的邮箱');
     sendDisabled.value = false;
   }
 };
@@ -184,10 +184,10 @@ const handleRegister = async (formEl: FormInstance | undefined) => {
         verifyCode: formData.verifyCode,
       };
       await register(registerVo);
-      ElMessage.success("注册成功,即将跳转登录页面");
+      ElMessage.success('注册成功,即将跳转登录页面');
       // 2秒后跳转登录页面
       setTimeout(() => {
-        router.push({ name: "Login" });
+        router.push({ name: 'Login' });
       }, 2000);
     }
   });

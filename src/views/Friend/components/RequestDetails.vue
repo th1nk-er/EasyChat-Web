@@ -72,11 +72,11 @@
   </div>
 </template>
 <script setup lang="ts">
-import { getFileUrl } from "@/utils/file";
-import { getTimeString } from "@/utils/timeUtils";
-import { AddStatus, AddType, type RequestRecord } from "@/api/friend/types";
-import { agreeRequest, refuseRequest, ignoreRequest } from "./request";
-const visible = defineModel("visible", { type: Boolean, default: false });
+import { getFileUrl } from '@/utils/file';
+import { getTimeString } from '@/utils/timeUtils';
+import { AddStatus, AddType, type RequestRecord } from '@/api/friend/types';
+import { agreeRequest, refuseRequest, ignoreRequest } from './request';
+const visible = defineModel('visible', { type: Boolean, default: false });
 const props = defineProps({
   item: {
     type: Object as PropType<RequestRecord>,
@@ -89,24 +89,24 @@ watch(visible, (value) => {
   }
 });
 const item = ref({} as RequestRecord);
-const emit = defineEmits(["onClose"]);
+const emit = defineEmits(['onClose']);
 
 const refuseReasonShow = ref(false);
-const refuseReason = ref("");
+const refuseReason = ref('');
 const handleAgreeRequest = async () => {
   await agreeRequest(item.value.id);
   props.item.status = AddStatus.AGREED;
-  ElMessage.success("您已同意该好友申请");
+  ElMessage.success('您已同意该好友申请');
 };
 const handleRefuseRequest = async () => {
   await refuseRequest(item.value.id);
   props.item.status = AddStatus.REFUSED;
-  ElMessage.success("您已拒绝该好友申请");
+  ElMessage.success('您已拒绝该好友申请');
 };
 const handleIgnoreRequest = async () => {
   await ignoreRequest(item.value.id, refuseReason.value);
   props.item.status = AddStatus.IGNORED;
-  ElMessage.success("您已忽略该好友申请");
+  ElMessage.success('您已忽略该好友申请');
 };
 </script>
 <style scoped lang="scss">

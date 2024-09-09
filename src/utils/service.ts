@@ -1,5 +1,5 @@
-import { useUserStore } from "@/stores/user";
-import axios, { type AxiosInstance, type AxiosRequestConfig } from "axios";
+import { useUserStore } from '@/stores/user';
+import axios, { type AxiosInstance, type AxiosRequestConfig } from 'axios';
 
 const service: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL, // api 的 base_url
@@ -32,48 +32,48 @@ service.interceptors.response.use(
       error.response != undefined &&
       (error.response.status == 401 || error.response.status == 403)
     ) {
-      ElMessage.error("请先登录");
+      ElMessage.error('请先登录');
       const userStore = useUserStore();
       userStore.removeToken();
       window.location.href = `/login?redirect=${window.location.href}`;
       return Promise.reject(error);
     }
-    ElMessage.error("请求出错");
+    ElMessage.error('请求出错');
     return Promise.reject(error);
   }
 );
 
 export default {
   get: async <T = any>(option: AxiosRequestConfig) => {
-    const res = await service({ method: "GET", ...option });
+    const res = await service({ method: 'GET', ...option });
     return res.data as unknown as T;
   },
   post: async <T = any>(option: AxiosRequestConfig) => {
-    const res = await service({ method: "POST", ...option });
+    const res = await service({ method: 'POST', ...option });
     return res.data as unknown as T;
   },
   delete: async <T = any>(option: AxiosRequestConfig) => {
-    const res = await service({ method: "DELETE", ...option });
+    const res = await service({ method: 'DELETE', ...option });
     return res.data as unknown as T;
   },
   put: async <T = any>(option: AxiosRequestConfig) => {
-    const res = await service({ method: "PUT", ...option });
+    const res = await service({ method: 'PUT', ...option });
     return res.data as unknown as T;
   },
   download: async <T = any>(option: AxiosRequestConfig) => {
     const res = await service({
-      method: "GET",
-      responseType: "blob",
+      method: 'GET',
+      responseType: 'blob',
       ...option,
     });
     return res as unknown as Promise<T>;
   },
   upload: async <T = any>(option: AxiosRequestConfig) => {
     option.headers = {
-      "Content-Type": "multipart/form-data",
+      'Content-Type': 'multipart/form-data',
       ...option.headers,
     };
-    const res = await service({ method: "POST", ...option });
+    const res = await service({ method: 'POST', ...option });
     return res.data as unknown as T;
   },
 };

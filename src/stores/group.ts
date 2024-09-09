@@ -1,9 +1,9 @@
-import { getGroupList } from "@/api/group";
-import type { UserGroupVo } from "@/api/group/types";
-import { defineStore } from "pinia";
-import { useUserStore } from "./user";
+import { getGroupList } from '@/api/group';
+import type { UserGroupVo } from '@/api/group/types';
+import { defineStore } from 'pinia';
+import { useUserStore } from './user';
 
-export const useGroupStore = defineStore("group", {
+export const useGroupStore = defineStore('group', {
   state() {
     return {
       groupList: [] as UserGroupVo[],

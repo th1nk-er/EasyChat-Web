@@ -1,4 +1,4 @@
-import { LoginType } from "@/views/Login/components/userLogin";
+import { LoginType } from '@/views/Login/components/userLogin';
 
 export type UserLoginVo = {
   type: LoginType;

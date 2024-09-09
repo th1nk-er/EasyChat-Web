@@ -8,9 +8,9 @@
   </div>
 </template>
 <script setup lang="ts">
-import LeftNavigation from "@/components/common/LeftNavigation.vue";
-import TopSearchBar from "@/components/common/TopSearchBar.vue";
-import { GroupList } from "./components";
+import LeftNavigation from '@/components/common/LeftNavigation.vue';
+import TopSearchBar from '@/components/common/TopSearchBar.vue';
+import { GroupList } from './components';
 </script>
 <style lang="scss" scoped>
 .container {

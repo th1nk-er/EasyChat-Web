@@ -7,17 +7,17 @@ export type WSMessage = {
 };
 
 export enum MessageType {
-  TEXT = "TEXT",
-  IMAGE = "IMAGE",
-  FILE = "FILE",
-  SYSTEM = "SYSTEM",
-  ERROR = "ERROR",
-  COMMAND = "COMMAND",
+  TEXT = 'TEXT',
+  IMAGE = 'IMAGE',
+  FILE = 'FILE',
+  SYSTEM = 'SYSTEM',
+  ERROR = 'ERROR',
+  COMMAND = 'COMMAND',
 }
 
 export enum ChatType {
-  FRIEND = "FRIEND",
-  GROUP = "GROUP",
+  FRIEND = 'FRIEND',
+  GROUP = 'GROUP',
 }
 
 export type ChatMessage = {

@@ -68,15 +68,15 @@
   </el-dialog>
 </template>
 <script setup lang="ts">
-import { sendAddRequest } from "@/api/friend";
-import type { AddFriendParams } from "@/api/friend/types";
-import { searchUser } from "@/api/user";
-import { type SearchResult } from "@/api/user/types";
-import { useUserStore } from "@/stores/user";
-import { getFileUrl } from "@/utils/file";
+import { sendAddRequest } from '@/api/friend';
+import type { AddFriendParams } from '@/api/friend/types';
+import { searchUser } from '@/api/user';
+import { type SearchResult } from '@/api/user/types';
+import { useUserStore } from '@/stores/user';
+import { getFileUrl } from '@/utils/file';
 const dialogVisible = defineModel({ type: Boolean, default: false });
 const userStore = useUserStore();
-const searchContent = ref("");
+const searchContent = ref('');
 const searchCurrentPage = ref(1);
 const searchResult = ref({
   total: 0,
@@ -95,7 +95,7 @@ const handlePagechange = () => {
 };
 
 const addInfoDialogVisible = ref(false);
-const addInfoText = ref("");
+const addInfoText = ref('');
 const addStrangerId = ref(0);
 const openAddDialog = (id: number) => {
   addStrangerId.value = id;
@@ -107,9 +107,9 @@ const handleAddFriend = async () => {
     addId: addStrangerId.value,
     addInfo: addInfoText.value,
   } as AddFriendParams);
-  ElMessage.success("好友申请已发送");
+  ElMessage.success('好友申请已发送');
   addInfoDialogVisible.value = false;
-  addInfoText.value = "";
+  addInfoText.value = '';
 };
 </script>
 <style lang="scss" scoped>
