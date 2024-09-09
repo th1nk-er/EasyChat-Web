@@ -23,6 +23,7 @@ export type GroupInvitationVo = {
   groupId: number;
   groupName: string;
   groupAvatar: string;
+  invitedById: number;
   invitedByUsername: string;
   invitedByNickname: string;
   invitedByRemark: string;
