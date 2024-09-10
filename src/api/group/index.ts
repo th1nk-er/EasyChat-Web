@@ -1,6 +1,10 @@
 import service from '@/utils/service';
 import type { Result } from '../types';
-import type { GroupInvitationVo, UserGroupVo } from './types';
+import type {
+  GroupAdminInvitationVo,
+  GroupInvitationVo,
+  UserGroupVo,
+} from './types';
 /**
  * 创建群聊
  * @param userId 用户ID
@@ -38,5 +42,51 @@ export const getGroupList = (userId: number, page: number) => {
 export const getGroupInvitationList = (userId: number, page: number) => {
   return service.get<Result<GroupInvitationVo[]>>({
     url: `/group/invitation/list/${userId}/${page}`,
+  });
+};
+
+/**
+ * 获取用户管理的的群聊的邀请列表
+ * @param userId 用户ID
+ * @param page 页码
+ */
+export const getAdminGroupInvitationList = (userId: number, page: number) => {
+  return service.get<Result<GroupAdminInvitationVo[]>>({
+    url: `/group/invitation/manage/list/${userId}/${page}`,
+  });
+};
+
+/**
+ * 处理用户的群聊邀请
+ * @param userId 用户ID
+ * @param groupId 群组ID
+ * @param accept 是否接受邀请
+ * @returns
+ */
+export const userHandelGroupInvitation = (
+  userId: number,
+  groupId: number,
+  accept: boolean
+) => {
+  return service.post<Result<null>>({
+    url: '/group/invitation',
+    data: { userId, groupId, accept },
+  });
+};
+/**
+ * 管理员处理用户的群聊邀请
+ * @param userId 用户ID
+ * @param groupId 群组ID
+ * @param accept 是否接受邀请
+ * @returns
+ */
+export const adminHandelGroupInvitation = (
+  userId: number,
+  groupId: number,
+  accept: boolean
+) => {
+  return service.post<Result<null>>({
+    url: '/group/invitation/manage',
+    data: { userId, groupId, accept },
   });
 };
