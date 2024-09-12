@@ -29,6 +29,22 @@ export const subscribeMessage = (callback: (message: WSMessage) => void) => {
   return true;
 };
 /**
+ * 订阅群聊消息
+ * @param groupId 群聊ID
+ * @param callback 回调函数
+ */
+export const subscribeGroupMessage = (
+  groupId: number,
+  callback: (message: WSMessage) => void
+) => {
+  const stompClient = useWSStore().stompClient;
+  if (!stompClient.connected) return;
+  stompClient.subscribe('/notify/message/group/' + groupId, (message) => {
+    callback(JSON.parse(message.body));
+  });
+  return true;
+};
+/**
  * 发送消息
  */
 export const sendMessage = (message: WSMessage) => {

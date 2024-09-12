@@ -1,13 +1,15 @@
 export type SearchResult = {
   total: number;
   pageSize: number;
-  records: {
-    id: number;
-    username: string;
-    nickname: string;
-    avatar: string;
-    sex: UserSex;
-  }[];
+  records: StrangerVo[];
+};
+
+export type StrangerVo = {
+  id: number;
+  username: string;
+  nickname: string;
+  avatar: string;
+  sex: UserSex;
 };
 
 export enum UserSex {

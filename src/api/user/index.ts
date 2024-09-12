@@ -2,6 +2,7 @@ import request from '@/utils/service';
 import type { Result } from '../types';
 import type {
   SearchResult,
+  StrangerVo,
   UpdatePasswordParams,
   UpdateUserInfoParams,
   UserVo,
@@ -67,5 +68,16 @@ export const updateUserInfo = (updateUserInfo: UpdateUserInfoParams) => {
   return request.put<Result<null>>({
     url: '/user/info',
     data: updateUserInfo,
+  });
+};
+
+/**
+ * 获取陌生人信息
+ * @param userId 用户ID
+ * @returns
+ */
+export const getStrangerInfo = (userId: number) => {
+  return request.get<Result<StrangerVo>>({
+    url: `/user/info/${userId}`,
   });
 };
