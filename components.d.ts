@@ -68,6 +68,7 @@ declare module 'vue' {
     LeftNavigation: typeof import('./src/components/common/LeftNavigation.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    StrangerInfoDialog: typeof import('./src/components/user/StrangerInfoDialog.vue')['default']
     TopSearchBar: typeof import('./src/components/common/TopSearchBar.vue')['default']
     UserInfoDialog: typeof import('./src/components/user/UserInfoDialog.vue')['default']
     UserSexIcon: typeof import('./src/components/user/UserSexIcon.vue')['default']

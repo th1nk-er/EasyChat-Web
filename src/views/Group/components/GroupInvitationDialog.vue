@@ -86,17 +86,25 @@
         />
         <div class="invitation-list-item__content">
           <p>
-            <span class="primary-color underline">{{
-              item.invitedByNickname
-            }}</span>
-            <span class="primary-color underline"
+            <span
+              class="primary-color underline"
+              @click="showStrangerInfo(item.invitedById)"
+              >{{ item.invitedByNickname }}</span
+            >
+            <span
+              class="primary-color underline"
+              @click="showStrangerInfo(item.invitedById)"
               >({{ item.invitedByUsername }})</span
             >
             <span>邀请</span>
-            <span class="primary-color underline">{{
-              item.inviterNickname
-            }}</span>
-            <span class="primary-color underline"
+            <span
+              class="primary-color underline"
+              @click="showStrangerInfo(item.inviterId)"
+              >{{ item.inviterNickname }}</span
+            >
+            <span
+              class="primary-color underline"
+              @click="showStrangerInfo(item.inviterId)"
               >({{ item.inviterUsername }})</span
             >
             <span>加入群组</span>
@@ -127,6 +135,7 @@
       >
     </div>
     <FriendInfoDialog :friend-id="friendId" v-model="friendInfoShow" />
+    <StrangerInfoDialog v-model="strangerInfoShow" :stranger-id="strangerId" />
   </el-dialog>
 </template>
 <script setup lang="ts">
@@ -142,6 +151,7 @@ import {
 import { useUserStore } from '@/stores/user';
 import { getFileUrl } from '@/utils/file';
 import FriendInfoDialog from '@/components/friend/FriendInfoDialog.vue';
+import StrangerInfoDialog from '@/components/user/StrangerInfoDialog.vue';
 
 const dialogVisible = defineModel({ type: Boolean, default: false });
 const userStore = useUserStore();
@@ -185,6 +195,13 @@ const friendInfoShow = ref(false);
 const showFriendInfo = (id: number) => {
   friendId.value = id;
   friendInfoShow.value = true;
+};
+
+const strangerInfoShow = ref(false);
+const strangerId = ref(0);
+const showStrangerInfo = (id: number) => {
+  strangerId.value = id;
+  strangerInfoShow.value = true;
 };
 </script>
 <style lang="scss" scoped>
