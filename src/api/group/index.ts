@@ -3,6 +3,7 @@ import type { Result } from '../types';
 import type {
   GroupAdminInvitationVo,
   GroupInvitationVo,
+  GroupVo,
   UserGroupVo,
 } from './types';
 /**
@@ -88,5 +89,16 @@ export const adminHandelGroupInvitation = (
   return service.post<Result<null>>({
     url: '/group/invitation/manage',
     data: { userId, groupId, accept },
+  });
+};
+
+/**
+ * 获取群聊信息
+ * @param groupId 群聊ID
+ * @returns
+ */
+export const getGroupInfo = (groupId: number) => {
+  return service.get<Result<GroupVo>>({
+    url: `/group/info/${groupId}`,
   });
 };

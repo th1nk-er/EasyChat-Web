@@ -44,3 +44,12 @@ export type GroupAdminInvitationVo = {
   status: GroupInvitationStatus;
   createTime: string;
 };
+
+export type GroupVo = {
+  groupId: number;
+  groupName: string;
+  groupDesc: string;
+  avatar: string;
+  createTime: string;
+  memberCount: number;
+};

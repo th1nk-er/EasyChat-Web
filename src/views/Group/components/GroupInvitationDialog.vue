@@ -38,7 +38,11 @@
               >({{ item.invitedByUsername }})</span
             >
             <span>邀请您加入群组</span>
-            <span class="primary-color underline">{{ item.groupName }}</span>
+            <span
+              class="primary-color underline"
+              @click="showGroupInfo(item.groupId)"
+              >{{ item.groupName }}</span
+            >
           </p>
         </div>
         <div
@@ -108,7 +112,11 @@
               >({{ item.inviterUsername }})</span
             >
             <span>加入群组</span>
-            <span class="primary-color underline">{{ item.groupName }}</span>
+            <span
+              class="primary-color underline"
+              @click="showGroupInfo(item.groupId)"
+              >{{ item.groupName }}</span
+            >
           </p>
         </div>
         <div
@@ -136,6 +144,7 @@
     </div>
     <FriendInfoDialog :friend-id="friendId" v-model="friendInfoShow" />
     <StrangerInfoDialog v-model="strangerInfoShow" :stranger-id="strangerId" />
+    <GroupInfoDialog v-model="groupInfoShow" :group-id="groupId" />
   </el-dialog>
 </template>
 <script setup lang="ts">
@@ -152,6 +161,7 @@ import { useUserStore } from '@/stores/user';
 import { getFileUrl } from '@/utils/file';
 import FriendInfoDialog from '@/components/friend/FriendInfoDialog.vue';
 import StrangerInfoDialog from '@/components/user/StrangerInfoDialog.vue';
+import GroupInfoDialog from '@/components/group/GroupInfoDialog.vue';
 
 const dialogVisible = defineModel({ type: Boolean, default: false });
 const userStore = useUserStore();
@@ -202,6 +212,12 @@ const strangerId = ref(0);
 const showStrangerInfo = (id: number) => {
   strangerId.value = id;
   strangerInfoShow.value = true;
+};
+const groupInfoShow = ref(false);
+const groupId = ref(0);
+const showGroupInfo = (id: number) => {
+  groupId.value = id;
+  groupInfoShow.value = true;
 };
 </script>
 <style lang="scss" scoped>
