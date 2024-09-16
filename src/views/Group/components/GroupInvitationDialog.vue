@@ -49,8 +49,10 @@
           class="invitation-list-item__button-group"
           v-if="item.status == GroupInvitationStatus.PENDING"
         >
-          <el-button type="primary">同意</el-button>
-          <el-button>拒绝</el-button>
+          <el-button type="primary" @click="handleAgreeInvitation(index)"
+            >同意</el-button
+          >
+          <el-button @click="handleRejectInvitation(index)">拒绝</el-button>
         </div>
         <div class="invitation-list-item__status" v-else>
           <span v-if="item.status == GroupInvitationStatus.REJECTED"
@@ -123,8 +125,12 @@
           class="invitation-list-item__button-group"
           v-if="item.status == GroupInvitationStatus.ADMIN_PENDING"
         >
-          <el-button type="primary">同意</el-button>
-          <el-button>拒绝</el-button>
+          <el-button type="primary" @click="handleAdminAgreeInvitation(index)"
+            >同意</el-button
+          >
+          <el-button @click="handleAdminRejectInvitation(index)"
+            >拒绝</el-button
+          >
         </div>
         <div class="invitation-list-item__status" v-else>
           <span v-if="item.status == GroupInvitationStatus.ADMIN_ACCEPTED"
@@ -149,8 +155,10 @@
 </template>
 <script setup lang="ts">
 import {
+  adminHandelGroupInvitation,
   getAdminGroupInvitationList,
   getGroupInvitationList,
+  userHandelGroupInvitation,
 } from '@/api/group';
 import {
   GroupInvitationStatus,
@@ -162,9 +170,11 @@ import { getFileUrl } from '@/utils/file';
 import FriendInfoDialog from '@/components/friend/FriendInfoDialog.vue';
 import StrangerInfoDialog from '@/components/user/StrangerInfoDialog.vue';
 import GroupInfoDialog from '@/components/group/GroupInfoDialog.vue';
+import { useGroupStore } from '@/stores/group';
 
 const dialogVisible = defineModel({ type: Boolean, default: false });
 const userStore = useUserStore();
+const groupStore = useGroupStore();
 const invitationType = ref(0);
 watch(dialogVisible, (value) => {
   if (value) {
@@ -218,6 +228,47 @@ const groupId = ref(0);
 const showGroupInfo = (id: number) => {
   groupId.value = id;
   groupInfoShow.value = true;
+};
+
+const handleAgreeInvitation = async (index: number) => {
+  await userHandelGroupInvitation(
+    userStore.userInfo.id,
+    invitationList.value[index].groupId,
+    true
+  );
+  invitationList.value[index].status = GroupInvitationStatus.ADMIN_PENDING;
+  ElMessage.success('已同意该邀请');
+  groupStore.loadGroupList();
+};
+const handleRejectInvitation = async (index: number) => {
+  await userHandelGroupInvitation(
+    userStore.userInfo.id,
+    invitationList.value[index].groupId,
+    false
+  );
+  invitationList.value[index].status = GroupInvitationStatus.REJECTED;
+  ElMessage.success('已拒绝该邀请');
+};
+
+const handleAdminAgreeInvitation = async (index: number) => {
+  await adminHandelGroupInvitation(
+    adminInvitationList.value[index].inviterId,
+    adminInvitationList.value[index].groupId,
+    true
+  );
+  ElMessage.success('已同意该邀请');
+  adminInvitationList.value[index].status =
+    GroupInvitationStatus.ADMIN_ACCEPTED;
+};
+const handleAdminRejectInvitation = async (index: number) => {
+  await adminHandelGroupInvitation(
+    adminInvitationList.value[index].inviterId,
+    adminInvitationList.value[index].groupId,
+    false
+  );
+  ElMessage.success('已拒绝该邀请');
+  adminInvitationList.value[index].status =
+    GroupInvitationStatus.ADMIN_REJECTED;
 };
 </script>
 <style lang="scss" scoped>
