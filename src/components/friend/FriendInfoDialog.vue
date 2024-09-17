@@ -55,9 +55,7 @@
           }}</span>
         </div>
         <div class="info-item">
-          <span class="info-item__label"
-            >免&nbsp;&nbsp;打&nbsp;&nbsp;&nbsp;扰</span
-          >
+          <span class="info-item__label">免&nbsp;&nbsp;打&nbsp;&nbsp;扰</span>
           <el-switch v-model="friendInfo.muted" />
         </div>
         <el-divider />

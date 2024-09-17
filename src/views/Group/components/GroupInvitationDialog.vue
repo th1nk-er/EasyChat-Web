@@ -150,7 +150,7 @@
     </div>
     <FriendInfoDialog :friend-id="friendId" v-model="friendInfoShow" />
     <StrangerInfoDialog v-model="strangerInfoShow" :stranger-id="strangerId" />
-    <GroupInfoDialog v-model="groupInfoShow" :group-id="groupId" />
+    <GroupDetails v-model="groupInfoShow" :group-id="groupId" />
   </el-dialog>
 </template>
 <script setup lang="ts">
@@ -169,8 +169,8 @@ import { useUserStore } from '@/stores/user';
 import { getFileUrl } from '@/utils/file';
 import FriendInfoDialog from '@/components/friend/FriendInfoDialog.vue';
 import StrangerInfoDialog from '@/components/user/StrangerInfoDialog.vue';
-import GroupInfoDialog from '@/components/group/GroupInfoDialog.vue';
 import { useGroupStore } from '@/stores/group';
+import GroupDetails from './GroupDetails.vue';
 
 const dialogVisible = defineModel({ type: Boolean, default: false });
 const userStore = useUserStore();

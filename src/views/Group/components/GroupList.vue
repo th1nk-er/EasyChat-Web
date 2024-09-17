@@ -10,6 +10,10 @@
       class="group-item"
       v-for="(item, index) in groupStore.groupList"
       :key="index"
+      @click="
+        groupInfoDialogVisible = true;
+        groupId = item.groupId;
+      "
     >
       <img :src="getFileUrl(item.avatar)" class="group-item__avatar" />
       <div class="group-item__name">
@@ -24,14 +28,18 @@
       </div>
     </div>
     <GroupInvitationDialog v-model="groupInvitationDialogVisible" />
+    <GroupInfoDialog v-model="groupInfoDialogVisible" :group-id="groupId" />
   </div>
 </template>
 <script setup lang="ts">
 import { useGroupStore } from '@/stores/group';
 import { getFileUrl } from '@/utils/file';
 import { GroupInvitationDialog } from '.';
+import GroupInfoDialog from '@/components/group/GroupInfoDialog.vue';
 const groupStore = useGroupStore();
 const groupInvitationDialogVisible = ref(false);
+const groupInfoDialogVisible = ref(false);
+const groupId = ref(0);
 onMounted(() => {
   groupStore.loadGroupList();
 });

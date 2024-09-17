@@ -9,7 +9,11 @@ export const useGroupStore = defineStore('group', {
       groupList: [] as UserGroupVo[],
     };
   },
+  getters: {},
   actions: {
+    getUserVoById(groupId: number) {
+      return this.groupList.find((item) => item.groupId == groupId);
+    },
     loadGroupList() {
       this.groupList = [];
       let page = 1;

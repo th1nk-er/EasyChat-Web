@@ -1,39 +1,69 @@
 <template>
-  <el-dialog v-model="dialogVisible" width="25%">
-    <div class="group-info">
-      <img :src="getFileUrl(groupInfo.avatar)" class="group-info__avatar" />
-      <div class="group-info__details">
-        <p>
-          <span>群聊名称：</span>
-          <span class="group-info__name">
-            {{ groupInfo.groupName }}
-          </span>
-        </p>
-        <p>
-          <span>群聊简介：</span>
-          <span class="group-info__desc">
-            {{ groupInfo.groupDesc }}
-          </span>
-        </p>
-        <p>
-          <span>创建时间：</span>
-          <span class="group-info__create-time">
-            {{ groupInfo.createTime }}
-          </span>
-        </p>
-        <p>
-          <span>群聊人数：</span>
-          <span class="group-info__member-count">
-            {{ groupInfo.memberCount }}
-          </span>
-        </p>
+  <el-dialog v-model="dialogVisible" width="35%">
+    <div class="container">
+      <div class="avatar">
+        <img :src="getFileUrl(groupInfo.avatar)" class="img-avatar" />
+      </div>
+      <el-divider />
+      <div class="info-container">
+        <div class="info-item">
+          <span class="info-item__label">群聊名称</span>
+          <span class="info-item__content">{{ groupInfo.groupName }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-item__label">群聊简介</span>
+          <span class="info-item__content">{{ groupInfo.groupDesc }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-item__label">群聊备注</span>
+          <span class="info-item__content" v-show="!editRemarkShow">{{
+            groupInfo.groupRemark
+          }}</span>
+          <IconEdit
+            class="icon-edit"
+            v-show="!editRemarkShow"
+            @click="
+              editRemarkShow = true;
+              remarkInputRef?.focus();
+            "
+          />
+          <el-input
+            v-model="groupInfo.groupRemark"
+            maxlength="20"
+            v-show="editRemarkShow"
+            ref="remarkInputRef"
+            @blur="editRemarkShow = false"
+            style="width: 30%"
+          />
+        </div>
+        <div class="info-item">
+          <span class="info-item__label">免&nbsp;&nbsp;打&nbsp;&nbsp;扰</span>
+          <el-switch v-model="groupInfo.muted" />
+        </div>
+      </div>
+      <el-divider />
+      <div class="info-item-button-group">
+        <el-button
+          class="button"
+          type="primary"
+          @click="handleUpdateUserGroupInfo"
+          >保存修改</el-button
+        >
+        <el-button class="button" type="primary" @click="handleSendMessage"
+          >发送消息</el-button
+        >
+        <el-button class="button" type="danger" @click="handleQuitGroup"
+          >退出群组</el-button
+        >
       </div>
     </div>
   </el-dialog>
 </template>
 <script setup lang="ts">
-import { getGroupInfo } from '@/api/group';
-import type { GroupVo } from '@/api/group/types';
+import { ChatType } from '@/api/chat/types';
+import type { UserGroupVo } from '@/api/group/types';
+import { useChatStore } from '@/stores/chat';
+import { useGroupStore } from '@/stores/group';
 import { getFileUrl } from '@/utils/file';
 
 const dialogVisible = defineModel({ type: Boolean, default: false });
@@ -43,31 +73,81 @@ const props = defineProps({
     required: true,
   },
 });
-const groupInfo = ref({} as GroupVo);
-watch(dialogVisible, async (value) => {
+watch(dialogVisible, (value) => {
   if (value) {
-    groupInfo.value = (await getGroupInfo(props.groupId)).data;
+    loadData();
   }
 });
+const router = useRouter();
+const groupStore = useGroupStore();
+const chatStore = useChatStore();
+const groupInfo = ref({} as UserGroupVo);
+const loadData = () => {
+  const userGroupVo = groupStore.getUserVoById(props.groupId);
+  if (userGroupVo) {
+    groupInfo.value = { ...userGroupVo };
+  }
+};
+const editRemarkShow = ref(false);
+const remarkInputRef = ref<HTMLInputElement>();
+const handleUpdateUserGroupInfo = () => {
+  //TODO 更新用户群组信息
+};
+const handleSendMessage = () => {
+  chatStore.chatId = props.groupId;
+  chatStore.isChatting = true;
+  chatStore.chatType = ChatType.GROUP;
+  router.push({ name: 'Chat' });
+};
+const handleQuitGroup = () => {
+  //TODO 退出群组
+};
 </script>
-<style lang="scss" scoped>
-.group-info {
+<style scoped lang="scss">
+.container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  p {
-    width: 250px;
+  width: 100%;
+  .avatar {
+    .img-avatar {
+      border-radius: 10px;
+      width: 120px;
+      height: 120px;
+    }
   }
-  &__avatar {
-    width: 80px;
-    height: 80px;
-    border-radius: 10px;
-  }
-  &__name,
-  &__desc,
-  &__create-time,
-  &__member-count {
-    font-weight: bolder;
+  .info-container {
+    display: flex;
+    flex-direction: column;
+    width: 95%;
+
+    .info-item {
+      display: flex;
+      width: 100%;
+      font-size: 18px;
+      align-items: center;
+      &__label {
+        width: 20%;
+        color: var(--color-subtitle);
+      }
+      &__content {
+        color: var(--color-text);
+      }
+      .icon-edit {
+        margin-left: 10px;
+        cursor: pointer;
+        &:hover {
+          fill: var(--color-subtitle);
+        }
+      }
+      &-button-group {
+        display: flex;
+        justify-content: space-between;
+        .button {
+          width: 30%;
+        }
+      }
+    }
   }
 }
 </style>
