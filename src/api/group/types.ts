@@ -53,3 +53,9 @@ export type GroupVo = {
   createTime: string;
   memberCount: number;
 };
+
+export type UpdateUserGroupParams = {
+  groupId: number;
+  muted?: boolean;
+  groupRemark?: string;
+};

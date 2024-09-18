@@ -4,6 +4,7 @@ import type {
   GroupAdminInvitationVo,
   GroupInvitationVo,
   GroupVo,
+  UpdateUserGroupParams,
   UserGroupVo,
 } from './types';
 /**
@@ -62,7 +63,6 @@ export const getAdminGroupInvitationList = (userId: number, page: number) => {
  * @param userId 用户ID
  * @param groupId 群组ID
  * @param accept 是否接受邀请
- * @returns
  */
 export const userHandelGroupInvitation = (
   userId: number,
@@ -79,7 +79,6 @@ export const userHandelGroupInvitation = (
  * @param userId 用户ID
  * @param groupId 群组ID
  * @param accept 是否接受邀请
- * @returns
  */
 export const adminHandelGroupInvitation = (
   userId: number,
@@ -95,10 +94,26 @@ export const adminHandelGroupInvitation = (
 /**
  * 获取群聊信息
  * @param groupId 群聊ID
- * @returns
  */
 export const getGroupInfo = (groupId: number) => {
   return service.get<Result<GroupVo>>({
     url: `/group/info/${groupId}`,
+  });
+};
+
+/**
+ * 更新用户群聊信息
+ * @param userId 用户ID
+ * @param groupId 群聊ID
+ * @param groupRemark 群聊备注
+ * @param muted 是否免打扰
+ */
+export const updateUserGroupInfo = (
+  userId: number,
+  params: UpdateUserGroupParams
+) => {
+  return service.put<Result<null>>({
+    url: `/group//update/user/${userId}`,
+    data: params,
   });
 };

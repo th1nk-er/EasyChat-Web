@@ -61,9 +61,11 @@
 </template>
 <script setup lang="ts">
 import { ChatType } from '@/api/chat/types';
+import { updateUserGroupInfo } from '@/api/group';
 import type { UserGroupVo } from '@/api/group/types';
 import { useChatStore } from '@/stores/chat';
 import { useGroupStore } from '@/stores/group';
+import { useUserStore } from '@/stores/user';
 import { getFileUrl } from '@/utils/file';
 
 const dialogVisible = defineModel({ type: Boolean, default: false });
@@ -79,6 +81,7 @@ watch(dialogVisible, (value) => {
   }
 });
 const router = useRouter();
+const userStore = useUserStore();
 const groupStore = useGroupStore();
 const chatStore = useChatStore();
 const groupInfo = ref({} as UserGroupVo);
@@ -90,8 +93,25 @@ const loadData = () => {
 };
 const editRemarkShow = ref(false);
 const remarkInputRef = ref<HTMLInputElement>();
-const handleUpdateUserGroupInfo = () => {
-  //TODO 更新用户群组信息
+const handleUpdateUserGroupInfo = async () => {
+  // 检测是否有修改
+  if (
+    groupInfo.value.groupRemark ===
+      groupStore.getUserVoById(props.groupId)?.groupRemark &&
+    groupInfo.value.muted === groupStore.getUserVoById(props.groupId)?.muted
+  ) {
+    return;
+  } else {
+    // 存在修改内容，发起更新请求
+    await updateUserGroupInfo(userStore.userInfo.id, {
+      groupId: props.groupId,
+      groupRemark: groupInfo.value.groupRemark,
+      muted: groupInfo.value.muted,
+    });
+    ElMessage.success('修改成功');
+    groupStore.loadGroupList();
+  }
+  dialogVisible.value = false;
 };
 const handleSendMessage = () => {
   chatStore.chatId = props.groupId;

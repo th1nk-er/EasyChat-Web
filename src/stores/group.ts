@@ -15,7 +15,7 @@ export const useGroupStore = defineStore('group', {
       return this.groupList.find((item) => item.groupId == groupId);
     },
     loadGroupList() {
-      this.groupList = [];
+      let groupList: UserGroupVo[] = [];
       let page = 1;
       const intervalId = setInterval(async () => {
         const userStore = useUserStore();
@@ -24,12 +24,13 @@ export const useGroupStore = defineStore('group', {
           if (resp.data.length == 0) {
             clearInterval(intervalId);
           } else {
-            this.groupList.push(...resp.data);
+            groupList.push(...resp.data);
           }
         } catch (e) {
           clearInterval(intervalId);
         }
       }, 300);
+      this.groupList = groupList;
     },
   },
 });
