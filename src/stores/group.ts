@@ -22,15 +22,16 @@ export const useGroupStore = defineStore('group', {
         try {
           const resp = await getGroupList(userStore.userInfo.id, page++);
           if (resp.data.length == 0) {
+            this.groupList = groupList;
             clearInterval(intervalId);
           } else {
             groupList.push(...resp.data);
           }
         } catch (e) {
+          this.groupList = groupList;
           clearInterval(intervalId);
         }
       }, 300);
-      this.groupList = groupList;
     },
   },
 });

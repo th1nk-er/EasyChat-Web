@@ -76,11 +76,9 @@ const handleClickConversation = (conversation: UserConversation) => {
     conversation.senderId,
     conversation.chatType
   );
-  if (conversation.chatType == ChatType.FRIEND) {
-    chatStore.chatId = conversation.senderId;
-    chatStore.chatType = ChatType.FRIEND;
-    chatStore.isChatting = true;
-  }
+  chatStore.chatId = conversation.senderId;
+  chatStore.chatType = conversation.chatType;
+  chatStore.isChatting = true;
 };
 onMounted(() => {
   chatStore.loadConversations();

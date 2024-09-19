@@ -48,8 +48,10 @@ import { UserSex } from '@/api/user/types';
 import { useChatStore } from '@/stores/chat';
 import { useUserStore } from '@/stores/user';
 import { ChatHeader, ChatInputBox, ChatMessageBox, ChatToolBar } from '.';
+import { useGroupStore } from '@/stores/group';
 const componentKey = ref(0);
 const chatStore = useChatStore();
+const groupStore = useGroupStore();
 const userStore = useUserStore();
 const messageData = ref<ChatMessage[]>([]);
 const msgBox = ref();
@@ -165,6 +167,19 @@ const initChatData = async () => {
     subscribeMessage((message: WSMessage) => {
       onReceiveMessage(message);
     });
+  } else if (chatStore.chatType == ChatType.GROUP) {
+    // 群聊
+    const group = groupStore.getUserVoById(chatStore.chatId);
+    if (group) {
+      chatInfo.value.chatId = chatStore.chatId;
+      chatInfo.value.name = group.groupName;
+      chatInfo.value.remark = group.groupName;
+      chatInfo.value.avatar = group.avatar;
+      chatInfo.value.muted = group.muted;
+      // TODO 获取最近消息
+      scrollToBottom();
+      // TODO 订阅群消息
+    }
   }
 };
 const onReceiveMessage = (message: WSMessage) => {

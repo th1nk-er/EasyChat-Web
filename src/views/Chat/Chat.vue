@@ -16,8 +16,10 @@ import { useUserStore } from '@/stores/user';
 import { getUserInfo } from '@/api/user';
 import { useChatStore } from '@/stores/chat';
 import { ChatList, ChatInstance } from './components';
+import { useGroupStore } from '@/stores/group';
 const userStore = useUserStore();
 const chatStore = useChatStore();
+const groupStore = useGroupStore();
 const wsStore = useWSStore();
 const router = useRouter();
 const wsConnect = () => {
@@ -38,6 +40,7 @@ const wsConnect = () => {
 onMounted(async () => {
   wsConnect();
   userStore.userInfo = (await getUserInfo()).data;
+  if (groupStore.groupList.length == 0) groupStore.loadGroupList();
 });
 const handleWsMessage = (message: WSMessage) => {
   if (message.messageType == MessageType.SYSTEM) {
