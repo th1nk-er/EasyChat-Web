@@ -36,7 +36,7 @@ export type UserConversation = {
   avatar: string;
   nickname: string;
   remark: string;
-  senderId: number;
+  chatId: number;
   chatType: ChatType;
   muted: boolean;
   unreadCount: number;

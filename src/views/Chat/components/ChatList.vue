@@ -72,11 +72,8 @@ import { getFileUrl } from '@/utils/file';
 
 const chatStore = useChatStore();
 const handleClickConversation = (conversation: UserConversation) => {
-  chatStore.clearConversationUnread(
-    conversation.senderId,
-    conversation.chatType
-  );
-  chatStore.chatId = conversation.senderId;
+  chatStore.clearConversationUnread(conversation.chatId, conversation.chatType);
+  chatStore.chatId = conversation.chatId;
   chatStore.chatType = conversation.chatType;
   chatStore.isChatting = true;
 };

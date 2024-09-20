@@ -40,15 +40,15 @@ export const useChatStore = defineStore('chat', {
     },
     /**
      * 清除指定话的未读消息
-     * @param senderId 发送者ID
+     * @param chatId 对方ID
      */
-    clearConversationUnread(senderId: number, chatType: ChatType) {
+    clearConversationUnread(chatId: number, chatType: ChatType) {
       const list = this.conversationList;
       for (let i = 0; i < list.length; i++) {
         if (
           list[i].chatType == chatType &&
-          senderId != undefined &&
-          list[i].senderId === senderId
+          chatId != undefined &&
+          list[i].chatId === chatId
         ) {
           this.conversationList[i].unreadCount = 0;
           break;
@@ -63,7 +63,7 @@ export const useChatStore = defineStore('chat', {
     updateConversation(message: WSMessage) {
       const list = this.conversationList;
       for (let i = 0; i < list.length; i++) {
-        if (message.toId != undefined && list[i].senderId === message.toId) {
+        if (message.toId != undefined && list[i].chatId === message.toId) {
           // 用户发送的消息
           this.conversationList[i].lastMessage = message.content;
           this.conversationList[i].messageType = message.messageType;
@@ -77,7 +77,7 @@ export const useChatStore = defineStore('chat', {
           break;
         } else if (
           message.fromId != undefined &&
-          list[i].senderId === message.fromId
+          list[i].chatId === message.fromId
         ) {
           // 用户接收的消息
           this.conversationList[i].lastMessage = message.content;
@@ -103,7 +103,7 @@ export const useChatStore = defineStore('chat', {
         if (
           list[i].chatType == ChatType.FRIEND &&
           friendInfo.friendId != undefined &&
-          list[i].senderId === friendInfo.friendId
+          list[i].chatId === friendInfo.friendId
         ) {
           this.conversationList[i].remark = friendInfo.remark;
           this.conversationList[i].muted = friendInfo.muted;
@@ -113,7 +113,7 @@ export const useChatStore = defineStore('chat', {
       this.conversationList.unshift({
         id: 0,
         uid: 0,
-        senderId: friendInfo.friendId,
+        chatId: friendInfo.friendId,
         avatar: friendInfo.avatar,
         nickname: friendInfo.nickname,
         remark: friendInfo.remark,
@@ -127,16 +127,16 @@ export const useChatStore = defineStore('chat', {
     },
     /**
      * 删除指定对话
-     * @param senderId 发送者ID
+     * @param chatId 发送者ID
      * @param chatType 对话类型
      */
-    deleteConversation(senderId: number, chatType: ChatType) {
+    deleteConversation(chatId: number, chatType: ChatType) {
       const list = this.conversationList;
       for (let i = 0; i < list.length; i++) {
         if (
           list[i].chatType == chatType &&
-          senderId != undefined &&
-          list[i].senderId === senderId
+          chatId != undefined &&
+          list[i].chatId === chatId
         ) {
           this.conversationList.splice(i, 1);
           break;
