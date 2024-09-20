@@ -30,6 +30,7 @@
 </template>
 <script setup lang="ts">
 import {
+  getGroupMessageHistory,
   getMessageHistory,
   publishOpenConversation,
   sendMessage,
@@ -206,15 +207,26 @@ watch(
 );
 const msgPageIndex = ref(0);
 const getMoreMessage = async () => {
-  messageData.value.unshift(
-    ...(
-      await getMessageHistory(
-        userStore.userInfo.id,
-        chatInfo.value.chatId,
-        ++msgPageIndex.value
-      )
-    ).data
-  );
+  if (chatInfo.value.chatType == ChatType.FRIEND) {
+    messageData.value.unshift(
+      ...(
+        await getMessageHistory(
+          userStore.userInfo.id,
+          chatInfo.value.chatId,
+          ++msgPageIndex.value
+        )
+      ).data
+    );
+  } else if (chatInfo.value.chatType == ChatType.GROUP) {
+    messageData.value.unshift(
+      ...(
+        await getGroupMessageHistory(
+          chatInfo.value.chatId,
+          ++msgPageIndex.value
+        )
+      ).data
+    );
+  }
 };
 onMounted(() => {
   if (chatStore.isChatting) initChatData();

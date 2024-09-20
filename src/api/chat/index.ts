@@ -102,6 +102,22 @@ export const getMessageHistory = (
 };
 
 /**
+ * 获取群聊消息历史记录
+ * @param userId 用户ID
+ * @param groupId 群聊ID
+ * @param currentPage 页码
+ * @returns
+ */
+export const getGroupMessageHistory = (
+  groupId: number,
+  currentPage: number
+) => {
+  return request.get<Result<ChatMessage[]>>({
+    url: `/message/history/group/${groupId}/${currentPage}`,
+    method: 'get',
+  });
+};
+/**
  * 获取用户对话列表
  * @param userId 用户ID
  */
