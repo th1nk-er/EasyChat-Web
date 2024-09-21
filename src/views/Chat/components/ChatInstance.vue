@@ -43,29 +43,14 @@ import {
   type ChatMessage,
   type WSMessage,
 } from '@/api/chat/types';
-import { getFriendInfo } from '@/api/friend';
-import type { UserFriendVo } from '@/api/friend/types';
-import { UserSex } from '@/api/user/types';
 import { useChatStore } from '@/stores/chat';
 import { useUserStore } from '@/stores/user';
 import { ChatHeader, ChatInputBox, ChatMessageBox, ChatToolBar } from '.';
-import { useGroupStore } from '@/stores/group';
 const componentKey = ref(0);
 const chatStore = useChatStore();
-const groupStore = useGroupStore();
 const userStore = useUserStore();
 const messageData = ref<ChatMessage[]>([]);
 const msgBox = ref();
-const friendInfo = ref<UserFriendVo>({
-  friendId: 0,
-  nickname: '',
-  username: '',
-  avatar: '',
-  sex: UserSex.SECRET,
-  createTime: '',
-  remark: '',
-  muted: false,
-});
 /** 用户输入的消息 */
 const inputMessage = ref('');
 /** 消息输入框 */
@@ -143,16 +128,16 @@ const initChatData = async () => {
   messageData.value = [];
   if (!chatStore.isChatting) return;
   chatInfo.value.chatType = chatStore.chatType;
+  chatInfo.value.chatId = chatStore.chatId;
   publishOpenConversation(chatStore.chatId, chatStore.chatType);
+  const con = chatStore.getConversation(chatStore.chatId, chatStore.chatType);
+  if (con) {
+    chatInfo.value.name = con.nickname;
+    chatInfo.value.remark = con.remark;
+    chatInfo.value.avatar = con.avatar;
+    chatInfo.value.muted = con.muted;
+  }
   if (chatStore.chatType == ChatType.FRIEND) {
-    const resp = await getFriendInfo(userStore.userInfo.id, chatStore.chatId);
-    friendInfo.value = resp.data;
-    chatStore.updateFriendConversation(resp.data);
-    chatInfo.value.chatId = resp.data.friendId;
-    chatInfo.value.name = resp.data.nickname;
-    chatInfo.value.remark = resp.data.remark;
-    chatInfo.value.avatar = resp.data.avatar;
-    chatInfo.value.muted = resp.data.muted;
     // 获取最近的消息
     messageData.value.push(
       ...(
@@ -169,18 +154,14 @@ const initChatData = async () => {
       onReceiveMessage(message);
     });
   } else if (chatStore.chatType == ChatType.GROUP) {
-    // 群聊
-    const group = groupStore.getUserVoById(chatStore.chatId);
-    if (group) {
-      chatInfo.value.chatId = chatStore.chatId;
-      chatInfo.value.name = group.groupName;
-      chatInfo.value.remark = group.groupName;
-      chatInfo.value.avatar = group.avatar;
-      chatInfo.value.muted = group.muted;
-      // TODO 获取最近消息
-      scrollToBottom();
-      // TODO 订阅群消息
-    }
+    // TODO 获取最近消息
+    messageData.value.push(
+      ...(
+        await getGroupMessageHistory(chatInfo.value.chatId, msgPageIndex.value)
+      ).data
+    );
+    scrollToBottom();
+    // TODO 订阅群消息
   }
 };
 const onReceiveMessage = (message: WSMessage) => {
@@ -206,26 +187,30 @@ watch(
   }
 );
 const msgPageIndex = ref(0);
+const hasMoreMessage = ref(true);
 const getMoreMessage = async () => {
+  if (!hasMoreMessage.value) return;
   if (chatInfo.value.chatType == ChatType.FRIEND) {
-    messageData.value.unshift(
-      ...(
-        await getMessageHistory(
-          userStore.userInfo.id,
-          chatInfo.value.chatId,
-          ++msgPageIndex.value
-        )
-      ).data
+    const resp = await getMessageHistory(
+      userStore.userInfo.id,
+      chatInfo.value.chatId,
+      ++msgPageIndex.value
     );
+    if (resp.data.length == 0) {
+      hasMoreMessage.value = false;
+      return;
+    }
+    messageData.value.unshift(...resp.data);
   } else if (chatInfo.value.chatType == ChatType.GROUP) {
-    messageData.value.unshift(
-      ...(
-        await getGroupMessageHistory(
-          chatInfo.value.chatId,
-          ++msgPageIndex.value
-        )
-      ).data
+    const resp = await getGroupMessageHistory(
+      chatInfo.value.chatId,
+      ++msgPageIndex.value
     );
+    if (resp.data.length == 0) {
+      hasMoreMessage.value = false;
+      return;
+    }
+    messageData.value.unshift(...resp.data);
   }
 };
 onMounted(() => {

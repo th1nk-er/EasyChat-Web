@@ -8,6 +8,7 @@ import {
 import type { UserFriendVo } from '@/api/friend/types';
 import { defineStore } from 'pinia';
 import { useUserStore } from './user';
+import type { UserGroupVo } from '@/api/group/types';
 export const useChatStore = defineStore('chat', {
   state() {
     return {
@@ -28,6 +29,16 @@ export const useChatStore = defineStore('chat', {
         }
       }
       return res;
+    },
+    getConversation: (state) => (chatId: number, chatType: ChatType) => {
+      for (let i = 0; i < state.conversationList.length; i++) {
+        if (
+          state.conversationList[i].chatId === chatId &&
+          state.conversationList[i].chatType === chatType
+        ) {
+          return state.conversationList[i];
+        }
+      }
     },
   },
   actions: {
@@ -123,6 +134,38 @@ export const useChatStore = defineStore('chat', {
         messageType: MessageType.TEXT,
         updateTime: new Date() + '',
         chatType: ChatType.FRIEND,
+      });
+    },
+    /**
+     * 当群组信息更新时，调用该方法更新对话列表
+     * @param groupInfo 群组信息
+     */
+    updateGroupConversation(groupInfo: UserGroupVo) {
+      const list = this.conversationList;
+      for (let i = 0; i < list.length; i++) {
+        if (
+          list[i].chatType == ChatType.GROUP &&
+          groupInfo.groupId != undefined &&
+          list[i].chatId === groupInfo.groupId
+        ) {
+          this.conversationList[i].remark = groupInfo.groupRemark ?? '';
+          this.conversationList[i].avatar = groupInfo.avatar;
+          return;
+        }
+      }
+      this.conversationList.unshift({
+        id: 0,
+        uid: 0,
+        chatId: groupInfo.groupId,
+        avatar: groupInfo.avatar,
+        nickname: groupInfo.groupName,
+        remark: groupInfo.groupRemark ?? '',
+        muted: groupInfo.muted,
+        unreadCount: 0,
+        lastMessage: '',
+        messageType: MessageType.TEXT,
+        updateTime: new Date() + '',
+        chatType: ChatType.GROUP,
       });
     },
     /**

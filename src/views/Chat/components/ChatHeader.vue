@@ -7,10 +7,13 @@
         :friend-id="chatInfo.chatId"
         @on-friend-info-update="onFriendInfoUpdate"
       />
-      <div
-        class="chat__header__title__name"
-        @click="friendInfoDialogShow = true"
-      >
+      <GroupInfoDialog
+        v-if="chatInfo.chatType == ChatType.GROUP"
+        v-model="groupInfoDialogShow"
+        :group-id="chatInfo.chatId"
+        @on-group-info-update="onGroupInfoUpdate"
+      />
+      <div class="chat__header__title__name" @click="showInfo">
         <span
           v-if="chatInfo.remark == undefined || chatInfo.remark.length == 0"
           >{{ chatInfo.name }}</span
@@ -29,7 +32,10 @@ import FriendInfoDialog from '@/components/friend/FriendInfoDialog.vue';
 import type { UserFriendVo } from '@/api/friend/types';
 import { ChatType } from '@/api/chat/types';
 import type { ChatInfo } from '.';
+import GroupInfoDialog from '@/components/group/GroupInfoDialog.vue';
+import type { UserGroupVo } from '@/api/group/types';
 const friendInfoDialogShow = ref(false);
+const groupInfoDialogShow = ref(false);
 const props = defineProps({
   chatInfo: {
     type: Object as PropType<ChatInfo>,
@@ -41,6 +47,19 @@ const onFriendInfoUpdate = (data: UserFriendVo) => {
   chatInfo.value.chatId = data.friendId;
   chatInfo.value.name = data.nickname;
   chatInfo.value.remark = data.remark;
+  chatInfo.value.avatar = data.avatar;
+  chatInfo.value.muted = data.muted;
+};
+const showInfo = () => {
+  if (chatInfo.value.chatType == ChatType.FRIEND)
+    friendInfoDialogShow.value = true;
+  else if (chatInfo.value.chatType == ChatType.GROUP)
+    groupInfoDialogShow.value = true;
+};
+const onGroupInfoUpdate = (data: UserGroupVo) => {
+  chatInfo.value.chatId = data.groupId;
+  chatInfo.value.name = data.groupName;
+  chatInfo.value.remark = data.groupRemark ?? '';
   chatInfo.value.avatar = data.avatar;
   chatInfo.value.muted = data.muted;
 };

@@ -75,6 +75,9 @@ const props = defineProps({
     required: true,
   },
 });
+const emit = defineEmits<{
+  onGroupInfoUpdate: [UserGroupVo];
+}>();
 watch(dialogVisible, (value) => {
   if (value) {
     loadData();
@@ -110,6 +113,8 @@ const handleUpdateUserGroupInfo = async () => {
     });
     ElMessage.success('修改成功');
     groupStore.loadGroupList();
+    emit('onGroupInfoUpdate', groupInfo.value);
+    chatStore.updateGroupConversation(groupInfo.value);
   }
   dialogVisible.value = false;
 };
@@ -118,6 +123,7 @@ const handleSendMessage = () => {
   chatStore.isChatting = true;
   chatStore.chatType = ChatType.GROUP;
   router.push({ name: 'Chat' });
+  dialogVisible.value = false;
 };
 const handleQuitGroup = () => {
   //TODO 退出群组

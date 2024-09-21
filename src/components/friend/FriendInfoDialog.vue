@@ -97,7 +97,9 @@ const props = defineProps({
     required: true,
   },
 });
-const emit = defineEmits(['onFriendInfoUpdate']);
+const emit = defineEmits<{
+  onFriendInfoUpdate: [UserFriendVo];
+}>();
 const friendInfo = ref<UserFriendVo>({} as UserFriendVo);
 watch(dialogShow, async (value) => {
   if (value) {
