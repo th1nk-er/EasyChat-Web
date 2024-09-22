@@ -34,6 +34,7 @@ import {
   getMessageHistory,
   publishOpenConversation,
   sendMessage,
+  subscribeGroupMessage,
   subscribeMessage,
   uploadChatImage,
 } from '@/api/chat';
@@ -154,24 +155,39 @@ const initChatData = async () => {
       onReceiveMessage(message);
     });
   } else if (chatStore.chatType == ChatType.GROUP) {
-    // TODO 获取最近消息
     messageData.value.push(
       ...(
         await getGroupMessageHistory(chatInfo.value.chatId, msgPageIndex.value)
       ).data
     );
     scrollToBottom();
-    // TODO 订阅群消息
+    subscribeGroupMessage(chatInfo.value.chatId, (message: WSMessage) => {
+      onReceiveMessage(message);
+    });
   }
 };
 const onReceiveMessage = (message: WSMessage) => {
   if (
     message.fromId == chatStore.chatId &&
-    message.chatType == chatStore.chatType
+    message.chatType == ChatType.FRIEND
   ) {
     messageData.value.push({
       senderId: message.fromId,
       receiverId: userStore.userInfo.id,
+      messageType: message.messageType,
+      content: message.content,
+      createTime: new Date().toISOString(),
+      chatType: message.chatType,
+    });
+    scrollToBottom();
+  } else if (
+    message.fromId != userStore.userInfo.id &&
+    message.toId == chatStore.chatId &&
+    message.chatType == ChatType.GROUP
+  ) {
+    messageData.value.push({
+      senderId: message.fromId,
+      receiverId: chatStore.chatId,
       messageType: message.messageType,
       content: message.content,
       createTime: new Date().toISOString(),

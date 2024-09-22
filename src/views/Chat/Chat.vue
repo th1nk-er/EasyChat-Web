@@ -8,7 +8,11 @@
   </div>
 </template>
 <script setup lang="ts">
-import { sendConnect, subscribeMessage } from '@/api/chat';
+import {
+  sendConnect,
+  subscribeGroupMessage,
+  subscribeMessage,
+} from '@/api/chat';
 import LeftNavigation from '@/components/common/LeftNavigation.vue';
 import { useWSStore } from '@/stores/ws';
 import { MessageType, type WSMessage } from '@/api/chat/types';
@@ -41,6 +45,9 @@ onMounted(async () => {
   wsConnect();
   userStore.userInfo = (await getUserInfo()).data;
   if (groupStore.groupList.length == 0) groupStore.loadGroupList();
+  groupStore.groupList.forEach((group) => {
+    subscribeGroupMessage(group.groupId, (msg) => handleWsMessage(msg));
+  });
 });
 const handleWsMessage = (message: WSMessage) => {
   if (message.messageType == MessageType.SYSTEM) {

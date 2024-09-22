@@ -67,6 +67,23 @@ export const useChatStore = defineStore('chat', {
       }
     },
     /**
+     * 将指定对话移动到顶部
+     * @param chatId 对方ID
+     * @param chatType 对话类型
+     */
+    moveToTop(chatId: number, chatType: ChatType) {
+      const list = this.conversationList;
+      for (let i = 0; i < list.length; i++) {
+        if (list[i].chatType == chatType && list[i].chatId === chatId) {
+          [this.conversationList[0], this.conversationList[i]] = [
+            this.conversationList[i],
+            this.conversationList[0],
+          ];
+          break;
+        }
+      }
+    },
+    /**
      * 根据消息更新对话列表
      * 若存在则更新，不存在则添加
      * @param message 消息
@@ -74,32 +91,23 @@ export const useChatStore = defineStore('chat', {
     updateConversation(message: WSMessage) {
       const list = this.conversationList;
       for (let i = 0; i < list.length; i++) {
-        if (message.toId != undefined && list[i].chatId === message.toId) {
+        if (message.chatType != list[i].chatType) continue;
+        if (list[i].chatId === message.toId) {
           // 用户发送的消息
           this.conversationList[i].lastMessage = message.content;
           this.conversationList[i].messageType = message.messageType;
           this.conversationList[i].updateTime = new Date().toISOString();
           this.conversationList[i].unreadCount = 0;
-          // 置顶消息
-          [this.conversationList[0], this.conversationList[i]] = [
-            this.conversationList[i],
-            this.conversationList[0],
-          ];
+          this.moveToTop(message.toId, message.chatType);
           break;
-        } else if (
-          message.fromId != undefined &&
-          list[i].chatId === message.fromId
-        ) {
+        } else if (list[i].chatId === message.fromId) {
           // 用户接收的消息
           this.conversationList[i].lastMessage = message.content;
           this.conversationList[i].messageType = message.messageType;
           this.conversationList[i].updateTime = new Date().toISOString();
           this.conversationList[i].unreadCount++;
-          // 置顶消息
-          [this.conversationList[0], this.conversationList[i]] = [
-            this.conversationList[i],
-            this.conversationList[0],
-          ];
+          this.moveToTop(message.fromId, message.chatType);
+          break;
         }
       }
     },

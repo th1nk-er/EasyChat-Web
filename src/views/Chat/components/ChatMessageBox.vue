@@ -75,6 +75,8 @@ import { getTimeString } from '@/utils/timeUtils';
 import UserInfoDialog from '@/components/user/UserInfoDialog.vue';
 import FriendInfoDialog from '@/components/friend/FriendInfoDialog.vue';
 import type { ChatInfo } from '.';
+import { getStrangerInfo } from '@/api/user';
+import type { StrangerVo } from '@/api/user/types';
 
 const msgBox = ref<HTMLElement>();
 const props = defineProps({
@@ -97,23 +99,26 @@ const scrollToBottom = () => {
 };
 const userStore = useUserStore();
 
-//TODO 群组成员信息
-const groupUserInfo = ref([]);
+const groupUserInfo = ref([] as StrangerVo[]);
 const getUserAvatarUrl = (userId: number) => {
   if (props.chatInfo.chatType == ChatType.FRIEND) {
     return getFileUrl(props.chatInfo.avatar);
   } else if (props.chatInfo.chatType == ChatType.GROUP) {
-    //TODO 从groupUserInfo中获取头像
-    let avatar;
-    if (avatar) return avatar;
+    let avatar = groupUserInfo.value.find((item) => item.id == userId)?.avatar;
+    if (avatar) return getFileUrl(avatar);
     else {
-      //TODO 获取用户头像，添加到avatarUrlArr
+      getStrangerInfo(userId).then((resp) => {
+        groupUserInfo.value.push(resp.data);
+        return getFileUrl(resp.data.avatar);
+      });
     }
   }
 };
 const userInfoId = ref(0);
+const strangerId = ref(0);
 const userInfoDialogShow = ref(false);
 const friendInfoDialogShow = ref(false);
+const strangerInfodialogShow = ref(false);
 const showUserInfo = (id: number) => {
   userInfoId.value = id;
   if (id == userStore.userInfo.id) {
@@ -122,7 +127,7 @@ const showUserInfo = (id: number) => {
     if (props.chatInfo.chatType == ChatType.FRIEND) {
       friendInfoDialogShow.value = true;
     } else if (props.chatInfo.chatType == ChatType.GROUP) {
-      //TODO 获取群成员信息
+      //TODO 增加群组成员信息对话框
     }
   }
 };
