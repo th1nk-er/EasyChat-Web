@@ -9,6 +9,8 @@ import type { UserFriendVo } from '@/api/friend/types';
 import { defineStore } from 'pinia';
 import { useUserStore } from './user';
 import type { UserGroupVo } from '@/api/group/types';
+import { useFriendStore } from './friend';
+import { useGroupStore } from './group';
 export const useChatStore = defineStore('chat', {
   state() {
     return {
@@ -89,27 +91,70 @@ export const useChatStore = defineStore('chat', {
      * @param message 消息
      */
     updateConversation(message: WSMessage) {
-      const list = this.conversationList;
-      for (let i = 0; i < list.length; i++) {
-        if (message.chatType != list[i].chatType) continue;
-        if (list[i].chatId === message.toId) {
-          // 用户发送的消息
-          this.conversationList[i].lastMessage = message.content;
-          this.conversationList[i].messageType = message.messageType;
-          this.conversationList[i].updateTime = new Date().toISOString();
-          this.conversationList[i].unreadCount = 0;
-          this.moveToTop(message.toId, message.chatType);
-          break;
-        } else if (list[i].chatId === message.fromId) {
-          // 用户接收的消息
-          this.conversationList[i].lastMessage = message.content;
-          this.conversationList[i].messageType = message.messageType;
-          this.conversationList[i].updateTime = new Date().toISOString();
-          this.conversationList[i].unreadCount++;
-          this.moveToTop(message.fromId, message.chatType);
-          break;
-        }
+      let senderId: number | undefined;
+      let chatId: number | undefined;
+      if (message.chatType == ChatType.FRIEND) {
+        chatId = message.fromId;
+        senderId = message.fromId;
+      } else if (message.chatType == ChatType.GROUP) {
+        chatId = message.toId;
+        senderId = message.fromId;
       }
+      const userStore = useUserStore();
+      let conversation: UserConversation | undefined;
+      if (chatId == undefined) return;
+      conversation = this.getConversation(chatId, message.chatType);
+      if (conversation) {
+        conversation.lastMessage = message.content;
+        conversation.messageType = message.messageType;
+        conversation.updateTime = new Date().toISOString();
+        if (senderId == userStore.userInfo.id)
+          conversation.unreadCount = 0; // 用户发送的消息
+        else if (
+          this.chatType != this.chatType ||
+          this.chatId != chatId ||
+          !this.isChatting
+        )
+          conversation.unreadCount++; // 用户收到的消息
+        this.moveToTop(chatId, message.chatType);
+      } else this.addConversation(chatId, message.chatType, message);
+    },
+    /**
+     * 添加对话
+     * message可选，若不传入则仅添加对话
+     * @param chatId 对方ID
+     * @param chatType 对话类型
+     * @param message 消息
+     */
+    addConversation(chatId: number, chatType: ChatType, message?: WSMessage) {
+      if (this.getConversation(chatId, chatType) != undefined) return;
+      let conversation = {} as UserConversation;
+      const userStore = useUserStore();
+      conversation.uid = userStore.userInfo.id;
+      conversation.chatType = chatType;
+      conversation.chatId = chatId;
+      conversation.lastMessage = message?.content ?? '';
+      conversation.messageType = message?.messageType ?? MessageType.TEXT;
+      conversation.unreadCount = message ? 1 : 0;
+      conversation.updateTime = new Date().toISOString();
+      if (chatType == ChatType.FRIEND) {
+        const friendStore = useFriendStore();
+        const friendVo = friendStore.getFriendVoById(chatId);
+        if (friendVo == undefined) return;
+        conversation.avatar = friendVo.avatar;
+        conversation.nickname = friendVo.nickname;
+        conversation.remark = friendVo.remark;
+        conversation.muted = friendVo.muted;
+      } else if (chatType == ChatType.GROUP) {
+        const groupStore = useGroupStore();
+        const groupVo = groupStore.getUserGroupVoById(chatId);
+        if (groupVo == undefined) return;
+        conversation.avatar = groupVo.avatar;
+        conversation.nickname = groupVo.groupName;
+        conversation.remark = groupVo.groupRemark ?? '';
+        conversation.muted = groupVo.muted;
+      }
+      this.conversationList.unshift(conversation);
     },
     /**
      * 当好友信息更新时，调用该方法更新对话列表
@@ -126,23 +171,8 @@ export const useChatStore = defineStore('chat', {
         ) {
           this.conversationList[i].remark = friendInfo.remark;
           this.conversationList[i].muted = friendInfo.muted;
-          return;
         }
       }
-      this.conversationList.unshift({
-        id: 0,
-        uid: 0,
-        chatId: friendInfo.friendId,
-        avatar: friendInfo.avatar,
-        nickname: friendInfo.nickname,
-        remark: friendInfo.remark,
-        muted: friendInfo.muted,
-        unreadCount: 0,
-        lastMessage: '',
-        messageType: MessageType.TEXT,
-        updateTime: new Date() + '',
-        chatType: ChatType.FRIEND,
-      });
     },
     /**
      * 当群组信息更新时，调用该方法更新对话列表
@@ -158,23 +188,8 @@ export const useChatStore = defineStore('chat', {
         ) {
           this.conversationList[i].remark = groupInfo.groupRemark ?? '';
           this.conversationList[i].avatar = groupInfo.avatar;
-          return;
         }
       }
-      this.conversationList.unshift({
-        id: 0,
-        uid: 0,
-        chatId: groupInfo.groupId,
-        avatar: groupInfo.avatar,
-        nickname: groupInfo.groupName,
-        remark: groupInfo.groupRemark ?? '',
-        muted: groupInfo.muted,
-        unreadCount: 0,
-        lastMessage: '',
-        messageType: MessageType.TEXT,
-        updateTime: new Date() + '',
-        chatType: ChatType.GROUP,
-      });
     },
     /**
      * 删除指定对话

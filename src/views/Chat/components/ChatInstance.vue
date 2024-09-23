@@ -131,6 +131,7 @@ const initChatData = async () => {
   chatInfo.value.chatType = chatStore.chatType;
   chatInfo.value.chatId = chatStore.chatId;
   publishOpenConversation(chatStore.chatId, chatStore.chatType);
+  chatStore.addConversation(chatStore.chatId, chatStore.chatType);
   const con = chatStore.getConversation(chatStore.chatId, chatStore.chatType);
   if (con) {
     chatInfo.value.name = con.nickname;

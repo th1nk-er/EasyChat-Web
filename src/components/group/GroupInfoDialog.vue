@@ -89,7 +89,7 @@ const groupStore = useGroupStore();
 const chatStore = useChatStore();
 const groupInfo = ref({} as UserGroupVo);
 const loadData = () => {
-  const userGroupVo = groupStore.getUserVoById(props.groupId);
+  const userGroupVo = groupStore.getUserGroupVoById(props.groupId);
   if (userGroupVo) {
     groupInfo.value = { ...userGroupVo };
   }
@@ -100,8 +100,9 @@ const handleUpdateUserGroupInfo = async () => {
   // 检测是否有修改
   if (
     groupInfo.value.groupRemark ===
-      groupStore.getUserVoById(props.groupId)?.groupRemark &&
-    groupInfo.value.muted === groupStore.getUserVoById(props.groupId)?.muted
+      groupStore.getUserGroupVoById(props.groupId)?.groupRemark &&
+    groupInfo.value.muted ===
+      groupStore.getUserGroupVoById(props.groupId)?.muted
   ) {
     return;
   } else {

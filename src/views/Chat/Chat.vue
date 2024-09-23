@@ -45,10 +45,17 @@ onMounted(async () => {
   wsConnect();
   userStore.userInfo = (await getUserInfo()).data;
   if (groupStore.groupList.length == 0) groupStore.loadGroupList();
-  groupStore.groupList.forEach((group) => {
-    subscribeGroupMessage(group.groupId, (msg) => handleWsMessage(msg));
-  });
 });
+watch(
+  () => groupStore.loaded,
+  (val) => {
+    if (val) {
+      groupStore.groupList.forEach((group) => {
+        subscribeGroupMessage(group.groupId, (msg) => handleWsMessage(msg));
+      });
+    }
+  }
+);
 const handleWsMessage = (message: WSMessage) => {
   if (message.messageType == MessageType.SYSTEM) {
     handleSystemMessage(message);

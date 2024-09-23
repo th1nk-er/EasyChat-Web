@@ -6,6 +6,11 @@ export const useFriendStore = defineStore('friend', {
       friendList: [] as UserFriendVo[],
     };
   },
+  getters: {
+    getFriendVoById: (state) => (friendId: number) => {
+      return state.friendList.find((item) => item.friendId == friendId);
+    },
+  },
   actions: {
     /**
      * 更新其中一个好友的信息

@@ -7,11 +7,12 @@ export const useGroupStore = defineStore('group', {
   state() {
     return {
       groupList: [] as UserGroupVo[],
+      loaded: false,
     };
   },
   getters: {},
   actions: {
-    getUserVoById(groupId: number) {
+    getUserGroupVoById(groupId: number) {
       return this.groupList.find((item) => item.groupId == groupId);
     },
     loadGroupList() {
@@ -24,12 +25,14 @@ export const useGroupStore = defineStore('group', {
           if (resp.data.length == 0) {
             this.groupList = groupList;
             clearInterval(intervalId);
+            this.loaded = true;
           } else {
             groupList.push(...resp.data);
           }
         } catch (e) {
           this.groupList = groupList;
           clearInterval(intervalId);
+          this.loaded = true;
         }
       }, 300);
     },
