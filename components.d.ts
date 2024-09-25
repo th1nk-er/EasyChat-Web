@@ -39,6 +39,7 @@ declare module 'vue' {
     FriendInfoDialog: typeof import('./src/components/friend/FriendInfoDialog.vue')['default']
     FriendSelectList: typeof import('./src/components/friend/FriendSelectList.vue')['default']
     GroupInfoDialog: typeof import('./src/components/group/GroupInfoDialog.vue')['default']
+    GroupMemberInfoDialog: typeof import('./src/components/group/GroupMemberInfoDialog.vue')['default']
     IconAccountCircle: typeof import('./src/components/icons/IconAccountCircle.vue')['default']
     IconAdd: typeof import('./src/components/icons/IconAdd.vue')['default']
     IconAddAPhoto: typeof import('./src/components/icons/IconAddAPhoto.vue')['default']

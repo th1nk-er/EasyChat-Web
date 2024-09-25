@@ -64,6 +64,11 @@
     </el-dialog>
     <UserInfoDialog v-model="userInfoDialogShow" />
     <FriendInfoDialog v-model="friendInfoDialogShow" :friend-id="userInfoId" />
+    <GroupMemberInfoDialog
+      v-model="groupMemberInfoDialogShow"
+      :group-id="chatInfo.chatId"
+      :user-id="memberId"
+    />
   </div>
 </template>
 
@@ -75,8 +80,7 @@ import { getTimeString } from '@/utils/timeUtils';
 import UserInfoDialog from '@/components/user/UserInfoDialog.vue';
 import FriendInfoDialog from '@/components/friend/FriendInfoDialog.vue';
 import type { ChatInfo } from '.';
-import { getStrangerInfo } from '@/api/user';
-import type { StrangerVo } from '@/api/user/types';
+import { useGroupStore } from '@/stores/group';
 
 const msgBox = ref<HTMLElement>();
 const props = defineProps({
@@ -98,27 +102,21 @@ const scrollToBottom = () => {
   });
 };
 const userStore = useUserStore();
-
-const groupUserInfo = ref([] as StrangerVo[]);
+const groupStore = useGroupStore();
 const getUserAvatarUrl = (userId: number) => {
   if (props.chatInfo.chatType == ChatType.FRIEND) {
     return getFileUrl(props.chatInfo.avatar);
   } else if (props.chatInfo.chatType == ChatType.GROUP) {
-    let avatar = groupUserInfo.value.find((item) => item.id == userId)?.avatar;
-    if (avatar) return getFileUrl(avatar);
-    else {
-      getStrangerInfo(userId).then((resp) => {
-        groupUserInfo.value.push(resp.data);
-        return getFileUrl(resp.data.avatar);
-      });
-    }
+    const info = groupStore.getMemberInfo(props.chatInfo.chatId, userId);
+    if (info) return getFileUrl(info?.avatar);
+    return '';
   }
 };
 const userInfoId = ref(0);
-const strangerId = ref(0);
+const memberId = ref(0);
 const userInfoDialogShow = ref(false);
 const friendInfoDialogShow = ref(false);
-const strangerInfodialogShow = ref(false);
+const groupMemberInfoDialogShow = ref(false);
 const showUserInfo = (id: number) => {
   userInfoId.value = id;
   if (id == userStore.userInfo.id) {
@@ -127,7 +125,8 @@ const showUserInfo = (id: number) => {
     if (props.chatInfo.chatType == ChatType.FRIEND) {
       friendInfoDialogShow.value = true;
     } else if (props.chatInfo.chatType == ChatType.GROUP) {
-      //TODO 增加群组成员信息对话框
+      memberId.value = id;
+      groupMemberInfoDialogShow.value = true;
     }
   }
 };

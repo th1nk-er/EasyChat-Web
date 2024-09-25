@@ -1,4 +1,4 @@
-import type { UserRole } from '../user/types';
+import type { UserRole, UserSex } from '../user/types';
 
 export enum GroupInvitationStatus {
   PENDING = 'PENDING', // 待处理
@@ -58,4 +58,16 @@ export type UpdateUserGroupParams = {
   groupId: number;
   muted?: boolean;
   groupRemark?: string;
+};
+
+export type GroupMemberInfoVo = {
+  groupId: number;
+  userId: number;
+  userGroupNickname: string;
+  role: UserRole;
+  createTime: string;
+  username: string;
+  nickname: string;
+  avatar: string;
+  sex: UserSex;
 };

@@ -3,6 +3,7 @@ import type { Result } from '../types';
 import type {
   GroupAdminInvitationVo,
   GroupInvitationVo,
+  GroupMemberInfoVo,
   GroupVo,
   UpdateUserGroupParams,
   UserGroupVo,
@@ -115,5 +116,16 @@ export const updateUserGroupInfo = (
   return service.put<Result<null>>({
     url: `/group//update/user/${userId}`,
     data: params,
+  });
+};
+
+/**
+ * 获取群成员信息
+ * @param groupId 群聊ID
+ * @param userId 用户ID
+ */
+export const getGroupmemberInfo = (groupId: number, userId: number) => {
+  return service.get<Result<GroupMemberInfoVo>>({
+    url: `/group/${groupId}/member/${userId}`,
   });
 };

@@ -1,5 +1,5 @@
-import { getGroupList } from '@/api/group';
-import type { UserGroupVo } from '@/api/group/types';
+import { getGroupList, getGroupmemberInfo } from '@/api/group';
+import type { GroupMemberInfoVo, UserGroupVo } from '@/api/group/types';
 import { defineStore } from 'pinia';
 import { useUserStore } from './user';
 
@@ -7,6 +7,7 @@ export const useGroupStore = defineStore('group', {
   state() {
     return {
       groupList: [] as UserGroupVo[],
+      groupMemberList: [] as GroupMemberInfoVo[],
       loaded: false,
     };
   },
@@ -35,6 +36,28 @@ export const useGroupStore = defineStore('group', {
           this.loaded = true;
         }
       }, 300);
+    },
+    /**
+     * 获取群组成员信息并存储，如果已经存储则直接返回
+     * @param groupId 群组ID
+     * @param userId 用户ID
+     * @returns `GroupMemberInfoVo`
+     */
+    getMemberInfo(groupId: number, userId: number) {
+      let result = this.groupMemberList.find(
+        (item) => item.groupId == groupId && item.userId == userId
+      );
+      if (result) {
+        return result;
+      } else {
+        getGroupmemberInfo(groupId, userId).then((resp) => {
+          if (resp.data != null) {
+            result = resp.data;
+            this.groupMemberList.push(result);
+            return result;
+          } else return undefined;
+        });
+      }
     },
   },
 });
