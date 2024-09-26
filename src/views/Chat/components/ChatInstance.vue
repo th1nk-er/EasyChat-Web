@@ -124,6 +124,7 @@ const chatInfo = ref({
 });
 /** 初始化数据 */
 const initChatData = async () => {
+  hasMoreMessage.value = true;
   componentKey.value++;
   msgPageIndex.value = 0;
   messageData.value = [];

@@ -29,20 +29,24 @@
         "
       >
         <img
-          :src="
-            item.senderId == userStore.userInfo.id
-              ? getFileUrl(userStore.userInfo.avatar)
-              : getUserAvatarUrl(item.senderId)
-          "
+          :src="getUserAvatarUrl(item.senderId)"
           class="message-container-item-avatar"
           @click="showUserInfo(item.senderId)"
         />
-        <p
+        <div
           class="message-container-item-content"
           v-if="item.messageType == MessageType.TEXT"
         >
-          {{ item.content }}
-        </p>
+          <p
+            v-if="chatInfo.chatType == ChatType.GROUP"
+            class="message-container-item-content-nickname"
+          >
+            {{ memberInfo.get(item.senderId)?.userGroupNickname }}
+          </p>
+          <p class="message-container-item-content-text">
+            {{ item.content }}
+          </p>
+        </div>
         <div
           class="message-container-item-img"
           v-if="item.messageType == MessageType.IMAGE"
@@ -67,7 +71,7 @@
     <GroupMemberInfoDialog
       v-model="groupMemberInfoDialogShow"
       :group-id="chatInfo.chatId"
-      :user-id="memberId"
+      :user-id="userInfoId"
     />
   </div>
 </template>
@@ -81,6 +85,8 @@ import UserInfoDialog from '@/components/user/UserInfoDialog.vue';
 import FriendInfoDialog from '@/components/friend/FriendInfoDialog.vue';
 import type { ChatInfo } from '.';
 import { useGroupStore } from '@/stores/group';
+import type { GroupMemberInfoVo } from '@/api/group/types';
+import { useFriendStore } from '@/stores/friend';
 
 const msgBox = ref<HTMLElement>();
 const props = defineProps({
@@ -102,18 +108,47 @@ const scrollToBottom = () => {
   });
 };
 const userStore = useUserStore();
+const friendStore = useFriendStore();
 const groupStore = useGroupStore();
+const memberInfo = ref<Map<Number, GroupMemberInfoVo>>(new Map());
+watch(
+  () => props.messageData.length,
+  () => {
+    // 获取群成员信息
+    if (props.chatInfo.chatType == ChatType.GROUP) {
+      props.messageData.forEach(async (msg) => {
+        if (
+          msg.senderId != userStore.userInfo.id &&
+          memberInfo.value.get(msg.senderId) == undefined
+        ) {
+          memberInfo.value.set(msg.senderId, {} as GroupMemberInfoVo);
+          let info = await groupStore.getMemberInfo(
+            props.chatInfo.chatId,
+            msg.senderId
+          );
+          if (info) {
+            if (info.userGroupNickname && info.userGroupNickname.length > 0)
+              memberInfo.value.set(msg.senderId, info);
+            else {
+              info.userGroupNickname = info.username;
+            }
+            memberInfo.value.set(msg.senderId, info);
+          }
+        }
+      });
+    }
+  }
+);
 const getUserAvatarUrl = (userId: number) => {
-  if (props.chatInfo.chatType == ChatType.FRIEND) {
+  if (userId == userStore.userInfo.id) {
+    return getFileUrl(userStore.userInfo.avatar);
+  } else if (props.chatInfo.chatType == ChatType.FRIEND) {
     return getFileUrl(props.chatInfo.avatar);
   } else if (props.chatInfo.chatType == ChatType.GROUP) {
-    const info = groupStore.getMemberInfo(props.chatInfo.chatId, userId);
-    if (info) return getFileUrl(info?.avatar);
-    return '';
+    return getFileUrl(memberInfo.value.get(userId)?.avatar);
   }
 };
 const userInfoId = ref(0);
-const memberId = ref(0);
 const userInfoDialogShow = ref(false);
 const friendInfoDialogShow = ref(false);
 const groupMemberInfoDialogShow = ref(false);
@@ -125,8 +160,8 @@ const showUserInfo = (id: number) => {
     if (props.chatInfo.chatType == ChatType.FRIEND) {
       friendInfoDialogShow.value = true;
     } else if (props.chatInfo.chatType == ChatType.GROUP) {
-      memberId.value = id;
-      groupMemberInfoDialogShow.value = true;
+      if (friendStore.getFriendVoById(id)) friendInfoDialogShow.value = true;
+      else groupMemberInfoDialogShow.value = true;
     }
   }
 };
@@ -191,14 +226,21 @@ defineExpose({
       }
     }
     &-content {
-      border-radius: 5px;
-      padding: 3px 8px;
-      font-size: 1.2rem;
-      background-color: var(--color-background-mute);
+      display: flex;
+      flex-direction: column;
       max-width: 55%;
-      text-wrap: wrap;
-      white-space: pre-wrap; /* 保留空格，允许换行 */
-      word-break: break-all; /* 允许单词内部断开 */
+      &-nickname {
+        color: var(--color-subtitle);
+      }
+      &-text {
+        border-radius: 5px;
+        padding: 3px 8px;
+        font-size: 1.2rem;
+        background-color: var(--color-background-mute);
+        text-wrap: wrap;
+        white-space: pre-wrap; /* 保留空格，允许换行 */
+        word-break: break-all; /* 允许单词内部断开 */
+      }
     }
     &-img {
       max-width: 15%;
@@ -217,8 +259,7 @@ defineExpose({
 
     .item-right {
       flex-direction: row-reverse;
-
-      .message-container-item-content {
+      .message-container-item-content-text {
         color: black;
         background-color: rgb(149, 236, 105);
       }

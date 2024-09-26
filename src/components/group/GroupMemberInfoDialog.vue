@@ -67,7 +67,7 @@ watch(dialogVisible, (val) => {
 const groupStore = useGroupStore();
 const memberInfo = ref({} as GroupMemberInfoVo);
 const loadData = async () => {
-  const info = groupStore.getMemberInfo(props.groupId, props.userId);
+  const info = await groupStore.getMemberInfo(props.groupId, props.userId);
   if (info) {
     memberInfo.value = info;
   } else {

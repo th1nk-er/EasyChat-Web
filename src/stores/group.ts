@@ -43,20 +43,19 @@ export const useGroupStore = defineStore('group', {
      * @param userId 用户ID
      * @returns `GroupMemberInfoVo`
      */
-    getMemberInfo(groupId: number, userId: number) {
+    async getMemberInfo(groupId: number, userId: number) {
       let result = this.groupMemberList.find(
         (item) => item.groupId == groupId && item.userId == userId
       );
       if (result) {
         return result;
       } else {
-        getGroupmemberInfo(groupId, userId).then((resp) => {
-          if (resp.data != null) {
-            result = resp.data;
-            this.groupMemberList.push(result);
-            return result;
-          } else return undefined;
-        });
+        const resp = await getGroupmemberInfo(groupId, userId);
+        if (resp.data != null) {
+          result = resp.data;
+          this.groupMemberList.push(result);
+          return result;
+        } else return undefined;
       }
     },
   },
