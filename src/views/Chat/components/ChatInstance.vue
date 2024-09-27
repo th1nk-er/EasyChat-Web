@@ -140,15 +140,14 @@ const initChatData = async () => {
     chatInfo.value.avatar = con.avatar;
     chatInfo.value.muted = con.muted;
   }
+  // 获取最近的消息
+  getMoreMessage();
   if (chatStore.chatType == ChatType.FRIEND) {
-    // 获取最近的消息
-    getMoreMessage();
     // 订阅消息
     subscribeMessage((message: WSMessage) => {
       onReceiveMessage(message);
     });
   } else if (chatStore.chatType == ChatType.GROUP) {
-    getMoreMessage();
     subscribeGroupMessage(chatInfo.value.chatId, (message: WSMessage) => {
       onReceiveMessage(message);
     });
@@ -200,7 +199,7 @@ const getMoreMessage = async () => {
       chatInfo.value.chatId,
       msgPageIndex.value++
     );
-    if (resp.data.length == 0) {
+    if (msgPageIndex.value > 1 && resp.data.length == 0) {
       hasMoreMessage.value = false;
       return;
     }
@@ -210,7 +209,7 @@ const getMoreMessage = async () => {
       chatInfo.value.chatId,
       msgPageIndex.value++
     );
-    if (resp.data.length == 0) {
+    if (msgPageIndex.value > 1 && resp.data.length == 0) {
       hasMoreMessage.value = false;
       return;
     }
