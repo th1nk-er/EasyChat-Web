@@ -92,3 +92,14 @@ body {
   height: 100%;
   width: 100%;
 }
+
+.primary {
+  color: var(--el-color-primary);
+}
+.link {
+  cursor: pointer;
+  font-weight: bold;
+}
+.link:hover {
+  text-decoration: underline;
+}

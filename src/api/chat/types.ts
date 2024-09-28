@@ -4,6 +4,7 @@ export type WSMessage = {
   fromId: number;
   toId: number;
   chatType: ChatType;
+  params?: string;
 };
 
 export enum MessageType {
@@ -28,6 +29,7 @@ export type ChatMessage = {
   messageType: MessageType;
   content: string;
   createTime: string;
+  params?: string;
 };
 
 export type UserConversation = {
@@ -44,3 +46,8 @@ export type UserConversation = {
   messageType: MessageType;
   updateTime: string;
 };
+
+export enum MessageCommand {
+  'CONNECTED' = 'CONNECTED',
+  'GROUP_INVITED' = 'GROUP_INVITED',
+}

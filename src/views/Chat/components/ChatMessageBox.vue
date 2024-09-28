@@ -12,6 +12,7 @@
       v-for="(item, index) in props.messageData"
       :key="index"
     >
+      <!-- 显示时间 -->
       <p
         class="message-container-item-time"
         v-if="
@@ -23,30 +24,70 @@
       >
         {{ getTimeString(item.createTime) }}
       </p>
+      <!-- 命令消息 -->
       <div
+        class="message-container-item-command"
+        v-if="item.messageType == MessageType.COMMAND"
+      >
+        <!-- 用户邀请进群 -->
+        <div
+          class="command-group-invitation"
+          v-if="item.content == MessageCommand.GROUP_INVITED"
+        >
+          <p>
+            <span
+              class="primary link"
+              @click="showUserInfo(Number(getMessageCommandParams(item)[0]))"
+              >{{
+                getMemberNickname(Number(getMessageCommandParams(item)[0]))
+              }}</span
+            >
+            <span>邀请</span>
+            <span
+              class="primary link"
+              @click="showUserInfo(Number(getMessageCommandParams(item)[1]))"
+              >{{
+                getMemberNickname(Number(getMessageCommandParams(item)[1]))
+              }}</span
+            >
+            <span>加入了群聊</span>
+          </p>
+        </div>
+      </div>
+      <!-- 文本消息和图片消息 -->
+      <div
+        v-if="
+          item.messageType == MessageType.TEXT ||
+          item.messageType == MessageType.IMAGE
+        "
         :class="
           item.senderId == userStore.userInfo.id ? 'item-right' : 'item-left'
         "
       >
+        <!-- 用户头像 -->
         <img
           :src="getUserAvatarUrl(item.senderId)"
           class="message-container-item-avatar"
           @click="showUserInfo(item.senderId)"
         />
+        <!-- 文本消息 -->
         <div
           class="message-container-item-content"
           v-if="item.messageType == MessageType.TEXT"
         >
+          <!-- 用户群昵称 -->
           <p
             v-if="chatInfo.chatType == ChatType.GROUP"
             class="message-container-item-content-nickname"
           >
             {{ memberInfo.get(item.senderId)?.userGroupNickname }}
           </p>
+          <!-- 消息内容 -->
           <p class="message-container-item-content-text">
             {{ item.content }}
           </p>
         </div>
+        <!-- 图片消息 -->
         <div
           class="message-container-item-img"
           v-if="item.messageType == MessageType.IMAGE"
@@ -77,7 +118,12 @@
 </template>
 
 <script setup lang="ts">
-import { ChatType, type ChatMessage, MessageType } from '@/api/chat/types';
+import {
+  ChatType,
+  type ChatMessage,
+  MessageType,
+  MessageCommand,
+} from '@/api/chat/types';
 import { useUserStore } from '@/stores/user';
 import { getFileUrl } from '@/utils/file';
 import { getTimeString } from '@/utils/timeUtils';
@@ -87,6 +133,7 @@ import type { ChatInfo } from '.';
 import { useGroupStore } from '@/stores/group';
 import type { GroupMemberInfoVo } from '@/api/group/types';
 import { useFriendStore } from '@/stores/friend';
+import { getMessageCommandParams } from '@/utils/chat';
 
 const msgBox = ref<HTMLElement>();
 const props = defineProps({
@@ -117,6 +164,7 @@ watch(
     // 获取群成员信息
     if (props.chatInfo.chatType == ChatType.GROUP) {
       props.messageData.forEach(async (msg) => {
+        if (msg.senderId == -1) return;
         if (
           msg.senderId != userStore.userInfo.id &&
           memberInfo.value.get(msg.senderId) == undefined
@@ -165,6 +213,25 @@ const showUserInfo = (id: number) => {
     }
   }
 };
+const getMemberNickname = (userId: number) => {
+  const member = groupStore.groupMemberList.find(
+    (member) => member.userId == userId
+  );
+  if (member) {
+    if (member.userGroupNickname && member.userGroupNickname.length > 0)
+      return member.userGroupNickname;
+    else return member.username;
+  } else {
+    groupStore.getMemberInfo(props.chatInfo.chatId, userId);
+  }
+};
+const getMemberUsername = async (userId: number) => {
+  const member = groupStore.groupMemberList.find(
+    (member) => member.userId == userId
+  );
+  if (member) return member.username;
+  else groupStore.getMemberInfo(props.chatInfo.chatId, userId);
+};
 const previewImgShow = ref(false);
 const previewImgSrc = ref('');
 defineExpose({
@@ -207,6 +274,10 @@ defineExpose({
       gap: 8px;
     }
     &-time {
+      text-align: center;
+      color: var(--color-subtitle);
+    }
+    &-command {
       text-align: center;
       color: var(--color-subtitle);
     }

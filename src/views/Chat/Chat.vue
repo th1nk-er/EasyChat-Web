@@ -15,7 +15,7 @@ import {
 } from '@/api/chat';
 import LeftNavigation from '@/components/common/LeftNavigation.vue';
 import { useWSStore } from '@/stores/ws';
-import { MessageType, type WSMessage } from '@/api/chat/types';
+import { MessageCommand, MessageType, type WSMessage } from '@/api/chat/types';
 import { useUserStore } from '@/stores/user';
 import { getUserInfo } from '@/api/user';
 import { useChatStore } from '@/stores/chat';
@@ -69,7 +69,7 @@ const handleWsMessage = (message: WSMessage) => {
 };
 const handleCommandMessage = (message: WSMessage) => {
   switch (message.content) {
-    case 'CONNECTED':
+    case MessageCommand.CONNECTED:
       ElMessage.success('已连接到通信服务器');
       break;
     default:

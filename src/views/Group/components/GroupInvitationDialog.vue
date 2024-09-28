@@ -21,7 +21,7 @@
         <div class="invitation-list-item__content">
           <p>
             <span
-              class="primary-color underline"
+              class="primary link"
               @click="showFriendInfo(item.invitedById)"
               v-if="
                 item.invitedByRemark != undefined &&
@@ -29,20 +29,16 @@
               "
               >{{ item.invitedByRemark }}</span
             >
-            <span class="primary-color underline" v-else>{{
+            <span class="primary link" v-else>{{
               item.invitedByNickname
             }}</span>
-            <span
-              class="primary-color underline"
-              @click="showFriendInfo(item.invitedById)"
+            <span class="primary link" @click="showFriendInfo(item.invitedById)"
               >({{ item.invitedByUsername }})</span
             >
             <span>邀请您加入群组</span>
-            <span
-              class="primary-color underline"
-              @click="showGroupInfo(item.groupId)"
-              >{{ item.groupName }}</span
-            >
+            <span class="primary link" @click="showGroupInfo(item.groupId)">{{
+              item.groupName
+            }}</span>
           </p>
         </div>
         <div
@@ -93,32 +89,28 @@
         <div class="invitation-list-item__content">
           <p>
             <span
-              class="primary-color underline"
+              class="primary link"
               @click="showStrangerInfo(item.invitedById)"
               >{{ item.invitedByNickname }}</span
             >
             <span
-              class="primary-color underline"
+              class="primary link"
               @click="showStrangerInfo(item.invitedById)"
               >({{ item.invitedByUsername }})</span
             >
             <span>邀请</span>
             <span
-              class="primary-color underline"
+              class="primary link"
               @click="showStrangerInfo(item.inviterId)"
               >{{ item.inviterNickname }}</span
             >
-            <span
-              class="primary-color underline"
-              @click="showStrangerInfo(item.inviterId)"
+            <span class="primary link" @click="showStrangerInfo(item.inviterId)"
               >({{ item.inviterUsername }})</span
             >
             <span>加入群组</span>
-            <span
-              class="primary-color underline"
-              @click="showGroupInfo(item.groupId)"
-              >{{ item.groupName }}</span
-            >
+            <span class="primary link" @click="showGroupInfo(item.groupId)">{{
+              item.groupName
+            }}</span>
           </p>
         </div>
         <div
@@ -292,17 +284,7 @@ const handleAdminRejectInvitation = async (index: number) => {
     &__content {
       flex-grow: 1;
       margin-left: 10px;
-      .underline {
-        cursor: pointer;
-        font-weight: bold;
-        &:hover {
-          text-decoration: underline;
-        }
-      }
     }
   }
-}
-.primary-color {
-  color: var(--el-color-primary);
 }
 </style>
