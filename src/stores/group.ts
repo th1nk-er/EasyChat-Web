@@ -2,6 +2,7 @@ import { getGroupList, getGroupmemberInfo } from '@/api/group';
 import type { GroupMemberInfoVo, UserGroupVo } from '@/api/group/types';
 import { defineStore } from 'pinia';
 import { useUserStore } from './user';
+import { UserRole } from '@/api/user/types';
 
 export const useGroupStore = defineStore('group', {
   state() {
@@ -11,7 +12,16 @@ export const useGroupStore = defineStore('group', {
       loaded: false,
     };
   },
-  getters: {},
+  getters: {
+    isMemberAdmin: (state) => (groupId: number, userId: number) => {
+      const member = state.groupMemberList.find(
+        (item) => item.groupId == groupId && item.userId == userId
+      );
+      if (member)
+        return member.role == UserRole.ADMIN || member.role == UserRole.LEADER;
+      else return false;
+    },
+  },
   actions: {
     getUserGroupVoById(groupId: number) {
       return this.groupList.find((item) => item.groupId == groupId);

@@ -33,4 +33,7 @@ export const useFriendStore = defineStore('friend', {
       }
     },
   },
+  persist: {
+    paths: ['friendList'],
+  },
 });
