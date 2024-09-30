@@ -50,26 +50,15 @@
           @update:current-page="handlePagechange()"
         />
       </div>
-      <el-dialog v-model="addInfoDialogVisible" title="附加信息" width="30%">
-        <el-input
-          type="textarea"
-          v-model="addInfoText"
-          placeholder="请输入附加消息"
-          maxlength="50"
-          aria-required="true"
-          class="input-add-info"
-        />
-        <el-button type="primary" @click="handleAddFriend()"
-          >发送申请</el-button
-        >
-        <el-button @click="dialogVisible = false">取消</el-button>
-      </el-dialog>
+      <AddFriendInfoDialog
+        v-model="addInfoDialogVisible"
+        :add-id="addStrangerId"
+      />
     </div>
   </el-dialog>
 </template>
 <script setup lang="ts">
-import { sendAddRequest } from '@/api/friend';
-import type { AddFriendParams } from '@/api/friend/types';
+import AddFriendInfoDialog from './AddFriendInfoDialog.vue';
 import { searchUser } from '@/api/user';
 import { type SearchResult } from '@/api/user/types';
 import { useUserStore } from '@/stores/user';
@@ -95,21 +84,10 @@ const handlePagechange = () => {
 };
 
 const addInfoDialogVisible = ref(false);
-const addInfoText = ref('');
 const addStrangerId = ref(0);
 const openAddDialog = (id: number) => {
   addStrangerId.value = id;
   addInfoDialogVisible.value = true;
-};
-const handleAddFriend = async () => {
-  await sendAddRequest({
-    userId: userStore.userInfo.id,
-    addId: addStrangerId.value,
-    addInfo: addInfoText.value,
-  } as AddFriendParams);
-  ElMessage.success('好友申请已发送');
-  addInfoDialogVisible.value = false;
-  addInfoText.value = '';
 };
 </script>
 <style lang="scss" scoped>

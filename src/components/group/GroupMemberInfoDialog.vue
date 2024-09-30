@@ -43,7 +43,9 @@
       </div>
       <el-divider />
       <div class="button-group">
-        <el-button type="primary">添加好友</el-button>
+        <el-button type="primary" @click="addInfoDialogVisible = true"
+          >添加好友</el-button
+        >
         <el-button type="primary">屏蔽用户</el-button>
         <el-button
           type="danger"
@@ -55,12 +57,17 @@
           v-if="groupStore.isMemberAdmin(props.groupId, userStore.userInfo.id)"
           >踢出群聊</el-button
         >
+        <AddFriendInfoDialog
+          v-model="addInfoDialogVisible"
+          :add-id="props.userId"
+        />
       </div>
     </div>
   </el-dialog>
 </template>
 
 <script lang="ts" setup>
+import AddFriendInfoDialog from '@/components/friend/AddFriendInfoDialog.vue';
 import type { GroupMemberInfoVo } from '@/api/group/types';
 import { useGroupStore } from '@/stores/group';
 import { useUserStore } from '@/stores/user';
@@ -82,6 +89,7 @@ watch(dialogVisible, (val) => {
 const groupStore = useGroupStore();
 const userStore = useUserStore();
 const memberInfo = ref({} as GroupMemberInfoVo);
+const addInfoDialogVisible = ref(false);
 const loadData = async () => {
   const info = await groupStore.getMemberInfo(props.groupId, props.userId);
   if (info) {

@@ -7,7 +7,8 @@ export {};
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
-    AddFriendDialog: typeof import('./src/components/common/AddFriendDialog.vue')['default']
+    AddFriendDialog: typeof import('./src/components/friend/AddFriendDialog.vue')['default']
+    AddFriendInfoDialog: typeof import('./src/components/friend/AddFriendInfoDialog.vue')['default']
     AppTitle: typeof import('./src/components/common/AppTitle.vue')['default']
     ChangePasswordDialog: typeof import('./src/components/user/ChangePasswordDialog.vue')['default']
     CreateGroupDialog: typeof import('./src/components/common/CreateGroupDialog.vue')['default']
