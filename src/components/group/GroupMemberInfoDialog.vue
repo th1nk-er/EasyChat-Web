@@ -55,6 +55,7 @@
         <el-button
           type="danger"
           v-if="groupStore.isMemberAdmin(props.groupId, userStore.userInfo.id)"
+          @click="handleKickMember"
           >踢出群聊</el-button
         >
         <AddFriendInfoDialog
@@ -75,6 +76,7 @@ import { getFileUrl } from '@/utils/file';
 import { getRoleString } from '@/utils/userUtils';
 import { getTimeString } from '@/utils/timeUtils';
 import UserSexIcon from '@/components/user/UserSexIcon.vue';
+import { kickGroupMember } from '@/api/group';
 
 const dialogVisible = defineModel({ type: Boolean, default: false });
 const props = defineProps({
@@ -97,6 +99,19 @@ const loadData = async () => {
   } else {
     ElMessage.error('获取信息失败');
   }
+};
+const handleKickMember = async () => {
+  ElMessageBox.confirm('确定将该群员踢出群聊吗？', 'Warning', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
+  })
+    .then(async () => {
+      await kickGroupMember(userStore.userInfo.id, props.groupId, props.userId);
+      ElMessage.success('操作成功');
+      dialogVisible.value = false;
+    })
+    .catch(() => {});
 };
 </script>
 

@@ -129,3 +129,31 @@ export const getGroupmemberInfo = (groupId: number, userId: number) => {
     url: `/group/${groupId}/member/${userId}`,
   });
 };
+
+/**
+ * 退出群组
+ * @param userId 用户ID
+ * @param groupId 群聊ID
+ */
+export const quitGroup = (userId: number, groupId: number) => {
+  return service.delete<Result<null>>({
+    url: `/group/quit/${userId}/${groupId}`,
+  });
+};
+
+/**
+ * 踢出群成员
+ * @param userId 用户ID
+ * @param groupId 群聊ID
+ * @param memberId 被踢的成员ID
+ * @returns
+ */
+export const kickGroupMember = (
+  userId: number,
+  groupId: number,
+  memberId: number
+) => {
+  return service.delete<Result<null>>({
+    url: `/group/kick/${userId}/${groupId}/${memberId}`,
+  });
+};

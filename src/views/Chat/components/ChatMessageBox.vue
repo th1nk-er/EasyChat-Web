@@ -208,8 +208,7 @@ const showUserInfo = (id: number) => {
     if (props.chatInfo.chatType == ChatType.FRIEND) {
       friendInfoDialogShow.value = true;
     } else if (props.chatInfo.chatType == ChatType.GROUP) {
-      if (friendStore.getFriendVoById(id)) friendInfoDialogShow.value = true;
-      else groupMemberInfoDialogShow.value = true;
+      groupMemberInfoDialogShow.value = true;
     }
   }
 };
@@ -224,13 +223,6 @@ const getMemberNickname = (userId: number) => {
   } else {
     groupStore.getMemberInfo(props.chatInfo.chatId, userId);
   }
-};
-const getMemberUsername = async (userId: number) => {
-  const member = groupStore.groupMemberList.find(
-    (member) => member.userId == userId
-  );
-  if (member) return member.username;
-  else groupStore.getMemberInfo(props.chatInfo.chatId, userId);
 };
 const previewImgShow = ref(false);
 const previewImgSrc = ref('');

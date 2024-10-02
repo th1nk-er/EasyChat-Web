@@ -23,7 +23,7 @@
 </template>
 <script lang="ts" setup>
 import { getStrangerInfo } from '@/api/user';
-import { type StrangerVo } from '@/api/user/types';
+import { UserSex, type StrangerVo } from '@/api/user/types';
 import { getFileUrl } from '@/utils/file';
 
 const dialogVisible = defineModel({ type: Boolean, default: false });
@@ -33,7 +33,7 @@ const props = defineProps({
     required: true,
   },
 });
-const strangerInfo = ref({} as StrangerVo);
+const strangerInfo = ref({ sex: UserSex.SECRET } as StrangerVo);
 watch(dialogVisible, async (value) => {
   if (value) {
     strangerInfo.value = (await getStrangerInfo(props.strangerId)).data;

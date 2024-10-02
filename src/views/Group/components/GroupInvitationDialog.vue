@@ -19,7 +19,30 @@
           class="invitation-list-item__avatar"
         />
         <div class="invitation-list-item__content">
-          <p>
+          <p v-if="item.status == GroupInvitationStatus.KICKED">
+            <span>管理员</span>
+            <span
+              class="primary link"
+              @click="showStrangerInfo(item.invitedById)"
+              >{{ item.invitedByNickname }}</span
+            >
+            <span
+              class="primary link"
+              @click="showStrangerInfo(item.invitedById)"
+              >({{ item.invitedByUsername }})</span
+            >
+            <span>将你移出群组</span>
+            <span class="primary link" @click="showGroupInfo(item.groupId)">{{
+              item.groupName
+            }}</span>
+          </p>
+          <p v-else-if="item.status == GroupInvitationStatus.QUITED">
+            <span>你退出了群组</span>
+            <span class="primary link" @click="showGroupInfo(item.groupId)">{{
+              item.groupName
+            }}</span>
+          </p>
+          <p v-else>
             <span
               class="primary link"
               @click="showFriendInfo(item.invitedById)"
@@ -87,7 +110,8 @@
           class="invitation-list-item__avatar"
         />
         <div class="invitation-list-item__content">
-          <p>
+          <p v-if="item.status == GroupInvitationStatus.KICKED">
+            <span>管理员</span>
             <span
               class="primary link"
               @click="showStrangerInfo(item.invitedById)"
@@ -98,15 +122,8 @@
               @click="showStrangerInfo(item.invitedById)"
               >({{ item.invitedByUsername }})</span
             >
-            <span v-if="item.status == GroupInvitationStatus.QUITED"
-              >退出群组</span
-            >
-            <span v-else-if="item.status == GroupInvitationStatus.KICKED"
-              >被管理员</span
-            >
-            <span v-else>邀请</span>
+            <span>将</span>
             <span
-              v-if="item.status != GroupInvitationStatus.QUITED"
               class="primary link"
               @click="showStrangerInfo(item.inviterId)"
               >{{ item.inviterNickname }}</span
@@ -114,11 +131,46 @@
             <span class="primary link" @click="showStrangerInfo(item.inviterId)"
               >({{ item.inviterUsername }})</span
             >
-            <span v-if="item.status == GroupInvitationStatus.KICKED"
-              >移出群组</span
+            <span>移出群组</span>
+            <span class="primary link" @click="showGroupInfo(item.groupId)">{{
+              item.groupName
+            }}</span>
+          </p>
+          <p v-else-if="item.status == GroupInvitationStatus.QUITED">
+            <span
+              class="primary link"
+              @click="showStrangerInfo(item.inviterId)"
+              >{{ item.inviterNickname }}</span
             >
-            <span v-else-if="item.status != GroupInvitationStatus.QUITED"
-              >加入群组</span
+            <span
+              class="primary link"
+              @click="showStrangerInfo(item.invitedById)"
+              >({{ item.invitedByUsername }})</span
+            >
+            <span>退出了群组</span>
+            <span class="primary link" @click="showGroupInfo(item.groupId)">{{
+              item.groupName
+            }}</span>
+          </p>
+          <p v-else>
+            <span
+              class="primary link"
+              @click="showStrangerInfo(item.invitedById)"
+              >{{ item.invitedByNickname }}</span
+            >
+            <span
+              class="primary link"
+              @click="showStrangerInfo(item.invitedById)"
+              >({{ item.invitedByUsername }})</span
+            >
+            <span>邀请</span>
+            <span
+              class="primary link"
+              @click="showStrangerInfo(item.inviterId)"
+              >{{ item.inviterNickname }}</span
+            >
+            <span class="primary link" @click="showStrangerInfo(item.inviterId)"
+              >({{ item.inviterUsername }})</span
             >
             <span class="primary link" @click="showGroupInfo(item.groupId)">{{
               item.groupName
