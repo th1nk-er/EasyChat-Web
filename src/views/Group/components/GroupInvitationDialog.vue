@@ -98,8 +98,15 @@
               @click="showStrangerInfo(item.invitedById)"
               >({{ item.invitedByUsername }})</span
             >
-            <span>邀请</span>
+            <span v-if="item.status == GroupInvitationStatus.QUITED"
+              >退出群组</span
+            >
+            <span v-else-if="item.status == GroupInvitationStatus.KICKED"
+              >被管理员</span
+            >
+            <span v-else>邀请</span>
             <span
+              v-if="item.status != GroupInvitationStatus.QUITED"
               class="primary link"
               @click="showStrangerInfo(item.inviterId)"
               >{{ item.inviterNickname }}</span
@@ -107,7 +114,12 @@
             <span class="primary link" @click="showStrangerInfo(item.inviterId)"
               >({{ item.inviterUsername }})</span
             >
-            <span>加入群组</span>
+            <span v-if="item.status == GroupInvitationStatus.KICKED"
+              >移出群组</span
+            >
+            <span v-else-if="item.status != GroupInvitationStatus.QUITED"
+              >加入群组</span
+            >
             <span class="primary link" @click="showGroupInfo(item.groupId)">{{
               item.groupName
             }}</span>

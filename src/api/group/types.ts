@@ -7,6 +7,8 @@ export enum GroupInvitationStatus {
   ADMIN_PENDING = 'ADMIN_PENDING', // 等待管理员处理
   ADMIN_ACCEPTED = 'ADMIN_ACCEPTED', // 管理员同意
   ADMIN_REJECTED = 'ADMIN_REJECTED', // 管理员拒绝
+  QUITED = 'QUITED', // 退出
+  KICKED = 'KICKED', // 被踢
 }
 
 export type UserGroupVo = {
