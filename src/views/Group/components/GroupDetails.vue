@@ -18,7 +18,7 @@
         <p>
           <span>创建时间：</span>
           <span class="group-info__create-time">
-            {{ groupInfo.createTime }}
+            {{ getTimeString(groupInfo.createTime) }}
           </span>
         </p>
         <p>
@@ -35,6 +35,7 @@
 import { getGroupInfo } from '@/api/group';
 import type { GroupVo } from '@/api/group/types';
 import { getFileUrl } from '@/utils/file';
+import { getTimeString } from '@/utils/timeUtils';
 
 const dialogVisible = defineModel({ type: Boolean, default: false });
 const props = defineProps({
