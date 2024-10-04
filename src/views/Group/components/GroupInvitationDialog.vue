@@ -142,10 +142,8 @@
               @click="showStrangerInfo(item.inviterId)"
               >{{ item.inviterNickname }}</span
             >
-            <span
-              class="primary link"
-              @click="showStrangerInfo(item.invitedById)"
-              >({{ item.invitedByUsername }})</span
+            <span class="primary link" @click="showStrangerInfo(item.inviterId)"
+              >({{ item.inviterUsername }})</span
             >
             <span>退出了群组</span>
             <span class="primary link" @click="showGroupInfo(item.groupId)">{{

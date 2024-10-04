@@ -61,7 +61,7 @@
 </template>
 <script setup lang="ts">
 import { ChatType } from '@/api/chat/types';
-import { updateUserGroupInfo } from '@/api/group';
+import { quitGroup, updateUserGroupInfo } from '@/api/group';
 import type { UserGroupVo } from '@/api/group/types';
 import { useChatStore } from '@/stores/chat';
 import { useGroupStore } from '@/stores/group';
@@ -127,7 +127,19 @@ const handleSendMessage = () => {
   dialogVisible.value = false;
 };
 const handleQuitGroup = () => {
-  //TODO 退出群组
+  ElMessageBox.confirm('确定退出该群组吗？', '警告', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
+  })
+    .then(async () => {
+      await quitGroup(userStore.userInfo.id, props.groupId);
+      ElMessage.success('操作成功');
+      dialogVisible.value = false;
+      groupStore.loadGroupList();
+      chatStore.deleteConversation(props.groupId, ChatType.GROUP);
+    })
+    .catch(() => {});
 };
 </script>
 <style scoped lang="scss">
