@@ -19,6 +19,7 @@ export const useChatStore = defineStore('chat', {
       isChatting: false,
       chatType: ChatType.FRIEND,
       conversationList: [] as UserConversation[],
+      loaded: false,
     };
   },
   getters: {
@@ -45,11 +46,13 @@ export const useChatStore = defineStore('chat', {
   },
   actions: {
     async loadConversations() {
+      if (this.loaded) return;
       const userStore = useUserStore();
       const resp = await getUserConversationList(userStore.userInfo.id);
       if (resp.data.length > 0) {
         this.conversationList = resp.data;
       }
+      this.loaded = true;
     },
     /**
      * 清除指定话的未读消息
@@ -93,14 +96,21 @@ export const useChatStore = defineStore('chat', {
     updateConversation(message: WSMessage) {
       let senderId: number | undefined;
       let chatId: number | undefined;
+      const userStore = useUserStore();
       if (message.chatType == ChatType.FRIEND) {
-        chatId = message.fromId;
-        senderId = message.fromId;
+        if (message.fromId == userStore.userInfo.id) {
+          // 自己发送的消息
+          chatId = message.toId;
+          senderId = message.toId;
+        } else {
+          // 收到的消息
+          chatId = message.fromId;
+          senderId = message.fromId;
+        }
       } else if (message.chatType == ChatType.GROUP) {
         chatId = message.toId;
         senderId = message.fromId;
       }
-      const userStore = useUserStore();
       let conversation: UserConversation | undefined;
       if (chatId == undefined) return;
       conversation = this.getConversation(chatId, message.chatType);

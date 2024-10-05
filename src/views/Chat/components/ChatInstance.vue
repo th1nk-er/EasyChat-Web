@@ -186,7 +186,7 @@ const onReceiveMessage = (message: WSMessage) => {
 watch(
   () => chatStore.chatId,
   (value) => {
-    if (value > 0) initChatData();
+    if (value > 0 && chatStore.isChatting) initChatData();
   }
 );
 const msgPageIndex = ref(0);

@@ -44,7 +44,7 @@ const wsConnect = () => {
 onMounted(async () => {
   wsConnect();
   userStore.userInfo = (await getUserInfo()).data;
-  if (groupStore.groupList.length == 0) groupStore.loadGroupList();
+  groupStore.loadGroupList();
 });
 watch(
   () => groupStore.loaded,

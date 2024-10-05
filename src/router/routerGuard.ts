@@ -11,6 +11,7 @@ router.beforeEach((to, from) => {
   }
   if (to.name != 'Chat') {
     const chatStore = useChatStore();
+    chatStore.chatId = -1;
     chatStore.isChatting = false;
   }
 });

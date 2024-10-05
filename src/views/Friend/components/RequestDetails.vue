@@ -121,6 +121,7 @@ const handleIgnoreRequest = async () => {
     &__img-avatar {
       width: 100px;
       height: 100px;
+      border-radius: 10px;
     }
     .content-info {
       text-align: center;

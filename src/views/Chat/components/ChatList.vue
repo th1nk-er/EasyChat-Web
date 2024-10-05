@@ -80,12 +80,7 @@ const handleClickConversation = (conversation: UserConversation) => {
   chatStore.isChatting = true;
 };
 onMounted(() => {
-  watch(
-    () => userStore.userInfo.id,
-    (val) => {
-      if (val > 0) chatStore.loadConversations();
-    }
-  );
+  chatStore.loadConversations();
 });
 </script>
 <style scoped lang="scss">
