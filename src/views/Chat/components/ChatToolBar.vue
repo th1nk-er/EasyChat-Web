@@ -52,6 +52,7 @@ const handleImageUpload = () => {
     };
     reader.readAsDataURL(file);
   }
+  if (imageUploader.value) imageUploader.value.value = '';
 };
 </script>
 <style lang="scss" scoped>
