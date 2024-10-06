@@ -52,8 +52,11 @@
         <el-button class="button" type="primary" @click="handleSendMessage"
           >发送消息</el-button
         >
+        <el-button class="button" type="primary" @click="handleManageGroup"
+          >群聊设置</el-button
+        >
         <el-button class="button" type="danger" @click="handleQuitGroup"
-          >退出群组</el-button
+          >退出群聊</el-button
         >
       </div>
     </div>
@@ -67,6 +70,7 @@ import { useChatStore } from '@/stores/chat';
 import { useGroupStore } from '@/stores/group';
 import { useUserStore } from '@/stores/user';
 import { getFileUrl } from '@/utils/file';
+import { SettingType } from '@/views/Setting/components/types';
 
 const dialogVisible = defineModel({ type: Boolean, default: false });
 const props = defineProps({
@@ -140,6 +144,13 @@ const handleQuitGroup = () => {
       chatStore.deleteConversation(props.groupId, ChatType.GROUP);
     })
     .catch(() => {});
+};
+const handleManageGroup = () => {
+  router.push({
+    name: 'Setting',
+    params: { settingType: SettingType.GROUP },
+    query: { id: props.groupId },
+  });
 };
 </script>
 <style scoped lang="scss">

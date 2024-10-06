@@ -49,7 +49,7 @@ const router = createRouter({
       },
     },
     {
-      path: '/setting',
+      path: '/setting/:settingType?',
       name: 'Setting',
       component: () => import('@/views/Setting/Setting.vue'),
       meta: {

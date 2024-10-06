@@ -3,8 +3,19 @@
     <LeftNavigation />
     <div class="center-box">
       <el-tabs tab-position="left" v-model="tabIndex" class="tab-box">
-        <el-tab-pane label="通用设置" name="common" class="tab-item">
+        <el-tab-pane
+          label="通用设置"
+          :name="SettingType.COMMON"
+          class="tab-item"
+        >
           <CommonSetting />
+        </el-tab-pane>
+        <el-tab-pane
+          label="群聊设置"
+          :name="SettingType.GROUP"
+          class="tab-item"
+        >
+          <GroupSetting />
         </el-tab-pane>
       </el-tabs>
     </div>
@@ -12,8 +23,15 @@
 </template>
 <script setup lang="ts">
 import LeftNavigation from '@/components/common/LeftNavigation.vue';
-import { CommonSetting } from './components';
-const tabIndex = ref('common');
+import { CommonSetting, GroupSetting } from './components';
+import { SettingType } from './components/types';
+const route = useRoute();
+const tabIndex = ref(SettingType.COMMON);
+onMounted(() => {
+  if (route.params.settingType) {
+    tabIndex.value = route.params.settingType as SettingType;
+  }
+});
 </script>
 <style scoped lang="scss">
 .main {

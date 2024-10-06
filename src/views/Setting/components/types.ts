@@ -3,3 +3,8 @@ export enum ThemePrefer {
   DARK = 'dark',
   SYSTEM = 'system',
 }
+
+export enum SettingType {
+  COMMON = 'common',
+  GROUP = 'group',
+}

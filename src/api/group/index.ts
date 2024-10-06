@@ -157,3 +157,14 @@ export const kickGroupMember = (
     url: `/group/kick/${userId}/${groupId}/${memberId}`,
   });
 };
+
+/**
+ * 获取群成员详细信息
+ * @param groupId 群聊ID
+ * @param page 页码
+ */
+export const getGroupMemberList = (groupId: number, page: number) => {
+  return service.get<Result<GroupMemberInfoVo[]>>({
+    url: `/group/${groupId}/member/list/${page}`,
+  });
+};

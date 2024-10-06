@@ -1,5 +1,5 @@
 <template>
-  <div class="common-setting">
+  <div class="setting">
     <div class="setting-item">
       <span class="setting-item-label">主题设置</span>
       <el-select
@@ -21,16 +21,5 @@ const settingStore = useSettingStore();
 const theme = ref(settingStore.themePreference);
 </script>
 <style scoped lang="scss">
-.common-setting {
-  width: 100%;
-  .setting-item {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    &-select {
-      width: 30%;
-    }
-  }
-}
+@import './style.scss';
 </style>

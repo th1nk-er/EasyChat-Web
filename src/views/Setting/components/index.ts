@@ -1,2 +1,3 @@
 import CommonSetting from './CommonSetting.vue';
-export { CommonSetting };
+import GroupSetting from './GroupSetting.vue';
+export { CommonSetting, GroupSetting };
