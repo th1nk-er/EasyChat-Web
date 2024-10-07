@@ -6,6 +6,7 @@
         <el-select
           v-model="selectedGroupId"
           class="setting-item-select"
+          :disabled="isLoading"
           @change="onSelectedGroupChange"
         >
           <el-option label="请选择群聊" :value="-1" />
@@ -22,7 +23,11 @@
           </el-option>
         </el-select>
         <h4 style="text-align: center">成员列表</h4>
-        <el-table :data="groupMemberList" table-layout="auto">
+        <el-table
+          :data="groupMemberList"
+          table-layout="auto"
+          v-loading="isLoading"
+        >
           <el-table-column fixed label="用户名">
             <template #default="scope">
               <div style="display: flex; align-items: center; gap: 5px">
@@ -58,7 +63,7 @@
               <el-button
                 link
                 type="danger"
-                @click="handleClickMember(scope.row.userId)"
+                @click="handleKickMember(scope.row.userId)"
                 v-if="
                   userStore.userInfo.id != scope.row.userId &&
                   isUserAdmin(userStore.userInfo.id)
@@ -73,7 +78,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { getGroupMemberList } from '@/api/group';
+import { getGroupMemberList, kickGroupMember } from '@/api/group';
 import type { GroupMemberInfoVo } from '@/api/group/types';
 import { useGroupStore } from '@/stores/group';
 import { getFileUrl } from '@/utils/file';
@@ -98,17 +103,21 @@ onMounted(() => {
 });
 const selectedGroupId = ref(-1);
 const groupMemberList = ref([] as GroupMemberInfoVo[]);
+const isLoading = ref(false);
 const onSelectedGroupChange = (groupId: number) => {
   groupMemberList.value = [];
   if (groupId === -1) return;
   let page = 1;
+  isLoading.value = true;
   const intervalId = setInterval(async () => {
     try {
       const resp = await getGroupMemberList(groupId, page++);
       if (resp.data.length === 0) clearInterval(intervalId);
       groupMemberList.value.push(...resp.data);
+      isLoading.value = false;
     } catch (e) {
       clearInterval(intervalId);
+      isLoading.value = false;
     }
   }, 200);
 };
@@ -128,8 +137,22 @@ const isUserLeader = (userId: number) => {
   });
   if (member) return true;
 };
-const handleClickMember = (userId: number) => {
-  //TODO 踢出群聊
+const handleKickMember = (userId: number) => {
+  ElMessageBox.confirm('确定将该群员踢出群聊吗？', 'Warning', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
+  })
+    .then(async () => {
+      await kickGroupMember(
+        userStore.userInfo.id,
+        selectedGroupId.value,
+        userId
+      );
+      ElMessage.success('操作成功');
+      onSelectedGroupChange(selectedGroupId.value);
+    })
+    .catch(() => {});
 };
 </script>
 <style lang="scss" scoped>
