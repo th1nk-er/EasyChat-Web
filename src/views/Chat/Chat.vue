@@ -17,7 +17,6 @@ import LeftNavigation from '@/components/common/LeftNavigation.vue';
 import { useWSStore } from '@/stores/ws';
 import { MessageCommand, MessageType, type WSMessage } from '@/api/chat/types';
 import { useUserStore } from '@/stores/user';
-import { getUserInfo } from '@/api/user';
 import { useChatStore } from '@/stores/chat';
 import { ChatList, ChatInstance } from './components';
 import { useGroupStore } from '@/stores/group';
@@ -43,7 +42,6 @@ const wsConnect = () => {
 };
 onMounted(async () => {
   wsConnect();
-  userStore.userInfo = (await getUserInfo()).data;
   groupStore.loadGroupList();
 });
 watch(

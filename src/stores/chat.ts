@@ -45,6 +45,9 @@ export const useChatStore = defineStore('chat', {
     },
   },
   actions: {
+    /**
+     *  加载对话列表
+     */
     async loadConversations() {
       if (this.loaded) return;
       const userStore = useUserStore();

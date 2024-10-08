@@ -69,10 +69,8 @@ import { useChatStore } from '@/stores/chat';
 import { MessageType, type UserConversation } from '@/api/chat/types';
 import { getTimeString } from '@/utils/timeUtils';
 import { getFileUrl } from '@/utils/file';
-import { useUserStore } from '@/stores/user';
 
 const chatStore = useChatStore();
-const userStore = useUserStore();
 const handleClickConversation = (conversation: UserConversation) => {
   chatStore.clearConversationUnread(conversation.chatId, conversation.chatType);
   chatStore.chatId = conversation.chatId;

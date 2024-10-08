@@ -48,6 +48,7 @@ import IconLock from '@/components/icons/IconLock.vue';
 import { LoginType, useLoginState } from './userLogin';
 import { login } from '@/api/login';
 import type { UserLoginVo } from '@/api/login/types';
+import { getUserInfo } from '@/api/user';
 import { useUserStore } from '@/stores/user';
 import type { FormInstance, FormRules } from 'element-plus';
 const router = useRouter();
@@ -108,7 +109,16 @@ const handleLogin = async (formEl: FormInstance | undefined) => {
         userStore.setLoginForm(formData.username, formData.password);
       else userStore.removeLoginForm();
       ElMessage.success('登录成功');
-      router.push({ name: 'Chat' });
+      // 同步获取用户信息
+      getUserInfo()
+        .then((res) => {
+          userStore.userInfo = res.data;
+          router.push({ name: 'Chat' });
+        })
+        .catch((err) => {
+          userStore.removeToken();
+          ElMessage.error('获取用户信息失败');
+        });
     }
   });
 };
