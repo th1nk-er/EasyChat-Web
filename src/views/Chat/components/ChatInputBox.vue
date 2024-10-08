@@ -13,13 +13,16 @@
       />
       <div class="upload-image" v-show="imgSrc != ''">
         <img :src="imgSrc" />
-        <IconDelete
-          class="icon-delete"
-          @click="
-            imgSrc = '';
-            imgFile = undefined;
-          "
-        />
+        <div class="icon-group">
+          <IconZoomIn class="icon-zoom-in" @click="previewImgShow = true" />
+          <IconDelete
+            class="icon-delete"
+            @click="
+              imgSrc = '';
+              imgFile = undefined;
+            "
+          />
+        </div>
       </div>
     </div>
     <el-button
@@ -28,6 +31,15 @@
       @click="$emit('onSendMessage')"
       >发送</el-button
     >
+    <el-dialog
+      v-model="previewImgShow"
+      :align-center="true"
+      style="display: flex; justify-content: center; padding: 10px"
+      :fullscreen="true"
+      @click="previewImgShow = false"
+    >
+      <img w-full :src="imgSrc" style="max-width: 100%" />
+    </el-dialog>
   </div>
 </template>
 <script setup lang="ts">
@@ -49,6 +61,7 @@ const handleEnterDown = (e: Event | KeyboardEvent) => {
     }
   }
 };
+const previewImgShow = ref(false);
 defineExpose({
   input: messageInputRef,
 });
@@ -73,20 +86,31 @@ defineExpose({
         img {
           opacity: 0.5;
         }
-        .icon-delete {
+        .icon-delete,
+        .icon-zoom-in {
           opacity: 1;
           fill: var(--color-background-mute);
         }
       }
       img {
-        height: 100%;
+        max-height: 100%;
+        max-width: 100%;
         border-radius: 10px;
       }
-      .icon-delete {
-        cursor: pointer;
+      .icon-group {
         position: absolute;
-        top: 45%;
-        left: 45%;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        align-items: center;
+      }
+      .icon-delete,
+      .icon-zoom-in {
+        cursor: pointer;
         opacity: 0;
       }
     }

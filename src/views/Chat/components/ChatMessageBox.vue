@@ -103,7 +103,9 @@
     <el-dialog
       v-model="previewImgShow"
       :align-center="true"
-      style="display: flex; justify-content: center"
+      style="display: flex; justify-content: center; padding: 10px"
+      :fullscreen="true"
+      @click="previewImgShow = false"
     >
       <img w-full :src="previewImgSrc" style="max-width: 100%" />
     </el-dialog>
