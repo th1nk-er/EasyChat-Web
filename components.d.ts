@@ -73,6 +73,7 @@ declare module 'vue' {
     IconSearch: typeof import('./src/components/icons/IconSearch.vue')['default']
     IconSettings: typeof import('./src/components/icons/IconSettings.vue')['default']
     IconZoomIn: typeof import('./src/components/icons/IconZoomIn.vue')['default']
+    InviteGroupMemberDialog: typeof import('./src/components/group/InviteGroupMemberDialog.vue')['default']
     LeftNavigation: typeof import('./src/components/common/LeftNavigation.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']

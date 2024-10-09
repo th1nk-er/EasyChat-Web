@@ -38,6 +38,11 @@
           </el-table-column>
           <el-table-column prop="nickname" label="昵称" />
           <el-table-column prop="userGroupNickname" label="群昵称" />
+          <el-table-column label="性别">
+            <template #default="scope">
+              <UserSexIcon :sex="scope.row.sex" :size="18" />
+            </template>
+          </el-table-column>
           <el-table-column label="身份">
             <template #default="scope">
               <span>{{ getRoleString(scope.row.role) }}</span>
@@ -87,6 +92,7 @@ import { getRoleString } from '@/utils/userUtils';
 import { SettingType } from './types';
 import { useUserStore } from '@/stores/user';
 import { UserRole } from '@/api/user/types';
+import UserSexIcon from '@/components/user/UserSexIcon.vue';
 const groupStore = useGroupStore();
 const userStore = useUserStore();
 const route = useRoute();
