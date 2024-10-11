@@ -31,6 +31,9 @@
             class="checkbox"
             type="checkbox"
             :checked="checkList[friendList.indexOf(item)]"
+            :disabled="
+              props.disabled && props.selectedFriend.includes(item.friendId)
+            "
           />
         </div>
       </div>
@@ -42,6 +45,18 @@ import { getUserFriendList } from '@/api/friend';
 import type { UserFriendVo } from '@/api/friend/types';
 import { useUserStore } from '@/stores/user';
 import { getFileUrl } from '@/utils/file';
+const props = defineProps({
+  selectedFriend: {
+    type: Array<Number>,
+    required: false,
+    default: [],
+  },
+  disabled: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
+});
 const emit = defineEmits<{
   onFriendSelected: [UserFriendVo];
   onFriendSelectedCancel: [UserFriendVo];
@@ -61,6 +76,12 @@ watch(searchContent, (value) => {
 });
 const checkList = ref<Array<boolean>>([]);
 const handleFriendSelect = (index: number) => {
+  // 如果传入的selectedFriend包含当前好友id，且disabled为true，则不允许取消选择
+  if (
+    props.disabled &&
+    props.selectedFriend.includes(friendList.value[index].friendId)
+  )
+    return;
   checkList.value[index] = !checkList.value[index];
   if (checkList.value[index]) emit('onFriendSelected', dataList.value[index]);
   else emit('onFriendSelectedCancel', dataList.value[index]);
@@ -70,11 +91,15 @@ const loadData = () => {
     try {
       const resp = await getUserFriendList(userStore.userInfo.id, page.value++);
       if (resp.data.records.length < resp.data.pageSize) {
+        // 数据加载完毕
         clearInterval(intervalId);
-        dataList.value = friendList.value;
-        checkList.value = friendList.value.map(() => false);
       }
       friendList.value.push(...resp.data.records);
+      dataList.value = friendList.value;
+      // 根据传入的selectedFriend，初始化checkList
+      checkList.value = friendList.value.map((item) => {
+        return props.selectedFriend.includes(item.friendId);
+      });
     } catch (e) {
       clearInterval(intervalId);
     }

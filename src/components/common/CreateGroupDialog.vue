@@ -55,7 +55,7 @@ watch(dialogVisible, (value) => {
   }
 });
 const groupStore = useGroupStore();
-const friendSelectList = ref();
+const friendSelectList = ref<typeof FriendSelectList | null>(null);
 const selectedFriend = ref([] as UserFriendVo[]);
 const onFriendSelected = (friend: UserFriendVo) => {
   selectedFriend.value.push(friend);
@@ -66,7 +66,7 @@ const onFriendSelectedCancel = (friend: UserFriendVo) => {
   );
 };
 const handleRemoveMember = (friend: UserFriendVo) => {
-  friendSelectList.value.selectCancel(friend);
+  friendSelectList.value?.selectCancel(friend);
   onFriendSelectedCancel(friend);
 };
 const groupName = ref('');

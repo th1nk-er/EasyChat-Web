@@ -78,8 +78,23 @@
             </template>
           </el-table-column>
         </el-table>
+        <div class="group-btn" v-show="selectedGroupId != -1">
+          <el-button type="primary" @click="inviteDialogShow = true"
+            >邀请成员</el-button
+          >
+          <div class="divider"></div>
+          <el-button type="danger" v-if="isUserLeader(userStore.userInfo.id)"
+            >解散群组</el-button
+          >
+          <el-button type="danger" v-else>退出群组</el-button>
+        </div>
       </div>
     </div>
+    <InviteGroupMemberDialog
+      v-model="inviteDialogShow"
+      :group-id="selectedGroupId"
+      :member-list="groupMemberList"
+    />
   </div>
 </template>
 <script setup lang="ts">
@@ -93,6 +108,7 @@ import { SettingType } from './types';
 import { useUserStore } from '@/stores/user';
 import { UserRole } from '@/api/user/types';
 import UserSexIcon from '@/components/user/UserSexIcon.vue';
+import InviteGroupMemberDialog from '@/components/group/InviteGroupMemberDialog.vue';
 const groupStore = useGroupStore();
 const userStore = useUserStore();
 const route = useRoute();
@@ -160,7 +176,14 @@ const handleKickMember = (userId: number) => {
     })
     .catch(() => {});
 };
+const inviteDialogShow = ref(false);
 </script>
 <style lang="scss" scoped>
 @import './style.scss';
+.group-btn {
+  display: flex;
+  .divider {
+    flex: 1;
+  }
+}
 </style>
