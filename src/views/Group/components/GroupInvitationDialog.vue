@@ -292,6 +292,7 @@ const handleAgreeInvitation = async (index: number) => {
   );
   invitationList.value[index].status = GroupInvitationStatus.ADMIN_PENDING;
   ElMessage.success('已同意该邀请');
+  groupStore.loaded = false;
   groupStore.loadGroupList();
 };
 const handleRejectInvitation = async (index: number) => {

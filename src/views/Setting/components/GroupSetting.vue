@@ -55,7 +55,16 @@
           </el-table-column>
           <el-table-column fixed="right" label="操作" align="center">
             <template #default="scope">
-              <el-button link type="primary">编辑群昵称</el-button>
+              <el-button
+                link
+                type="primary"
+                v-if="
+                  userStore.userInfo.id == scope.row.userId ||
+                  (isUserAdmin(userStore.userInfo.id) &&
+                    !isUserLeader(scope.row.userId))
+                "
+                >编辑群昵称</el-button
+              >
               <el-button
                 link
                 type="danger"

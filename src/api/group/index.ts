@@ -168,3 +168,21 @@ export const getGroupMemberList = (groupId: number, page: number) => {
     url: `/group/${groupId}/member/list/${page}`,
   });
 };
+
+/**
+ * 邀请好友加入群聊
+ * @param userId 用户ID
+ * @param groupId 群聊ID
+ * @param friendIds 邀请的好友ID列表
+ * @returns
+ */
+export const inviteGroupMember = (
+  userId: number,
+  groupId: number,
+  friendIds: number[]
+) => {
+  return service.post<Result<null>>({
+    url: `/group/invite/${userId}/${groupId}`,
+    data: friendIds,
+  });
+};
