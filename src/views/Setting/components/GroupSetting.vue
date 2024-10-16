@@ -63,6 +63,7 @@
                   (isUserAdmin(userStore.userInfo.id) &&
                     !isUserLeader(scope.row.userId))
                 "
+                @click="handleChangeUserGroupNickname(scope.row.userId)"
                 >编辑群昵称</el-button
               >
               <el-button
@@ -104,6 +105,16 @@
       :group-id="selectedGroupId"
       :member-list="groupMemberList"
     />
+    <EditUserGroupNicknameDialog
+      v-model="editNicknameDialogShow"
+      :groupId="selectedGroupId"
+      :userId="selectedUserId"
+      :nickname="
+        groupMemberList.find((member) => member.userId == selectedUserId)
+          ?.userGroupNickname
+      "
+      @onNicknameChanged="onUserGroupNicknameChanged"
+    />
   </div>
 </template>
 <script setup lang="ts">
@@ -118,6 +129,7 @@ import { useUserStore } from '@/stores/user';
 import { UserRole } from '@/api/user/types';
 import UserSexIcon from '@/components/user/UserSexIcon.vue';
 import InviteGroupMemberDialog from '@/components/group/InviteGroupMemberDialog.vue';
+import EditUserGroupNicknameDialog from '@/components/group/EditUserGroupNicknameDialog.vue';
 const groupStore = useGroupStore();
 const userStore = useUserStore();
 const route = useRoute();
@@ -186,6 +198,19 @@ const handleKickMember = (userId: number) => {
     .catch(() => {});
 };
 const inviteDialogShow = ref(false);
+
+const editNicknameDialogShow = ref(false);
+const selectedUserId = ref(-1);
+const handleChangeUserGroupNickname = (userId: number) => {
+  selectedUserId.value = userId;
+  editNicknameDialogShow.value = true;
+};
+const onUserGroupNicknameChanged = (nickname: string) => {
+  const member = groupMemberList.value.find(
+    (member) => member.userId == selectedUserId.value
+  );
+  if (member) member.userGroupNickname = nickname;
+};
 </script>
 <style lang="scss" scoped>
 @import './style.scss';

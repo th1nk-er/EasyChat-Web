@@ -65,7 +65,7 @@ export const getAdminGroupInvitationList = (userId: number, page: number) => {
  * @param groupId 群组ID
  * @param accept 是否接受邀请
  */
-export const userHandelGroupInvitation = (
+export const userhandleGroupInvitation = (
   userId: number,
   groupId: number,
   accept: boolean
@@ -81,7 +81,7 @@ export const userHandelGroupInvitation = (
  * @param groupId 群组ID
  * @param accept 是否接受邀请
  */
-export const adminHandelGroupInvitation = (
+export const adminhandleGroupInvitation = (
   userId: number,
   groupId: number,
   accept: boolean
@@ -184,5 +184,22 @@ export const inviteGroupMember = (
   return service.post<Result<null>>({
     url: `/group/invite/${userId}/${groupId}`,
     data: friendIds,
+  });
+};
+
+/**
+ * 更新群成员昵称
+ * @param userId 用户ID
+ * @param groupId 群聊ID
+ * @param nickname 昵称
+ */
+export const updateUserGroupNickname = (
+  userId: number,
+  groupId: number,
+  nickname: string
+) => {
+  return service.put<Result<null>>({
+    url: `/group/${groupId}/user/${userId}/nickname`,
+    data: { nickname },
   });
 };

@@ -12,6 +12,7 @@ declare module 'vue' {
     AppTitle: typeof import('./src/components/common/AppTitle.vue')['default']
     ChangePasswordDialog: typeof import('./src/components/user/ChangePasswordDialog.vue')['default']
     CreateGroupDialog: typeof import('./src/components/common/CreateGroupDialog.vue')['default']
+    EditUserGroupNicknameDialog: typeof import('./src/components/group/EditUserGroupNicknameDialog.vue')['default']
     ElAvatar: typeof import('element-plus/es')['ElAvatar']
     ElBadge: typeof import('element-plus/es')['ElBadge']
     ElButton: typeof import('element-plus/es')['ElButton']

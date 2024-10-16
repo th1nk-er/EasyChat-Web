@@ -209,10 +209,10 @@
 </template>
 <script setup lang="ts">
 import {
-  adminHandelGroupInvitation,
+  adminhandleGroupInvitation,
   getAdminGroupInvitationList,
   getGroupInvitationList,
-  userHandelGroupInvitation,
+  userhandleGroupInvitation,
 } from '@/api/group';
 import {
   GroupInvitationStatus,
@@ -285,7 +285,7 @@ const showGroupInfo = (id: number) => {
 };
 
 const handleAgreeInvitation = async (index: number) => {
-  await userHandelGroupInvitation(
+  await userhandleGroupInvitation(
     userStore.userInfo.id,
     invitationList.value[index].groupId,
     true
@@ -296,7 +296,7 @@ const handleAgreeInvitation = async (index: number) => {
   groupStore.loadGroupList();
 };
 const handleRejectInvitation = async (index: number) => {
-  await userHandelGroupInvitation(
+  await userhandleGroupInvitation(
     userStore.userInfo.id,
     invitationList.value[index].groupId,
     false
@@ -306,7 +306,7 @@ const handleRejectInvitation = async (index: number) => {
 };
 
 const handleAdminAgreeInvitation = async (index: number) => {
-  await adminHandelGroupInvitation(
+  await adminhandleGroupInvitation(
     adminInvitationList.value[index].inviterId,
     adminInvitationList.value[index].groupId,
     true
@@ -316,7 +316,7 @@ const handleAdminAgreeInvitation = async (index: number) => {
     GroupInvitationStatus.ADMIN_ACCEPTED;
 };
 const handleAdminRejectInvitation = async (index: number) => {
-  await adminHandelGroupInvitation(
+  await adminhandleGroupInvitation(
     adminInvitationList.value[index].inviterId,
     adminInvitationList.value[index].groupId,
     false
