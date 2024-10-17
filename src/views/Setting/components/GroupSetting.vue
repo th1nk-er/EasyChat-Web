@@ -201,10 +201,16 @@ const inviteDialogShow = ref(false);
 
 const editNicknameDialogShow = ref(false);
 const selectedUserId = ref(-1);
+
+/** 打开修改群昵称对话框，修改用户群昵称 */
 const handleChangeUserGroupNickname = (userId: number) => {
   selectedUserId.value = userId;
   editNicknameDialogShow.value = true;
 };
+/**
+ * 回调函数，当用户群昵称修改成功时调用
+ * @param nickname 群昵称
+ */
 const onUserGroupNicknameChanged = (nickname: string) => {
   const member = groupMemberList.value.find(
     (member) => member.userId == selectedUserId.value

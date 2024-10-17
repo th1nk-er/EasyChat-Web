@@ -41,6 +41,7 @@ watch(dialogVisible, (value) => {
     nickname.value = props.nickname;
   }
 });
+/** 处理用户修改群昵称 */
 const handleChangeUserGroupNickname = async () => {
   if (!nickname.value || nickname.value === props.nickname) {
     dialogVisible.value = false;
