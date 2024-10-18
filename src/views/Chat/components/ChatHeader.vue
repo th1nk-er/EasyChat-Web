@@ -19,6 +19,9 @@
           >{{ chatInfo.name }}</span
         >
         <span v-else>{{ chatInfo.remark }}</span>
+        <span v-if="chatInfo.chatType == ChatType.GROUP"
+          >({{ memberCount }})</span
+        >
       </div>
       <IconNotificationOff
         class="chat__header__title__muted"
@@ -33,7 +36,8 @@ import type { UserFriendVo } from '@/api/friend/types';
 import { ChatType } from '@/api/chat/types';
 import type { ChatInfo } from '.';
 import GroupInfoDialog from '@/components/group/GroupInfoDialog.vue';
-import type { UserGroupVo } from '@/api/group/types';
+import type { GroupVo, UserGroupVo } from '@/api/group/types';
+import { getGroupInfo } from '../../../api/group';
 const friendInfoDialogShow = ref(false);
 const groupInfoDialogShow = ref(false);
 const props = defineProps({
@@ -43,6 +47,16 @@ const props = defineProps({
   },
 });
 const chatInfo = ref(props.chatInfo);
+const groupInfo = ref({} as GroupVo);
+
+const memberCount = computed(() => {
+  loadGroupInfo();
+  return groupInfo.value.memberCount;
+});
+const loadGroupInfo = async () => {
+  const resp = await getGroupInfo(chatInfo.value.chatId);
+  groupInfo.value = resp.data;
+};
 const onFriendInfoUpdate = (data: UserFriendVo) => {
   chatInfo.value.chatId = data.friendId;
   chatInfo.value.name = data.nickname;
