@@ -45,7 +45,28 @@
           </el-table-column>
           <el-table-column label="身份">
             <template #default="scope">
-              <span>{{ getRoleString(scope.row.role) }}</span>
+              <span
+                v-if="
+                  scope.row.userId == userStore.userInfo.id ||
+                  scope.row.role == UserRole.LEADER ||
+                  !isUserAdmin(userStore.userInfo.id)
+                "
+                >{{ getRoleString(scope.row.role) }}</span
+              >
+              <el-select
+                v-else
+                v-model="scope.row.role"
+                @change="handleRoleChange($event, scope.row.userId)"
+              >
+                <el-option
+                  :label="getRoleString(UserRole.ADMIN)"
+                  :value="UserRole.ADMIN"
+                />
+                <el-option
+                  :label="getRoleString(UserRole.USER)"
+                  :value="UserRole.USER"
+                />
+              </el-select>
             </template>
           </el-table-column>
           <el-table-column label="加入时间">
@@ -216,6 +237,15 @@ const onUserGroupNicknameChanged = (nickname: string) => {
     (member) => member.userId == selectedUserId.value
   );
   if (member) member.userGroupNickname = nickname;
+};
+
+/**
+ * 处理用户身份改变
+ * @param role 改变后的身份
+ * @param userId 用户id
+ */
+const handleRoleChange = (role: UserRole, userId: number) => {
+  //TODO 修改用户身份
 };
 </script>
 <style lang="scss" scoped>
