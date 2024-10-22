@@ -139,7 +139,11 @@
   </div>
 </template>
 <script setup lang="ts">
-import { getGroupMemberList, kickGroupMember } from '@/api/group';
+import {
+  getGroupMemberList,
+  kickGroupMember,
+  updateUserGroupRole,
+} from '@/api/group';
 import type { GroupMemberInfoVo } from '@/api/group/types';
 import { useGroupStore } from '@/stores/group';
 import { getFileUrl } from '@/utils/file';
@@ -151,6 +155,7 @@ import { UserRole } from '@/api/user/types';
 import UserSexIcon from '@/components/user/UserSexIcon.vue';
 import InviteGroupMemberDialog from '@/components/group/InviteGroupMemberDialog.vue';
 import EditUserGroupNicknameDialog from '@/components/group/EditUserGroupNicknameDialog.vue';
+import type { VNode } from 'vue';
 const groupStore = useGroupStore();
 const userStore = useUserStore();
 const route = useRoute();
@@ -245,7 +250,54 @@ const onUserGroupNicknameChanged = (nickname: string) => {
  * @param userId 用户id
  */
 const handleRoleChange = (role: UserRole, userId: number) => {
-  //TODO 修改用户身份
+  let msg: VNode;
+  if (role == UserRole.ADMIN) {
+    msg = h('p', [
+      h('span', null, '确定将用户'),
+      h(
+        'span',
+        { style: 'color:var(--el-color-primary)' },
+        `${groupMemberList.value.find((member) => member.userId == userId)?.username}`
+      ),
+      h('span', null, '设为管理员？'),
+    ]);
+  } else if (role == UserRole.USER) {
+    msg = h('p', [
+      h('span', null, '确定撤销用户'),
+      h(
+        'span',
+        { style: 'color:var(--el-color-primary)' },
+        `${groupMemberList.value.find((member) => member.userId == userId)?.username}`
+      ),
+      h('span', null, '的管理员身份？'),
+    ]);
+  } else {
+    return;
+  }
+  ElMessageBox.confirm(msg, 'Warning', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
+  })
+    .then(async () => {
+      await updateUserGroupRole(
+        userStore.userInfo.id,
+        selectedGroupId.value,
+        userId,
+        role
+      );
+      ElMessage.success('操作成功');
+    })
+    .catch(() => {
+      // 取消操作
+      if (role == UserRole.ADMIN) {
+        groupMemberList.value.find((member) => member.userId == userId)!.role =
+          UserRole.USER;
+      } else if (role == UserRole.USER) {
+        groupMemberList.value.find((member) => member.userId == userId)!.role =
+          UserRole.ADMIN;
+      }
+    });
 };
 </script>
 <style lang="scss" scoped>

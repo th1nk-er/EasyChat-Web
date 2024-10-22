@@ -150,6 +150,7 @@
               item.groupName
             }}</span>
           </p>
+          <!-- TODO 设置管理员和取消管理员 -->
           <p v-else>
             <span
               class="primary link"

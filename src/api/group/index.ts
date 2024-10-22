@@ -8,6 +8,7 @@ import type {
   UpdateUserGroupParams,
   UserGroupVo,
 } from './types';
+import type { UserRole } from '../user/types';
 /**
  * 创建群聊
  * @param userId 用户ID
@@ -201,5 +202,24 @@ export const updateUserGroupNickname = (
   return service.put<Result<null>>({
     url: `/group/${groupId}/user/${userId}/nickname`,
     data: { nickname },
+  });
+};
+
+/**
+ * 更新群成员身份
+ * @param userId 用户ID
+ * @param groupId 群聊ID
+ * @param memberId 成员ID
+ * @param role 身份
+ */
+export const updateUserGroupRole = (
+  userId: number,
+  groupId: number,
+  memberId: number,
+  role: UserRole
+) => {
+  return service.put<Result<null>>({
+    url: `/group/${groupId}/member/${memberId}/role`,
+    data: { userId, role },
   });
 };
