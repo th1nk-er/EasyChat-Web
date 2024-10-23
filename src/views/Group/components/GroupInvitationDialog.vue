@@ -151,6 +151,50 @@
             }}</span>
           </p>
           <!-- TODO 设置管理员和取消管理员 -->
+          <p v-else-if="item.status == GroupInvitationStatus.SET_ADMIN">
+            <span
+              class="primary link"
+              @click="showStrangerInfo(item.invitedById)"
+              >{{ item.invitedByNickname }}</span
+            >
+            <span
+              class="primary link"
+              @click="showStrangerInfo(item.invitedById)"
+              >({{ item.invitedByUsername }})</span
+            >
+            <span>将</span>
+            <span
+              class="primary link"
+              @click="showStrangerInfo(item.inviterId)"
+              >{{ item.inviterNickname }}</span
+            >
+            <span class="primary link" @click="showStrangerInfo(item.inviterId)"
+              >({{ item.inviterUsername }})</span
+            >
+            <span>设置为管理员</span>
+          </p>
+          <p v-else-if="item.status == GroupInvitationStatus.CANCEL_ADMIN">
+            <span
+              class="primary link"
+              @click="showStrangerInfo(item.invitedById)"
+              >{{ item.invitedByNickname }}</span
+            >
+            <span
+              class="primary link"
+              @click="showStrangerInfo(item.invitedById)"
+              >({{ item.invitedByUsername }})</span
+            >
+            <span>取消了</span>
+            <span
+              class="primary link"
+              @click="showStrangerInfo(item.inviterId)"
+              >{{ item.inviterNickname }}</span
+            >
+            <span class="primary link" @click="showStrangerInfo(item.inviterId)"
+              >({{ item.inviterUsername }})</span
+            >
+            <span>的管理员身份</span>
+          </p>
           <p v-else>
             <span
               class="primary link"
@@ -332,6 +376,8 @@ const handleAdminRejectInvitation = async (index: number) => {
   width: 100%;
   display: flex;
   flex-direction: column;
+  max-height: 400px;
+  overflow-y: scroll;
   .invitation-list-item {
     margin-bottom: 5px;
     display: flex;

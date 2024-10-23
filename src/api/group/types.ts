@@ -9,6 +9,8 @@ export enum GroupInvitationStatus {
   ADMIN_REJECTED = 'ADMIN_REJECTED', // 管理员拒绝
   QUITED = 'QUITED', // 退出
   KICKED = 'KICKED', // 被踢
+  SET_ADMIN = 'SET_ADMIN', // 设置为管理员
+  CANCEL_ADMIN = 'CANCEL_ADMIN', // 取消管理员
 }
 
 export type UserGroupVo = {
