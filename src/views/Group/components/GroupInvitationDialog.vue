@@ -150,7 +150,6 @@
               item.groupName
             }}</span>
           </p>
-          <!-- TODO 设置管理员和取消管理员 -->
           <p v-else-if="item.status == GroupInvitationStatus.SET_ADMIN">
             <span
               class="primary link"
