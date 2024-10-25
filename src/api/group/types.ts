@@ -1,6 +1,6 @@
 import type { UserRole, UserSex } from '../user/types';
 
-export enum GroupInvitationStatus {
+export enum GroupNotificationType {
   PENDING = 'PENDING', // 待处理
   REJECTED = 'REJECTED', // 已拒绝
   EXPIRED = 'EXPIRED', // 已过期
@@ -31,7 +31,7 @@ export type GroupInvitationVo = {
   invitedByUsername: string;
   invitedByNickname: string;
   invitedByRemark: string;
-  status: GroupInvitationStatus;
+  status: GroupNotificationType;
   createTime: string;
 };
 
@@ -45,7 +45,7 @@ export type GroupAdminInvitationVo = {
   inviterId: number;
   inviterUsername: string;
   inviterNickname: string;
-  status: GroupInvitationStatus;
+  status: GroupNotificationType;
   createTime: string;
 };
 

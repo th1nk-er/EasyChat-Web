@@ -19,7 +19,7 @@
           class="invitation-list-item__avatar"
         />
         <div class="invitation-list-item__content">
-          <p v-if="item.status == GroupInvitationStatus.KICKED">
+          <p v-if="item.status == GroupNotificationType.KICKED">
             <span>管理员</span>
             <span
               class="primary link"
@@ -36,7 +36,7 @@
               item.groupName
             }}</span>
           </p>
-          <p v-else-if="item.status == GroupInvitationStatus.QUITED">
+          <p v-else-if="item.status == GroupNotificationType.QUITED">
             <span>你退出了群组</span>
             <span class="primary link" @click="showGroupInfo(item.groupId)">{{
               item.groupName
@@ -66,7 +66,7 @@
         </div>
         <div
           class="invitation-list-item__button-group"
-          v-if="item.status == GroupInvitationStatus.PENDING"
+          v-if="item.status == GroupNotificationType.PENDING"
         >
           <el-button type="primary" @click="handleAgreeInvitation(index)"
             >同意</el-button
@@ -74,19 +74,19 @@
           <el-button @click="handleRejectInvitation(index)">拒绝</el-button>
         </div>
         <div class="invitation-list-item__status" v-else>
-          <span v-if="item.status == GroupInvitationStatus.REJECTED"
+          <span v-if="item.status == GroupNotificationType.REJECTED"
             >已拒绝</span
           >
-          <span v-if="item.status == GroupInvitationStatus.ADMIN_ACCEPTED"
+          <span v-if="item.status == GroupNotificationType.ADMIN_ACCEPTED"
             >管理员已同意</span
           >
-          <span v-if="item.status == GroupInvitationStatus.ADMIN_REJECTED"
+          <span v-if="item.status == GroupNotificationType.ADMIN_REJECTED"
             >管理员已拒绝</span
           >
-          <span v-if="item.status == GroupInvitationStatus.ADMIN_PENDING"
+          <span v-if="item.status == GroupNotificationType.ADMIN_PENDING"
             >等待管理员处理</span
           >
-          <span v-if="item.status == GroupInvitationStatus.EXPIRED"
+          <span v-if="item.status == GroupNotificationType.EXPIRED"
             >已过期</span
           >
         </div>
@@ -110,7 +110,7 @@
           class="invitation-list-item__avatar"
         />
         <div class="invitation-list-item__content">
-          <p v-if="item.status == GroupInvitationStatus.KICKED">
+          <p v-if="item.status == GroupNotificationType.KICKED">
             <span>管理员</span>
             <span
               class="primary link"
@@ -136,7 +136,7 @@
               item.groupName
             }}</span>
           </p>
-          <p v-else-if="item.status == GroupInvitationStatus.QUITED">
+          <p v-else-if="item.status == GroupNotificationType.QUITED">
             <span
               class="primary link"
               @click="showStrangerInfo(item.inviterId)"
@@ -150,7 +150,7 @@
               item.groupName
             }}</span>
           </p>
-          <p v-else-if="item.status == GroupInvitationStatus.SET_ADMIN">
+          <p v-else-if="item.status == GroupNotificationType.SET_ADMIN">
             <span
               class="primary link"
               @click="showStrangerInfo(item.invitedById)"
@@ -172,7 +172,7 @@
             >
             <span>设置为管理员</span>
           </p>
-          <p v-else-if="item.status == GroupInvitationStatus.CANCEL_ADMIN">
+          <p v-else-if="item.status == GroupNotificationType.CANCEL_ADMIN">
             <span
               class="primary link"
               @click="showStrangerInfo(item.invitedById)"
@@ -221,7 +221,7 @@
         </div>
         <div
           class="invitation-list-item__button-group"
-          v-if="item.status == GroupInvitationStatus.ADMIN_PENDING"
+          v-if="item.status == GroupNotificationType.ADMIN_PENDING"
         >
           <el-button type="primary" @click="handleAdminAgreeInvitation(index)"
             >同意</el-button
@@ -231,13 +231,13 @@
           >
         </div>
         <div class="invitation-list-item__status" v-else>
-          <span v-if="item.status == GroupInvitationStatus.ADMIN_ACCEPTED"
+          <span v-if="item.status == GroupNotificationType.ADMIN_ACCEPTED"
             >已同意</span
           >
-          <span v-if="item.status == GroupInvitationStatus.ADMIN_REJECTED"
+          <span v-if="item.status == GroupNotificationType.ADMIN_REJECTED"
             >已拒绝</span
           >
-          <span v-if="item.status == GroupInvitationStatus.EXPIRED"
+          <span v-if="item.status == GroupNotificationType.EXPIRED"
             >已过期</span
           >
         </div>
@@ -259,7 +259,7 @@ import {
   userhandleGroupInvitation,
 } from '@/api/group';
 import {
-  GroupInvitationStatus,
+  GroupNotificationType,
   type GroupAdminInvitationVo,
   type GroupInvitationVo,
 } from '@/api/group/types';
@@ -334,7 +334,7 @@ const handleAgreeInvitation = async (index: number) => {
     invitationList.value[index].groupId,
     true
   );
-  invitationList.value[index].status = GroupInvitationStatus.ADMIN_PENDING;
+  invitationList.value[index].status = GroupNotificationType.ADMIN_PENDING;
   ElMessage.success('已同意该邀请');
   groupStore.loaded = false;
   groupStore.loadGroupList();
@@ -345,7 +345,7 @@ const handleRejectInvitation = async (index: number) => {
     invitationList.value[index].groupId,
     false
   );
-  invitationList.value[index].status = GroupInvitationStatus.REJECTED;
+  invitationList.value[index].status = GroupNotificationType.REJECTED;
   ElMessage.success('已拒绝该邀请');
 };
 
@@ -357,7 +357,7 @@ const handleAdminAgreeInvitation = async (index: number) => {
   );
   ElMessage.success('已同意该邀请');
   adminInvitationList.value[index].status =
-    GroupInvitationStatus.ADMIN_ACCEPTED;
+    GroupNotificationType.ADMIN_ACCEPTED;
 };
 const handleAdminRejectInvitation = async (index: number) => {
   await adminhandleGroupInvitation(
@@ -367,7 +367,7 @@ const handleAdminRejectInvitation = async (index: number) => {
   );
   ElMessage.success('已拒绝该邀请');
   adminInvitationList.value[index].status =
-    GroupInvitationStatus.ADMIN_REJECTED;
+    GroupNotificationType.ADMIN_REJECTED;
 };
 </script>
 <style lang="scss" scoped>
