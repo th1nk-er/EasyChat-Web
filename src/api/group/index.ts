@@ -1,8 +1,7 @@
 import service from '@/utils/service';
 import type { Result } from '../types';
 import type {
-  GroupAdminInvitationVo,
-  GroupInvitationVo,
+  GroupNotificationVo,
   GroupMemberInfoVo,
   GroupVo,
   UpdateUserGroupParams,
@@ -39,24 +38,13 @@ export const getGroupList = (userId: number, page: number) => {
 };
 
 /**
- * 获取用户的群聊邀请列表
+ * 获取用户的群聊通知列表
  * @param userId 用户ID
  * @param page 页码
  */
 export const getGroupInvitationList = (userId: number, page: number) => {
-  return service.get<Result<GroupInvitationVo[]>>({
-    url: `/group/invitation/list/${userId}/${page}`,
-  });
-};
-
-/**
- * 获取用户管理的的群聊的邀请列表
- * @param userId 用户ID
- * @param page 页码
- */
-export const getAdminGroupInvitationList = (userId: number, page: number) => {
-  return service.get<Result<GroupAdminInvitationVo[]>>({
-    url: `/group/invitation/manage/list/${userId}/${page}`,
+  return service.get<Result<GroupNotificationVo[]>>({
+    url: `/group/notification/list/${userId}/${page}`,
   });
 };
 

@@ -23,29 +23,17 @@ export type UserGroupVo = {
   groupRemark?: string;
 };
 
-export type GroupInvitationVo = {
+export type GroupNotificationVo = {
   groupId: number;
   groupName: string;
   groupAvatar: string;
-  invitedById: number;
-  invitedByUsername: string;
-  invitedByNickname: string;
-  invitedByRemark: string;
-  status: GroupNotificationType;
-  createTime: string;
-};
-
-export type GroupAdminInvitationVo = {
-  groupId: number;
-  groupName: string;
-  groupAvatar: string;
-  invitedById: number;
-  invitedByUsername: string;
-  invitedByNickname: string;
-  inviterId: number;
-  inviterUsername: string;
-  inviterNickname: string;
-  status: GroupNotificationType;
+  targetId: number;
+  targetUsername: string;
+  targetNickname: string;
+  operatorId: number;
+  operatorUsername: string;
+  operatorNickname: string;
+  type: GroupNotificationType;
   createTime: string;
 };
 
