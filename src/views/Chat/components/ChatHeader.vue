@@ -37,7 +37,7 @@ import { ChatType } from '@/api/chat/types';
 import type { ChatInfo } from '.';
 import GroupInfoDialog from '@/components/group/GroupInfoDialog.vue';
 import type { GroupVo, UserGroupVo } from '@/api/group/types';
-import { getGroupInfo } from '../../../api/group';
+import { getGroupInfo } from '@/api/group';
 const friendInfoDialogShow = ref(false);
 const groupInfoDialogShow = ref(false);
 const props = defineProps({
@@ -50,7 +50,7 @@ const chatInfo = ref(props.chatInfo);
 const groupInfo = ref({} as GroupVo);
 
 const memberCount = computed(() => {
-  loadGroupInfo();
+  if (groupInfo.value.memberCount == undefined) loadGroupInfo();
   return groupInfo.value.memberCount;
 });
 const loadGroupInfo = async () => {
