@@ -24,7 +24,7 @@
         </el-select>
         <h4 style="text-align: center">成员列表</h4>
         <el-table
-          :data="groupMemberList"
+          :data="filterTableData"
           table-layout="auto"
           v-loading="isLoading"
         >
@@ -65,8 +65,10 @@
                 <el-option
                   :label="getRoleString(UserRole.USER)"
                   :value="UserRole.USER"
-                />
-              </el-select>
+                /> </el-select
+              ><span style="visibility: hidden">{{
+                getRoleString(scope.row.role)
+              }}</span>
             </template>
           </el-table-column>
           <el-table-column label="加入时间">
@@ -74,7 +76,14 @@
               <span>{{ getTimeString(scope.row.createTime) }}</span>
             </template>
           </el-table-column>
-          <el-table-column fixed="right" label="操作" align="center">
+          <el-table-column fixed="right" align="center">
+            <template #header>
+              <el-input v-model="searchText" placeholder="输入关键字搜索">
+                <template #prepend>
+                  <IconSearch />
+                </template>
+              </el-input>
+            </template>
             <template #default="scope">
               <el-button
                 link
@@ -159,7 +168,18 @@ import type { VNode } from 'vue';
 const groupStore = useGroupStore();
 const userStore = useUserStore();
 const route = useRoute();
-
+const searchText = ref('');
+const filterTableData = computed(() =>
+  groupMemberList.value.filter(
+    (data) =>
+      !searchText.value ||
+      data.nickname.toLowerCase().includes(searchText.value.toLowerCase()) ||
+      data.username.toLowerCase().includes(searchText.value.toLowerCase()) ||
+      data.userGroupNickname
+        ?.toLowerCase()
+        .includes(searchText.value.toLowerCase())
+  )
+);
 onMounted(() => {
   groupStore.loadGroupList();
   if (route.params.settingType == SettingType.GROUP) {
