@@ -60,6 +60,7 @@ export const useChatStore = defineStore('chat', {
     /**
      * 清除指定话的未读消息
      * @param chatId 对方ID
+     * @param chatType 对话类型
      */
     clearConversationUnread(chatId: number, chatType: ChatType) {
       const list = this.conversationList;

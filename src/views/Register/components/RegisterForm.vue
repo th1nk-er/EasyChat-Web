@@ -173,9 +173,9 @@ watch(sendSeconds, (newValue) => {
   }
 });
 
-const handleRegister = async (formEl: FormInstance | undefined) => {
+const handleRegister = (formEl: FormInstance | undefined) => {
   if (!formEl) return;
-  formEl.validate(async (valid, fields) => {
+  formEl.validate(async (valid) => {
     if (valid) {
       const registerVo: RegisterVo = {
         username: formData.username,

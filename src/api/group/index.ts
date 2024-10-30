@@ -94,9 +94,7 @@ export const getGroupInfo = (groupId: number) => {
 /**
  * 更新用户群聊信息
  * @param userId 用户ID
- * @param groupId 群聊ID
- * @param groupRemark 群聊备注
- * @param muted 是否免打扰
+ * @param params 更新参数
  */
 export const updateUserGroupInfo = (
   userId: number,

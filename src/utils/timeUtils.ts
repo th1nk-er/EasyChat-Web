@@ -4,7 +4,7 @@
 export const getTimeString = (time: string) => {
   const now = new Date();
   const date = new Date(time);
-  let res = '';
+  let res: string;
 
   if (now.getFullYear() != date.getFullYear())
     // 年份不一样

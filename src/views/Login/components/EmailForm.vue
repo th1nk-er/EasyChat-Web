@@ -122,9 +122,9 @@ watch(sendSeconds, (newValue) => {
   }
 });
 
-const handleLogin = async (formEl: FormInstance | undefined) => {
+const handleLogin = (formEl: FormInstance | undefined) => {
   if (!formEl) return;
-  formEl.validate(async (valid, fields) => {
+  formEl.validate(async (valid) => {
     if (valid) {
       const userLoginVo = {
         type: LoginType.EMAIL,
@@ -140,7 +140,7 @@ const handleLogin = async (formEl: FormInstance | undefined) => {
           userStore.userInfo = res.data;
           router.push({ name: 'Chat' });
         })
-        .catch((err) => {
+        .catch(() => {
           userStore.removeToken();
           ElMessage.error('获取用户信息失败');
         });

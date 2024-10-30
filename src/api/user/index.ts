@@ -48,7 +48,7 @@ export const sendChangePasswordEmail = () => {
 /**
  * 修改头像
  * @param userId 用户id
- * @param formData 表单数据
+ * @param file 头像文件
  * @returns 上传后的头像路径
  */
 export const changeAvatar = (userId: number, file: File) => {

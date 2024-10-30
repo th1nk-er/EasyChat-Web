@@ -103,7 +103,6 @@ export const getMessageHistory = (
 
 /**
  * 获取群聊消息历史记录
- * @param userId 用户ID
  * @param groupId 群聊ID
  * @param currentPage 页码
  * @returns

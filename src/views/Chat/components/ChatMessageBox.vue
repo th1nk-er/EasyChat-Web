@@ -134,7 +134,6 @@ import FriendInfoDialog from '@/components/friend/FriendInfoDialog.vue';
 import type { ChatInfo } from '.';
 import { useGroupStore } from '@/stores/group';
 import type { GroupMemberInfoVo } from '@/api/group/types';
-import { useFriendStore } from '@/stores/friend';
 import { getMessageCommandParams } from '@/utils/chat';
 
 const msgBox = ref<HTMLElement>();
@@ -157,7 +156,6 @@ const scrollToBottom = () => {
   });
 };
 const userStore = useUserStore();
-const friendStore = useFriendStore();
 const groupStore = useGroupStore();
 const memberInfo = ref<Map<Number, GroupMemberInfoVo>>(new Map());
 watch(
