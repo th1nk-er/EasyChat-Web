@@ -71,6 +71,15 @@
               }}</span>
             </template>
           </el-table-column>
+          <el-table-column label="屏蔽">
+            <template #default="scope">
+              <el-switch
+                :disabled="userStore.userInfo.id == scope.row.userId"
+                v-model="scope.row.ignored"
+                @change="handleIgnoreChange($event, scope.row.userId)"
+              />
+            </template>
+          </el-table-column>
           <el-table-column label="加入时间">
             <template #default="scope">
               <span>{{ getTimeString(scope.row.createTime) }}</span>
@@ -149,7 +158,10 @@
 </template>
 <script setup lang="ts">
 import {
+  cancelIgnoreGroupMember,
   getGroupMemberList,
+  getIgnoredMemberIds,
+  ignoreGroupMember,
   kickGroupMember,
   updateUserGroupRole,
 } from '@/api/group';
@@ -191,24 +203,60 @@ onMounted(() => {
   }
 });
 const selectedGroupId = ref(-1);
-const groupMemberList = ref([] as GroupMemberInfoVo[]);
+const groupMemberList = ref([] as (GroupMemberInfoVo & { ignored: boolean })[]);
+const ignoredIds = ref([] as number[]);
 const isLoading = ref(false);
-const onSelectedGroupChange = (groupId: number) => {
+const onSelectedGroupChange = async (groupId: number) => {
   groupMemberList.value = [];
   if (groupId === -1) return;
   let page = 1;
   isLoading.value = true;
+  const resp = await getIgnoredMemberIds(userStore.userInfo.id, groupId);
+  ignoredIds.value = resp.data;
   const intervalId = setInterval(async () => {
     try {
       const resp = await getGroupMemberList(groupId, page++);
       if (resp.data.length === 0) clearInterval(intervalId);
-      groupMemberList.value.push(...resp.data);
+      groupMemberList.value.push(
+        ...resp.data.map((member: GroupMemberInfoVo) => ({
+          ...member,
+          ignored: ignoredIds.value.includes(member.userId),
+        }))
+      );
       isLoading.value = false;
     } catch (e) {
       clearInterval(intervalId);
       isLoading.value = false;
     }
   }, 200);
+};
+
+const handleIgnoreChange = async (value: any, userId: number) => {
+  value = value as boolean;
+  const member = groupMemberList.value.find(
+    (member) => member.userId == userId
+  );
+  if (value) {
+    try {
+      await ignoreGroupMember(
+        userStore.userInfo.id,
+        selectedGroupId.value,
+        userId
+      );
+    } catch (_) {
+      member!.ignored = false;
+    }
+  } else {
+    try {
+      await cancelIgnoreGroupMember(
+        userStore.userInfo.id,
+        selectedGroupId.value,
+        userId
+      );
+    } catch (_) {
+      member!.ignored = true;
+    }
+  }
 };
 /** 判断用户是否拥有管理员权限 */
 const isUserAdmin = (userId: number) => {

@@ -209,3 +209,46 @@ export const updateUserGroupRole = (
     data: { userId, role },
   });
 };
+
+/**
+ * 获取用户忽略的群成员ID
+ * @param userId 用户ID
+ * @param groupId 群聊ID
+ */
+export const getIgnoredMemberIds = (userId: number, groupId: number) => {
+  return service.get<Result<number[]>>({
+    url: `/group/${groupId}/${userId}/ignored/members`,
+  });
+};
+
+/**
+ * 忽略群成员
+ * @param userId 用户ID
+ * @param groupId 群聊ID
+ * @param memberId 成员ID
+ */
+export const ignoreGroupMember = (
+  userId: number,
+  groupId: number,
+  memberId: number
+) => {
+  return service.post<Result<null>>({
+    url: `/group/${groupId}/${userId}/ignore/member/${memberId}`,
+  });
+};
+
+/**
+ * 取消忽略群成员
+ * @param userId 用户ID
+ * @param groupId 群聊ID
+ * @param memberId 成员ID
+ */
+export const cancelIgnoreGroupMember = (
+  userId: number,
+  groupId: number,
+  memberId: number
+) => {
+  return service.delete<Result<null>>({
+    url: `/group/${groupId}/${userId}/ignore/member/${memberId}`,
+  });
+};
