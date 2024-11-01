@@ -160,7 +160,7 @@
 import {
   cancelIgnoreGroupMember,
   getGroupMemberList,
-  getIgnoredMemberIds,
+  getGroupIgnored,
   ignoreGroupMember,
   kickGroupMember,
   updateUserGroupRole,
@@ -211,8 +211,8 @@ const onSelectedGroupChange = async (groupId: number) => {
   if (groupId === -1) return;
   let page = 1;
   isLoading.value = true;
-  const resp = await getIgnoredMemberIds(userStore.userInfo.id, groupId);
-  ignoredIds.value = resp.data;
+  const resp = await getGroupIgnored(userStore.userInfo.id, groupId);
+  ignoredIds.value = resp.data.map((vo) => vo.ignoredId);
   const intervalId = setInterval(async () => {
     try {
       const resp = await getGroupMemberList(groupId, page++);

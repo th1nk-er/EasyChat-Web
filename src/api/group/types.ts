@@ -63,3 +63,10 @@ export type GroupMemberInfoVo = {
   avatar: string;
   sex: UserSex;
 };
+
+export type GroupMemberIgnoredVo = {
+  groupId: number;
+  userId: number;
+  ignoredId: number;
+  createTime: string;
+};

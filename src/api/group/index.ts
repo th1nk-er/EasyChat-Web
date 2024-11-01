@@ -6,6 +6,7 @@ import type {
   GroupVo,
   UpdateUserGroupParams,
   UserGroupVo,
+  GroupMemberIgnoredVo,
 } from './types';
 import type { UserRole } from '../user/types';
 /**
@@ -211,12 +212,12 @@ export const updateUserGroupRole = (
 };
 
 /**
- * 获取用户忽略的群成员ID
+ * 获取用户对某个群聊中成员的屏蔽信息
  * @param userId 用户ID
  * @param groupId 群聊ID
  */
-export const getIgnoredMemberIds = (userId: number, groupId: number) => {
-  return service.get<Result<number[]>>({
+export const getGroupIgnored = (userId: number, groupId: number) => {
+  return service.get<Result<GroupMemberIgnoredVo[]>>({
     url: `/group/${groupId}/${userId}/ignored/members`,
   });
 };

@@ -25,6 +25,12 @@
           }}</span>
         </div>
         <div class="info-item">
+          <span class="info-item__label"
+            >屏&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;蔽</span
+          >
+          <el-switch v-model="isIgnored" @change="handleIgnoredChange" />
+        </div>
+        <div class="info-item">
           <span class="info-item__label">用&nbsp;&nbsp;户&nbsp;&nbsp;名</span>
           <span class="info-item__content">{{ memberInfo.username }}</span>
         </div>
@@ -46,7 +52,6 @@
         <el-button type="primary" @click="addInfoDialogVisible = true"
           >添加好友</el-button
         >
-        <el-button type="primary">屏蔽用户</el-button>
         <el-button
           type="danger"
           v-if="groupStore.isMemberAdmin(props.groupId, userStore.userInfo.id)"
@@ -76,7 +81,12 @@ import { getFileUrl } from '@/utils/file';
 import { getRoleString } from '@/utils/userUtils';
 import { getTimeString } from '@/utils/timeUtils';
 import UserSexIcon from '@/components/user/UserSexIcon.vue';
-import { kickGroupMember } from '@/api/group';
+import {
+  cancelIgnoreGroupMember,
+  getGroupIgnored,
+  ignoreGroupMember,
+  kickGroupMember,
+} from '@/api/group';
 
 const dialogVisible = defineModel({ type: Boolean, default: false });
 const props = defineProps({
@@ -92,12 +102,28 @@ const groupStore = useGroupStore();
 const userStore = useUserStore();
 const memberInfo = ref({} as GroupMemberInfoVo);
 const addInfoDialogVisible = ref(false);
+const isIgnored = ref(false);
 const loadData = async () => {
+  if (memberInfo.value.userId == props.userId) return;
   const info = await groupStore.getMemberInfo(props.groupId, props.userId);
+  const resp = await getGroupIgnored(userStore.userInfo.id, props.groupId);
+  isIgnored.value =
+    resp.data.find((item) => item.ignoredId === props.userId) !== undefined;
   if (info) {
     memberInfo.value = info;
   } else {
     ElMessage.error('获取信息失败');
+  }
+};
+const handleIgnoredChange = async () => {
+  if (isIgnored.value) {
+    await ignoreGroupMember(userStore.userInfo.id, props.groupId, props.userId);
+  } else {
+    await cancelIgnoreGroupMember(
+      userStore.userInfo.id,
+      props.groupId,
+      props.userId
+    );
   }
 };
 const handleKickMember = async () => {
