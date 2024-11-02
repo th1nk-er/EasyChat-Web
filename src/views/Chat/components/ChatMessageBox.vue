@@ -12,93 +12,95 @@
       v-for="(item, index) in props.messageData"
       :key="index"
     >
-      <!-- 显示时间 -->
-      <p
-        class="message-container-item-time"
-        v-if="
-          index != 0 &&
-          new Date(item.createTime).getTime() -
-            new Date(messageData[index - 1].createTime).getTime() >
-            1000 * 60 * 3
-        "
-      >
-        {{ getTimeString(item.createTime) }}
-      </p>
-      <!-- 命令消息 -->
-      <div
-        class="message-container-item-command"
-        v-if="item.messageType == MessageType.COMMAND"
-      >
-        <!-- 用户邀请进群 -->
-        <div
-          class="command-group-invitation"
-          v-if="item.content == MessageCommand.GROUP_INVITED"
-        >
-          <p>
-            <span
-              class="primary link"
-              @click="showUserInfo(Number(getMessageCommandParams(item)[0]))"
-              >{{
-                getMemberNickname(Number(getMessageCommandParams(item)[0]))
-              }}</span
-            >
-            <span>邀请</span>
-            <span
-              class="primary link"
-              @click="showUserInfo(Number(getMessageCommandParams(item)[1]))"
-              >{{
-                getMemberNickname(Number(getMessageCommandParams(item)[1]))
-              }}</span
-            >
-            <span>加入了群聊</span>
-          </p>
-        </div>
-      </div>
-      <!-- 文本消息和图片消息 -->
-      <div
-        v-if="
-          item.messageType == MessageType.TEXT ||
-          item.messageType == MessageType.IMAGE
-        "
-        :class="
-          item.senderId == userStore.userInfo.id ? 'item-right' : 'item-left'
-        "
-      >
-        <!-- 用户头像 -->
-        <img
-          :src="getUserAvatarUrl(item.senderId)"
-          class="message-container-item-avatar"
-          @click="showUserInfo(item.senderId)"
-        />
-        <!-- 文本消息 -->
-        <div
-          class="message-container-item-content"
-          v-if="item.messageType == MessageType.TEXT"
-        >
-          <!-- 用户群昵称 -->
-          <p
-            v-if="chatInfo.chatType == ChatType.GROUP"
-            class="message-container-item-content-nickname"
-          >
-            {{ memberInfo.get(item.senderId)?.userGroupNickname }}
-          </p>
-          <!-- 消息内容 -->
-          <p class="message-container-item-content-text">
-            {{ item.content }}
-          </p>
-        </div>
-        <!-- 图片消息 -->
-        <div
-          class="message-container-item-img"
-          v-if="item.messageType == MessageType.IMAGE"
-          @click="
-            previewImgSrc = getFileUrl(item.content);
-            previewImgShow = true;
+      <template v-if="isMessageVisible(item)">
+        <!-- 显示时间 -->
+        <p
+          class="message-container-item-time"
+          v-if="
+            index != 0 &&
+            new Date(item.createTime).getTime() -
+              new Date(messageData[index - 1].createTime).getTime() >
+              1000 * 60 * 3
           "
         >
-          <img :src="getFileUrl(item.content)" />
+          {{ getTimeString(item.createTime) }}
+        </p>
+        <!-- 命令消息 -->
+        <div
+          class="message-container-item-command"
+          v-if="item.messageType == MessageType.COMMAND"
+        >
+          <!-- 用户邀请进群 -->
+          <div
+            class="command-group-invitation"
+            v-if="item.content == MessageCommand.GROUP_INVITED"
+          >
+            <p>
+              <span
+                class="primary link"
+                @click="showUserInfo(Number(getMessageCommandParams(item)[0]))"
+                >{{
+                  getMemberNickname(Number(getMessageCommandParams(item)[0]))
+                }}</span
+              >
+              <span>邀请</span>
+              <span
+                class="primary link"
+                @click="showUserInfo(Number(getMessageCommandParams(item)[1]))"
+                >{{
+                  getMemberNickname(Number(getMessageCommandParams(item)[1]))
+                }}</span
+              >
+              <span>加入了群聊</span>
+            </p>
+          </div>
         </div>
-      </div>
+        <!-- 文本消息和图片消息 -->
+        <div
+          v-if="
+            item.messageType == MessageType.TEXT ||
+            item.messageType == MessageType.IMAGE
+          "
+          :class="
+            item.senderId == userStore.userInfo.id ? 'item-right' : 'item-left'
+          "
+        >
+          <!-- 用户头像 -->
+          <img
+            :src="getUserAvatarUrl(item.senderId)"
+            class="message-container-item-avatar"
+            @click="showUserInfo(item.senderId)"
+          />
+          <!-- 文本消息 -->
+          <div
+            class="message-container-item-content"
+            v-if="item.messageType == MessageType.TEXT"
+          >
+            <!-- 用户群昵称 -->
+            <p
+              v-if="chatInfo.chatType == ChatType.GROUP"
+              class="message-container-item-content-nickname"
+            >
+              {{ memberInfo.get(item.senderId)?.userGroupNickname }}
+            </p>
+            <!-- 消息内容 -->
+            <p class="message-container-item-content-text">
+              {{ item.content }}
+            </p>
+          </div>
+          <!-- 图片消息 -->
+          <div
+            class="message-container-item-img"
+            v-if="item.messageType == MessageType.IMAGE"
+            @click="
+              previewImgSrc = getFileUrl(item.content);
+              previewImgShow = true;
+            "
+          >
+            <img :src="getFileUrl(item.content)" />
+          </div>
+        </div>
+      </template>
     </div>
     <el-dialog
       v-model="previewImgShow"
@@ -115,6 +117,7 @@
       v-model="groupMemberInfoDialogShow"
       :group-id="chatInfo.chatId"
       :user-id="userInfoId"
+      @onMemberIgnoreChanged="handleMemberIgnoreChanged"
     />
   </div>
 </template>
@@ -133,8 +136,12 @@ import UserInfoDialog from '@/components/user/UserInfoDialog.vue';
 import FriendInfoDialog from '@/components/friend/FriendInfoDialog.vue';
 import type { ChatInfo } from '.';
 import { useGroupStore } from '@/stores/group';
-import type { GroupMemberInfoVo } from '@/api/group/types';
+import type {
+  GroupMemberIgnoredVo,
+  GroupMemberInfoVo,
+} from '@/api/group/types';
 import { getMessageCommandParams } from '@/utils/chat';
+import { getGroupIgnored } from '@/api/group';
 
 const msgBox = ref<HTMLElement>();
 const props = defineProps({
@@ -158,6 +165,28 @@ const scrollToBottom = () => {
 const userStore = useUserStore();
 const groupStore = useGroupStore();
 const memberInfo = ref<Map<Number, GroupMemberInfoVo>>(new Map());
+const ignoredMembers = ref([] as GroupMemberIgnoredVo[]);
+onMounted(async () => {
+  if (props.chatInfo.chatType == ChatType.GROUP) {
+    const resp = await getGroupIgnored(
+      userStore.userInfo.id,
+      props.chatInfo.chatId
+    );
+    ignoredMembers.value = resp.data;
+  }
+});
+
+const isMessageVisible = (msg: ChatMessage) => {
+  if (msg.chatType == ChatType.FRIEND) return true;
+  if (msg.chatType == ChatType.GROUP) {
+    const m = ignoredMembers.value.find((m) => m.ignoredId == msg.senderId);
+    if (m) {
+      return (
+        new Date(m.createTime).getTime() > new Date(msg.createTime).getTime()
+      );
+    } else return true;
+  }
+};
 watch(
   () => props.messageData.length,
   () => {
@@ -222,6 +251,21 @@ const getMemberNickname = (userId: number) => {
     else return member.username;
   } else {
     groupStore.getMemberInfo(props.chatInfo.chatId, userId);
+  }
+};
+
+const handleMemberIgnoreChanged = (newVal: boolean) => {
+  if (newVal) {
+    ignoredMembers.value.push({
+      ignoredId: userInfoId.value,
+      groupId: props.chatInfo.chatId,
+      userId: userStore.userInfo.id,
+      createTime: new Date().toISOString(),
+    });
+  } else {
+    ignoredMembers.value = ignoredMembers.value.filter(
+      (item) => item.ignoredId != userInfoId.value
+    );
   }
 };
 const previewImgShow = ref(false);

@@ -89,6 +89,9 @@ import {
 } from '@/api/group';
 
 const dialogVisible = defineModel({ type: Boolean, default: false });
+const emit = defineEmits<{
+  onMemberIgnoreChanged: [newVal: boolean];
+}>();
 const props = defineProps({
   userId: { type: Number, required: true },
   groupId: { type: Number, required: true },
@@ -118,12 +121,14 @@ const loadData = async () => {
 const handleIgnoredChange = async () => {
   if (isIgnored.value) {
     await ignoreGroupMember(userStore.userInfo.id, props.groupId, props.userId);
+    emit('onMemberIgnoreChanged', true);
   } else {
     await cancelIgnoreGroupMember(
       userStore.userInfo.id,
       props.groupId,
       props.userId
     );
+    emit('onMemberIgnoreChanged', false);
   }
 };
 const handleKickMember = async () => {
