@@ -10,6 +10,7 @@
         :message-data="messageData"
         :chat-info="chatInfo"
         @on-get-more-message="getMoreMessage"
+        @onMemberIgnoreChanged="handleMemberIgnoreChanged"
         :key="componentKey"
       />
       <ChatToolBar
@@ -47,10 +48,14 @@ import {
 import { useChatStore } from '@/stores/chat';
 import { useUserStore } from '@/stores/user';
 import { ChatHeader, ChatInputBox, ChatMessageBox, ChatToolBar } from '.';
+import type { GroupMemberIgnoredVo } from '@/api/group/types';
+import { useGroupStore } from '@/stores/group';
 const componentKey = ref(0);
 const chatStore = useChatStore();
+const groupStore = useGroupStore();
 const userStore = useUserStore();
 const messageData = ref<ChatMessage[]>([]);
+const ignoredMembers = ref([] as GroupMemberIgnoredVo[]);
 const msgBox = ref();
 /** 用户输入的消息 */
 const inputMessage = ref('');
@@ -122,6 +127,30 @@ const chatInfo = ref({
   avatar: '',
   muted: false,
 });
+const isMessageVisible = (msg: ChatMessage) => {
+  if (msg.chatType == ChatType.FRIEND) return true;
+  if (msg.chatType == ChatType.GROUP) {
+    const m = ignoredMembers.value.find((m) => m.ignoredId == msg.senderId);
+    if (m) {
+      return (
+        new Date(m.createTime).getTime() > new Date(msg.createTime).getTime()
+      );
+    } else return true;
+  }
+};
+const handleMemberIgnoreChanged = (memberId: number, ignored: boolean) => {
+  const m = ignoredMembers.value.find((item) => item.ignoredId == memberId);
+  if (ignored) {
+    ignoredMembers.value.push({
+      ignoredId: memberId,
+      groupId: chatInfo.value.chatId,
+      userId: userStore.userInfo.id,
+      createTime: new Date().toISOString(),
+    });
+  } else {
+    groupStore.cancelIgnoreMember(chatInfo.value.chatId, memberId);
+  }
+};
 /** 初始化数据 */
 const initChatData = async () => {
   hasMoreMessage.value = true;
@@ -148,6 +177,8 @@ const initChatData = async () => {
       onReceiveMessage(message);
     });
   } else if (chatStore.chatType == ChatType.GROUP) {
+    await groupStore.loadIgnoredMembers(chatStore.chatId);
+    ignoredMembers.value = groupStore.getIgnoredList(chatStore.chatId);
     subscribeGroupMessage(chatInfo.value.chatId, (message: WSMessage) => {
       onReceiveMessage(message);
     });
@@ -180,6 +211,7 @@ const onReceiveMessage = (message: WSMessage) => {
       createTime: new Date().toISOString(),
       chatType: message.chatType,
     });
+    messageData.value = messageData.value.filter(isMessageVisible);
     scrollToBottom();
   }
 };
@@ -214,6 +246,7 @@ const getMoreMessage = async () => {
       return;
     }
     messageData.value.unshift(...resp.data);
+    messageData.value = messageData.value.filter(isMessageVisible);
   }
 };
 onMounted(() => {

@@ -15,7 +15,12 @@ import {
 } from '@/api/chat';
 import LeftNavigation from '@/components/common/LeftNavigation.vue';
 import { useWSStore } from '@/stores/ws';
-import { MessageCommand, MessageType, type WSMessage } from '@/api/chat/types';
+import {
+  ChatType,
+  MessageCommand,
+  MessageType,
+  type WSMessage,
+} from '@/api/chat/types';
 import { useUserStore } from '@/stores/user';
 import { useChatStore } from '@/stores/chat';
 import { ChatList, ChatInstance } from './components';
@@ -75,7 +80,12 @@ const handleCommandMessage = (message: WSMessage) => {
   }
 };
 const handleSystemMessage = (message: WSMessage) => {};
-const handleUserMessage = (message: WSMessage) => {
+const handleUserMessage = async (message: WSMessage) => {
+  if (message.chatType == ChatType.GROUP) {
+    await groupStore.loadIgnoredMembers(message.toId);
+    const ignoredList = groupStore.getIgnoredList(message.toId);
+    if (ignoredList.find((m) => m.ignoredId == message.fromId)) return;
+  }
   chatStore.updateConversation(message);
 };
 </script>

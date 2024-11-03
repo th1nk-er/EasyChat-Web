@@ -103,7 +103,7 @@ watch(dialogVisible, (val) => {
 });
 const groupStore = useGroupStore();
 const userStore = useUserStore();
-const memberInfo = ref({} as GroupMemberInfoVo);
+const memberInfo = ref({ sex: 'SECRET' } as GroupMemberInfoVo);
 const addInfoDialogVisible = ref(false);
 const isIgnored = ref(false);
 const loadData = async () => {

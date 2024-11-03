@@ -1,5 +1,9 @@
-import { getGroupList, getGroupmemberInfo } from '@/api/group';
-import type { GroupMemberInfoVo, UserGroupVo } from '@/api/group/types';
+import { getGroupIgnored, getGroupList, getGroupmemberInfo } from '@/api/group';
+import type {
+  GroupMemberIgnoredVo,
+  GroupMemberInfoVo,
+  UserGroupVo,
+} from '@/api/group/types';
 import { defineStore } from 'pinia';
 import { useUserStore } from './user';
 import { UserRole } from '@/api/user/types';
@@ -9,6 +13,10 @@ export const useGroupStore = defineStore('group', {
     return {
       groupList: [] as UserGroupVo[],
       groupMemberList: [] as GroupMemberInfoVo[],
+      ignoredMemberList: [] as {
+        groupId: number;
+        ignoredList: GroupMemberIgnoredVo[];
+      }[],
       loaded: false,
     };
   },
@@ -20,6 +28,13 @@ export const useGroupStore = defineStore('group', {
       if (member)
         return member.role == UserRole.ADMIN || member.role == UserRole.LEADER;
       else return false;
+    },
+    getIgnoredList: (state) => (groupId: number) => {
+      const r = state.ignoredMemberList.find(
+        (item) => item.groupId === groupId
+      );
+      if (r) return r.ignoredList;
+      return [];
     },
   },
   actions: {
@@ -67,6 +82,33 @@ export const useGroupStore = defineStore('group', {
           this.groupMemberList.push(result);
           return result;
         } else return undefined;
+      }
+    },
+    /**
+     * 加载指定群组的屏蔽列表
+     * @param groupId 群组ID
+     */
+    async loadIgnoredMembers(groupId: number) {
+      if (this.ignoredMemberList.find((item) => item.groupId === groupId))
+        return;
+      const userStore = useUserStore();
+      const resp = await getGroupIgnored(userStore.userInfo.id, groupId);
+      this.ignoredMemberList.push({ groupId, ignoredList: resp.data });
+    },
+    /**
+     * 取消屏蔽指定群组成员
+     * @param groupId 群组ID
+     * @param memberId 成员ID
+     */
+    cancelIgnoreMember(groupId: number, memberId: number) {
+      const list = this.ignoredMemberList.find(
+        (item) => item.groupId === groupId
+      );
+      if (list) {
+        const index = list.ignoredList.findIndex(
+          (item) => item.ignoredId === memberId
+        );
+        if (index != -1) list.ignoredList.splice(index, 1);
       }
     },
   },
