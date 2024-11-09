@@ -70,3 +70,10 @@ export type GroupMemberIgnoredVo = {
   ignoredId: number;
   createTime: string;
 };
+
+export type MuteMemberDto = {
+  groupId: number;
+  memberId: number;
+  adminId: number;
+  duration: number;
+};

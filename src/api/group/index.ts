@@ -7,6 +7,7 @@ import type {
   UpdateUserGroupParams,
   UserGroupVo,
   GroupMemberIgnoredVo,
+  MuteMemberDto,
 } from './types';
 import type { UserRole } from '../user/types';
 /**
@@ -251,5 +252,26 @@ export const cancelIgnoreGroupMember = (
 ) => {
   return service.delete<Result<null>>({
     url: `/group/${groupId}/${userId}/ignore/member/${memberId}`,
+  });
+};
+
+/**
+ * 禁言群成员
+ * @param dto 禁言参数
+ */
+export const muteGroupMember = (dto: MuteMemberDto) => {
+  return service.post<Result<null>>({
+    url: '/group/mute/member',
+    data: dto,
+  });
+};
+
+export const calcelMuteGroupMember = (
+  groupId: number,
+  memberId: number,
+  adminId: number
+) => {
+  return service.delete<Result<null>>({
+    url: `/group/${groupId}/mute/member/${memberId}/${adminId}`,
   });
 };
