@@ -48,6 +48,8 @@ export type UserConversation = {
 };
 
 export enum MessageCommand {
-  'CONNECTED' = 'CONNECTED',
-  'GROUP_INVITED' = 'GROUP_INVITED',
+  CONNECTED = 'CONNECTED',
+  GROUP_INVITED = 'GROUP_INVITED',
+  MEMBER_MUTED = 'MEMBER_MUTED',
+  MEMBER_CANCEL_MUTE = 'MEMBER_CANCEL_MUTE',
 }

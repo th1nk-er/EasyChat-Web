@@ -114,6 +114,7 @@ import {
   getGroupIgnored,
   ignoreGroupMember,
   kickGroupMember,
+  muteGroupMember,
 } from '@/api/group';
 
 const dialogVisible = defineModel({ type: Boolean, default: false });
@@ -176,12 +177,18 @@ const handleKickMember = async () => {
 const muteDialogShow = ref(false);
 const muteMinutes = ref(1);
 const muteMinutesInput = ref(1);
-const handleMuteMember = () => {
+const handleMuteMember = async () => {
   let minutes = muteMinutes.value;
   if (minutes == -1) {
     minutes = muteMinutesInput.value;
   }
-  //TODO 发送请求
+  await muteGroupMember({
+    groupId: props.groupId,
+    memberId: props.userId,
+    adminId: userStore.userInfo.id,
+    duration: minutes,
+  });
+  ElMessage.success('操作成功');
 };
 </script>
 

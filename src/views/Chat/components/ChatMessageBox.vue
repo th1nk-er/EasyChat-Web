@@ -53,6 +53,52 @@
             <span>加入了群聊</span>
           </p>
         </div>
+        <div
+          class="command-group-mute"
+          v-else-if="item.content == MessageCommand.MEMBER_MUTED"
+        >
+          <p>
+            <span>管理员</span>
+            <span
+              class="primary link"
+              @click="showUserInfo(Number(getMessageCommandParams(item)[0]))"
+            >
+              {{ getMemberNickname(Number(getMessageCommandParams(item)[0])) }}
+            </span>
+            <span>将</span>
+            <span
+              class="primary link"
+              @click="showUserInfo(Number(getMessageCommandParams(item)[1]))"
+              >{{
+                getMemberNickname(Number(getMessageCommandParams(item)[1]))
+              }}</span
+            >
+            <span>禁言</span>
+            <span>{{ getMessageCommandParams(item)[2] }}分钟</span>
+          </p>
+        </div>
+        <div
+          class="command-group-cancel-mute"
+          v-else-if="item.content == MessageCommand.MEMBER_CANCEL_MUTE"
+        >
+          <p>
+            <span
+              class="primary link"
+              @click="showUserInfo(Number(getMessageCommandParams(item)[1]))"
+              >{{
+                getMemberNickname(Number(getMessageCommandParams(item)[1]))
+              }}</span
+            >
+            <span>被管理员</span>
+            <span
+              class="primary link"
+              @click="showUserInfo(Number(getMessageCommandParams(item)[0]))"
+            >
+              {{ getMemberNickname(Number(getMessageCommandParams(item)[0])) }}
+            </span>
+            <span>解除禁言</span>
+          </p>
+        </div>
       </div>
       <!-- 文本消息和图片消息 -->
       <div
