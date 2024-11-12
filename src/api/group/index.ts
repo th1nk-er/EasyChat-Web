@@ -8,6 +8,7 @@ import type {
   UserGroupVo,
   GroupMemberIgnoredVo,
   MuteMemberDto,
+  GroupMemberMuteVo,
 } from './types';
 import type { UserRole } from '../user/types';
 /**
@@ -266,6 +267,12 @@ export const muteGroupMember = (dto: MuteMemberDto) => {
   });
 };
 
+/**
+ * 取消禁言群成员
+ * @param groupId 群聊ID
+ * @param memberId 成员ID
+ * @param adminId 管理员ID
+ */
 export const calcelMuteGroupMember = (
   groupId: number,
   memberId: number,
@@ -273,5 +280,16 @@ export const calcelMuteGroupMember = (
 ) => {
   return service.delete<Result<null>>({
     url: `/group/${groupId}/mute/member/${memberId}/${adminId}`,
+  });
+};
+
+/**
+ * 获取群成员禁言信息
+ * @param groupId 群聊ID
+ * @param memberId 成员ID
+ */
+export const getGroupMemberMuteInfo = (groupId: number, memberId: number) => {
+  return service.get<Result<GroupMemberMuteVo>>({
+    url: `/group/${groupId}/mute/status/member/${memberId}`,
   });
 };

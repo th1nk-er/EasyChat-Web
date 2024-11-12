@@ -77,3 +77,12 @@ export type MuteMemberDto = {
   adminId: number;
   duration: number;
 };
+
+export type GroupMemberMuteVo = {
+  groupId: number;
+  memberId: number;
+  adminId: number;
+  muted: boolean;
+  muteTime: string;
+  unmuteTime: string;
+};

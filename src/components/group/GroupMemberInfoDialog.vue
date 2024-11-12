@@ -54,7 +54,10 @@
         >
         <el-button
           type="danger"
-          v-if="groupStore.isMemberAdmin(props.groupId, userStore.userInfo.id)"
+          v-if="
+            groupStore.isMemberAdmin(props.groupId, userStore.userInfo.id) &&
+            muteInfo.muted == false
+          "
           @click="muteDialogShow = true"
           >设置禁言</el-button
         >
@@ -102,7 +105,7 @@
 
 <script lang="ts" setup>
 import AddFriendInfoDialog from '@/components/friend/AddFriendInfoDialog.vue';
-import type { GroupMemberInfoVo } from '@/api/group/types';
+import type { GroupMemberInfoVo, GroupMemberMuteVo } from '@/api/group/types';
 import { useGroupStore } from '@/stores/group';
 import { useUserStore } from '@/stores/user';
 import { getFileUrl } from '@/utils/file';
@@ -112,6 +115,7 @@ import UserSexIcon from '@/components/user/UserSexIcon.vue';
 import {
   cancelIgnoreGroupMember,
   getGroupIgnored,
+  getGroupMemberMuteInfo,
   ignoreGroupMember,
   kickGroupMember,
   muteGroupMember,
@@ -135,12 +139,15 @@ const userStore = useUserStore();
 const memberInfo = ref({ sex: 'SECRET' } as GroupMemberInfoVo);
 const addInfoDialogVisible = ref(false);
 const isIgnored = ref(false);
+const muteInfo = ref({} as GroupMemberMuteVo);
 const loadData = async () => {
   if (memberInfo.value.userId == props.userId) return;
   const info = await groupStore.getMemberInfo(props.groupId, props.userId);
   const resp = await getGroupIgnored(userStore.userInfo.id, props.groupId);
   isIgnored.value =
     resp.data.find((item) => item.ignoredId === props.userId) !== undefined;
+  const muteResp = await getGroupMemberMuteInfo(props.groupId, props.userId);
+  muteInfo.value = muteResp.data;
   if (info) {
     memberInfo.value = info;
   } else {
