@@ -43,9 +43,14 @@
   </div>
 </template>
 <script setup lang="ts">
+import { type GroupMemberMuteVo } from '@/api/group/types';
+
 const message = defineModel('message', { type: String, required: true });
 const imgSrc = defineModel('imageSrc', { type: String });
 const imgFile = defineModel('imageFile', { type: File });
+const muteInfo = defineModel('muteInfo', {
+  type: Object as () => GroupMemberMuteVo,
+});
 const emit = defineEmits<{
   onSendMessage: [];
 }>();

@@ -22,6 +22,7 @@
         v-model:message="inputMessage"
         v-model:image-src="imageSrc"
         v-model:image-file="imgFile"
+        v-model:mute-info="muteInfo"
         @on-send-message="handleSendMessage"
         ref="inputBox"
         :key="componentKey"
@@ -48,14 +49,19 @@ import {
 import { useChatStore } from '@/stores/chat';
 import { useUserStore } from '@/stores/user';
 import { ChatHeader, ChatInputBox, ChatMessageBox, ChatToolBar } from '.';
-import type { GroupMemberIgnoredVo } from '@/api/group/types';
+import type {
+  GroupMemberIgnoredVo,
+  GroupMemberMuteVo,
+} from '@/api/group/types';
 import { useGroupStore } from '@/stores/group';
+import { getGroupMemberMuteInfo } from '@/api/group';
 const componentKey = ref(0);
 const chatStore = useChatStore();
 const groupStore = useGroupStore();
 const userStore = useUserStore();
 const messageData = ref<ChatMessage[]>([]);
 const ignoredMembers = ref([] as GroupMemberIgnoredVo[]);
+const muteInfo = ref({} as GroupMemberMuteVo);
 const msgBox = ref();
 /** 用户输入的消息 */
 const inputMessage = ref('');
@@ -139,7 +145,6 @@ const isMessageVisible = (msg: ChatMessage) => {
   }
 };
 const handleMemberIgnoreChanged = (memberId: number, ignored: boolean) => {
-  const m = ignoredMembers.value.find((item) => item.ignoredId == memberId);
   if (ignored) {
     ignoredMembers.value.push({
       ignoredId: memberId,
@@ -160,6 +165,7 @@ const initChatData = async () => {
   if (!chatStore.isChatting) return;
   chatInfo.value.chatType = chatStore.chatType;
   chatInfo.value.chatId = chatStore.chatId;
+
   publishOpenConversation(chatStore.chatId, chatStore.chatType);
   chatStore.addConversation(chatStore.chatId, chatStore.chatType);
   const con = chatStore.getConversation(chatStore.chatId, chatStore.chatType);
@@ -177,6 +183,11 @@ const initChatData = async () => {
       onReceiveMessage(message);
     });
   } else if (chatStore.chatType == ChatType.GROUP) {
+    const resp = await getGroupMemberMuteInfo(
+      chatInfo.value.chatId,
+      userStore.userInfo.id
+    );
+    muteInfo.value = resp.data;
     await groupStore.loadIgnoredMembers(chatStore.chatId);
     ignoredMembers.value = groupStore.getIgnoredList(chatStore.chatId);
     subscribeGroupMessage(chatInfo.value.chatId, (message: WSMessage) => {
