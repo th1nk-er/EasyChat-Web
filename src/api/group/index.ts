@@ -273,7 +273,7 @@ export const muteGroupMember = (dto: MuteMemberDto) => {
  * @param memberId 成员ID
  * @param adminId 管理员ID
  */
-export const calcelMuteGroupMember = (
+export const cancelMuteGroupMember = (
   groupId: number,
   memberId: number,
   adminId: number

@@ -38,6 +38,23 @@ export const getTimeString = (time: string) => {
   }
   return res;
 };
+
+/**
+ * 获取时间差值格式化文本
+ */
+export const getDurationString = (time1: string, time2: string) => {
+  const date1 = new Date(time1);
+  const date2 = new Date(time2);
+  const duration = date2.getTime() - date1.getTime();
+  if (duration < 60 * 1000) return Math.floor(duration / 1000 + 1) + '秒';
+  else if (duration < 60 * 60 * 1000)
+    return Math.floor(duration / (60 * 1000) + 1) + '分钟';
+  else if (duration < 24 * 60 * 60 * 1000)
+    return Math.floor(duration / (60 * 60 * 1000) + 1) + '小时';
+  else if (duration < 7 * 24 * 60 * 60 * 1000)
+    return Math.floor(duration / (24 * 60 * 60 * 1000) + 1) + '天';
+  else return getTimeString(time1);
+};
 const formatDateTime = (
   Time: Date | null | string | number = null,
   M: string

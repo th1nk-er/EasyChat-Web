@@ -9,6 +9,7 @@
         maxlength="1024"
         class="input-container__textarea"
         @keydown.enter.native="handleEnterDown"
+        :disabled="muteInfo?.muted"
         ref="messageInputRef"
       />
       <div class="upload-image" v-show="imgSrc != ''">
@@ -29,6 +30,7 @@
       class="input-container__button-send"
       type="primary"
       @click="$emit('onSendMessage')"
+      :disabled="muteInfo?.muted"
       >发送</el-button
     >
     <el-dialog
@@ -44,6 +46,7 @@
 </template>
 <script setup lang="ts">
 import { type GroupMemberMuteVo } from '@/api/group/types';
+import { getDurationString } from '@/utils/timeUtils';
 
 const message = defineModel('message', { type: String, required: true });
 const imgSrc = defineModel('imageSrc', { type: String });
@@ -57,6 +60,9 @@ const emit = defineEmits<{
 const messageInputRef = ref<HTMLInputElement>();
 /** 用户输入的消息 */
 const handleEnterDown = (e: Event | KeyboardEvent) => {
+  if (muteInfo.value?.muted) {
+    return;
+  }
   if (e instanceof KeyboardEvent) {
     if (e.shiftKey) {
       message.value += '\n';
@@ -69,6 +75,24 @@ const handleEnterDown = (e: Event | KeyboardEvent) => {
 const previewImgShow = ref(false);
 defineExpose({
   input: messageInputRef,
+});
+watch(muteInfo, (value) => {
+  if (value) {
+    if (value.muted) {
+      const intervalId = setInterval(() => {
+        message.value =
+          '您已被禁言' +
+          getDurationString(new Date().toISOString(), value.unmuteTime);
+        if (new Date().getTime() > Date.parse(value.unmuteTime)) {
+          clearInterval(intervalId);
+          message.value = '';
+          value.muted = false;
+        }
+      }, 1000);
+    } else {
+      message.value = '';
+    }
+  }
 });
 </script>
 <style lang="scss" scoped>

@@ -207,6 +207,7 @@ const onReceiveMessage = (message: WSMessage) => {
       content: message.content,
       createTime: new Date().toISOString(),
       chatType: message.chatType,
+      params: message.params,
     });
     scrollToBottom();
   } else if (
@@ -221,6 +222,7 @@ const onReceiveMessage = (message: WSMessage) => {
       content: message.content,
       createTime: new Date().toISOString(),
       chatType: message.chatType,
+      params: message.params,
     });
     messageData.value = messageData.value.filter(isMessageVisible);
     scrollToBottom();

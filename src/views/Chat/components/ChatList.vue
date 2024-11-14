@@ -44,9 +44,12 @@
               <span v-if="conversation.messageType == MessageType.TEXT">
                 {{ conversation.lastMessage }}
               </span>
-              <span v-if="conversation.messageType == MessageType.IMAGE">
+              <span v-else-if="conversation.messageType == MessageType.IMAGE">
                 [图片]
               </span>
+              <span v-else-if="conversation.messageType == MessageType.COMMAND"
+                >[系统消息]</span
+              >
             </p>
           </div>
           <div class="user-item__content__info">

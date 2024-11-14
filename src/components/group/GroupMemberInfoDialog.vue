@@ -48,6 +48,11 @@
         </div>
       </div>
       <el-divider />
+      <span v-if="muteInfo.muted"
+        >禁言中，剩余{{
+          getDurationString(new Date().toISOString(), muteInfo.unmuteTime)
+        }}</span
+      >
       <div class="button-group">
         <el-button type="primary" @click="addInfoDialogVisible = true"
           >添加好友</el-button
@@ -56,10 +61,19 @@
           type="danger"
           v-if="
             groupStore.isMemberAdmin(props.groupId, userStore.userInfo.id) &&
-            muteInfo.muted == false
+            !muteInfo.muted
           "
           @click="muteDialogShow = true"
           >设置禁言</el-button
+        >
+        <el-button
+          type="danger"
+          v-if="
+            groupStore.isMemberAdmin(props.groupId, userStore.userInfo.id) &&
+            muteInfo.muted
+          "
+          @click="handleCancelMute"
+          >解除禁言</el-button
         >
         <el-button
           type="danger"
@@ -110,10 +124,11 @@ import { useGroupStore } from '@/stores/group';
 import { useUserStore } from '@/stores/user';
 import { getFileUrl } from '@/utils/file';
 import { getRoleString } from '@/utils/userUtils';
-import { getTimeString } from '@/utils/timeUtils';
+import { getDurationString, getTimeString } from '@/utils/timeUtils';
 import UserSexIcon from '@/components/user/UserSexIcon.vue';
 import {
   cancelIgnoreGroupMember,
+  cancelMuteGroupMember,
   getGroupIgnored,
   getGroupMemberMuteInfo,
   ignoreGroupMember,
@@ -147,7 +162,9 @@ const loadData = async () => {
   isIgnored.value =
     resp.data.find((item) => item.ignoredId === props.userId) !== undefined;
   const muteResp = await getGroupMemberMuteInfo(props.groupId, props.userId);
-  muteInfo.value = muteResp.data;
+  if (muteResp.data) {
+    muteInfo.value = muteResp.data;
+  }
   if (info) {
     memberInfo.value = info;
   } else {
@@ -196,6 +213,30 @@ const handleMuteMember = async () => {
     duration: minutes,
   });
   ElMessage.success('操作成功');
+  muteDialogShow.value = false;
+  muteInfo.value.muted = true;
+  muteInfo.value.unmuteTime = new Date(
+    new Date().getTime() + minutes * 60 * 1000
+  ).toISOString();
+  muteInfo.value.groupId = props.groupId;
+  muteInfo.value.memberId = props.userId;
+  muteInfo.value.adminId = userStore.userInfo.id;
+  muteInfo.value.muteTime = new Date().toISOString();
+};
+
+const handleCancelMute = async () => {
+  await ElMessageBox.confirm('确定解除该成员的禁言吗？', 'Warning', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
+  });
+  await cancelMuteGroupMember(
+    props.groupId,
+    props.userId,
+    userStore.userInfo.id
+  );
+  ElMessage.success('操作成功');
+  muteInfo.value.muted = false;
 };
 </script>
 
@@ -227,14 +268,12 @@ const handleMuteMember = async () => {
       &__content {
         color: var(--color-text);
       }
-      &-button-group {
-        display: flex;
-        justify-content: space-between;
-        .button {
-          width: 30%;
-        }
-      }
     }
+  }
+  .button-group {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
   }
 }
 .mute-box {
