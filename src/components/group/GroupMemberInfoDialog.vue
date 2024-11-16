@@ -88,37 +88,12 @@
       </div>
     </div>
   </el-dialog>
-  <el-dialog v-model="muteDialogShow" title="禁言" width="20%" top="35vh">
-    <template class="mute-box">
-      <el-select v-model="muteMinutes" placeholder="请选择">
-        <el-option label="1分钟" :value="1" />
-        <el-option label="10分钟" :value="10" />
-        <el-option label="30分钟" :value="30" />
-        <el-option label="1小时" :value="60" />
-        <el-option label="12小时" :value="60 * 12" />
-        <el-option label="24小时" :value="60 * 24" />
-        <el-option label="3天" :value="60 * 24 * 3" />
-        <el-option label="7天" :value="60 * 24 * 7" />
-        <el-option label="30天" :value="60 * 24 * 30" />
-        <el-option label="自定义时长" :value="-1" />
-      </el-select>
-      <el-input-number
-        v-show="muteMinutes == -1"
-        v-model="muteMinutesInput"
-        :min="1"
-        :max="60 * 24 * 30"
-        placeholder="请输入禁言时长(分钟)"
-      />
-      <div class="button-group">
-        <el-button type="primary" @click="handleMuteMember">禁言</el-button>
-        <el-button @click="muteDialogShow = false">取消</el-button>
-      </div>
-    </template>
-  </el-dialog>
+  <MuteMemberDialog v-model="muteDialogShow" @onMemberMute="handleMuteMember" />
 </template>
 
 <script lang="ts" setup>
 import AddFriendInfoDialog from '@/components/friend/AddFriendInfoDialog.vue';
+import MuteMemberDialog from '@/components/group/MuteMemberDialog.vue';
 import type { GroupMemberInfoVo, GroupMemberMuteVo } from '@/api/group/types';
 import { useGroupStore } from '@/stores/group';
 import { useUserStore } from '@/stores/user';
@@ -185,7 +160,7 @@ const handleIgnoredChange = async () => {
   }
 };
 const handleKickMember = async () => {
-  ElMessageBox.confirm('确定将该群员踢出群聊吗？', 'Warning', {
+  ElMessageBox.confirm('确定将该群员踢出群聊吗？', '警告', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning',
@@ -199,13 +174,7 @@ const handleKickMember = async () => {
 };
 
 const muteDialogShow = ref(false);
-const muteMinutes = ref(1);
-const muteMinutesInput = ref(1);
-const handleMuteMember = async () => {
-  let minutes = muteMinutes.value;
-  if (minutes == -1) {
-    minutes = muteMinutesInput.value;
-  }
+const handleMuteMember = async (minutes: number) => {
   await muteGroupMember({
     groupId: props.groupId,
     memberId: props.userId,
@@ -225,7 +194,7 @@ const handleMuteMember = async () => {
 };
 
 const handleCancelMute = async () => {
-  await ElMessageBox.confirm('确定解除该成员的禁言吗？', 'Warning', {
+  await ElMessageBox.confirm('确定解除该成员的禁言吗？', '警告', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning',
@@ -274,15 +243,6 @@ const handleCancelMute = async () => {
     display: flex;
     justify-content: space-between;
     margin-top: 10px;
-  }
-}
-.mute-box {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  .button-group {
-    display: flex;
-    justify-content: space-between;
   }
 }
 </style>
