@@ -45,16 +45,11 @@
           </el-table-column>
           <el-table-column label="身份">
             <template #default="scope">
-              <span
-                v-if="
-                  scope.row.userId == userStore.userInfo.id ||
-                  scope.row.role == UserRole.LEADER ||
-                  !isUserAdmin(userStore.userInfo.id)
-                "
-                >{{ getRoleString(scope.row.role) }}</span
-              >
               <el-select
-                v-else
+                v-if="
+                  isUserLeader(userStore.userInfo.id) &&
+                  userStore.userInfo.id != scope.row.userId
+                "
                 v-model="scope.row.role"
                 @change="handleRoleChange($event, scope.row.userId)"
               >
@@ -65,8 +60,10 @@
                 <el-option
                   :label="getRoleString(UserRole.USER)"
                   :value="UserRole.USER"
-                /> </el-select
-              ><span style="visibility: hidden">{{
+                />
+              </el-select>
+              <span v-else>{{ getRoleString(scope.row.role) }}</span>
+              <span style="visibility: hidden">{{
                 getRoleString(scope.row.role)
               }}</span>
             </template>
@@ -78,6 +75,11 @@
                 v-model="scope.row.ignored"
                 @change="handleIgnoreChange($event, scope.row.userId)"
               />
+            </template>
+          </el-table-column>
+          <el-table-column label="禁言">
+            <template #default="scope">
+              <span>{{ getUserMuteString(scope.row.userId) }}</span>
             </template>
           </el-table-column>
           <el-table-column label="加入时间">
@@ -105,25 +107,27 @@
                 @click="handleChangeUserGroupNickname(scope.row.userId)"
                 >编辑群昵称</el-button
               >
-              <el-button
-                link
-                type="danger"
+              <template
                 v-if="
                   userStore.userInfo.id != scope.row.userId &&
-                  isUserAdmin(userStore.userInfo.id)
+                  isUserAdmin(userStore.userInfo.id) &&
+                  !isUserLeader(scope.row.userId)
                 "
-                >禁言</el-button
               >
-              <el-button
-                link
-                type="danger"
-                @click="handleKickMember(scope.row.userId)"
-                v-if="
-                  userStore.userInfo.id != scope.row.userId &&
-                  isUserAdmin(userStore.userInfo.id)
-                "
-                >踢出</el-button
-              >
+                <el-button
+                  link
+                  type="danger"
+                  v-if="!isMemberMuted(scope.row.userId)"
+                  >禁言</el-button
+                >
+                <el-button link type="danger" v-else>解除禁言</el-button>
+                <el-button
+                  link
+                  type="danger"
+                  @click="handleKickMember(scope.row.userId)"
+                  >踢出</el-button
+                >
+              </template>
             </template>
           </el-table-column>
         </el-table>
@@ -164,11 +168,12 @@ import {
   ignoreGroupMember,
   kickGroupMember,
   updateUserGroupRole,
+  getGroupMemberMuteInfoList,
 } from '@/api/group';
-import type { GroupMemberInfoVo } from '@/api/group/types';
+import type { GroupMemberInfoVo, GroupMemberMuteVo } from '@/api/group/types';
 import { useGroupStore } from '@/stores/group';
 import { getFileUrl } from '@/utils/file';
-import { getTimeString } from '@/utils/timeUtils';
+import { getDurationString, getTimeString } from '@/utils/timeUtils';
 import { getRoleString } from '@/utils/userUtils';
 import { SettingType } from './types';
 import { useUserStore } from '@/stores/user';
@@ -209,6 +214,7 @@ const isLoading = ref(false);
 const onSelectedGroupChange = async (groupId: number) => {
   groupMemberList.value = [];
   if (groupId === -1) return;
+  loadMuteInfo();
   let page = 1;
   isLoading.value = true;
   const resp = await getGroupIgnored(userStore.userInfo.id, groupId);
@@ -230,7 +236,23 @@ const onSelectedGroupChange = async (groupId: number) => {
     }
   }, 200);
 };
-
+const muteList = ref([] as GroupMemberMuteVo[]);
+const loadMuteInfo = async () => {
+  const resp = await getGroupMemberMuteInfoList(selectedGroupId.value);
+  muteList.value = resp.data;
+};
+const getUserMuteString = (userId: number) => {
+  const mute = muteList.value.find((mute) => mute.userId == userId);
+  if (mute && mute.muted) {
+    return getDurationString(new Date().toISOString(), mute.unmuteTime);
+  }
+  return '';
+};
+const isMemberMuted = (userId: number) => {
+  const mute = muteList.value.find((mute) => mute.userId == userId);
+  if (mute && mute.muted) return true;
+  return false;
+};
 const handleIgnoreChange = async (value: any, userId: number) => {
   value = value as boolean;
   const member = groupMemberList.value.find(

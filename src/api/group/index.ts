@@ -293,3 +293,13 @@ export const getGroupMemberMuteInfo = (groupId: number, memberId: number) => {
     url: `/group/${groupId}/mute/status/member/${memberId}`,
   });
 };
+
+/**
+ * 获取群成员禁言列表
+ * @param groupId 群聊ID
+ */
+export const getGroupMemberMuteInfoList = (groupId: number) => {
+  return service.get<Result<GroupMemberMuteVo[]>>({
+    url: `/group/${groupId}/mute/list`,
+  });
+};

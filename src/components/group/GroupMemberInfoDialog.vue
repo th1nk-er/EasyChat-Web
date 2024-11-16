@@ -188,7 +188,7 @@ const handleMuteMember = async (minutes: number) => {
     new Date().getTime() + minutes * 60 * 1000
   ).toISOString();
   muteInfo.value.groupId = props.groupId;
-  muteInfo.value.memberId = props.userId;
+  muteInfo.value.userId = props.userId;
   muteInfo.value.adminId = userStore.userInfo.id;
   muteInfo.value.muteTime = new Date().toISOString();
 };
