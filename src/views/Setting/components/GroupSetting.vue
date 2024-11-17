@@ -118,9 +118,19 @@
                   link
                   type="danger"
                   v-if="!isMemberMuted(scope.row.userId)"
+                  @click="
+                    muteMemberId = scope.row.userId;
+                    muteDialogShow = true;
+                  "
                   >禁言</el-button
                 >
-                <el-button link type="danger" v-else>解除禁言</el-button>
+                <el-button
+                  link
+                  type="danger"
+                  v-else
+                  @click="handleCancelMuteMember(scope.row.userId)"
+                  >解除禁言</el-button
+                >
                 <el-button
                   link
                   type="danger"
@@ -158,6 +168,10 @@
       "
       @onNicknameChanged="onUserGroupNicknameChanged"
     />
+    <MuteMemberDialog
+      v-model="muteDialogShow"
+      @onMemberMute="handleMuteMember"
+    />
   </div>
 </template>
 <script setup lang="ts">
@@ -169,6 +183,8 @@ import {
   kickGroupMember,
   updateUserGroupRole,
   getGroupMemberMuteInfoList,
+  muteGroupMember,
+  cancelMuteGroupMember,
 } from '@/api/group';
 import type { GroupMemberInfoVo, GroupMemberMuteVo } from '@/api/group/types';
 import { useGroupStore } from '@/stores/group';
@@ -181,6 +197,7 @@ import { UserRole } from '@/api/user/types';
 import UserSexIcon from '@/components/user/UserSexIcon.vue';
 import InviteGroupMemberDialog from '@/components/group/InviteGroupMemberDialog.vue';
 import EditUserGroupNicknameDialog from '@/components/group/EditUserGroupNicknameDialog.vue';
+import MuteMemberDialog from '@/components/group/MuteMemberDialog.vue';
 import type { VNode } from 'vue';
 const groupStore = useGroupStore();
 const userStore = useUserStore();
@@ -252,6 +269,51 @@ const isMemberMuted = (userId: number) => {
   const mute = muteList.value.find((mute) => mute.userId == userId);
   if (mute && mute.muted) return true;
   return false;
+};
+const muteMemberId = ref(-1);
+const muteDialogShow = ref(false);
+const handleMuteMember = async (minutes: number) => {
+  if (muteMemberId.value == -1) return;
+  await muteGroupMember({
+    adminId: userStore.userInfo.id,
+    groupId: selectedGroupId.value,
+    memberId: muteMemberId.value,
+    duration: minutes,
+  });
+  ElMessage.success('操作成功');
+  const mute = muteList.value.find((mute) => mute.userId == muteMemberId.value);
+  if (mute) {
+    mute.muted = true;
+    mute.unmuteTime = new Date(
+      new Date().getTime() + minutes * 60 * 1000
+    ).toISOString();
+  } else {
+    muteList.value.push({
+      groupId: selectedGroupId.value,
+      userId: muteMemberId.value,
+      adminId: userStore.userInfo.id,
+      muted: true,
+      muteTime: new Date().toISOString(),
+      unmuteTime: new Date(
+        new Date().getTime() + minutes * 60 * 1000
+      ).toISOString(),
+    });
+  }
+};
+const handleCancelMuteMember = async (userId: number) => {
+  await ElMessageBox.confirm('确定解除该用户的禁言吗？', '警告', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
+  });
+  await cancelMuteGroupMember(
+    selectedGroupId.value,
+    userId,
+    userStore.userInfo.id
+  );
+  ElMessage.success('操作成功');
+  const mute = muteList.value.find((mute) => mute.userId == userId);
+  if (mute) mute.muted = false;
 };
 const handleIgnoreChange = async (value: any, userId: number) => {
   value = value as boolean;

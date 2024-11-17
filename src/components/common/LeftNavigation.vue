@@ -58,6 +58,7 @@ const userInfoShow = ref(false);
     height: 50px;
     padding: 10px 0;
     margin-bottom: 8px;
+    transition: all 0.2s;
   }
   svg:hover {
     fill: #eeffff;

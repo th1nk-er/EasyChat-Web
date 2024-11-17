@@ -1,9 +1,12 @@
 import NProgress from 'nprogress';
 import router from './';
 import { useChatStore } from '@/stores/chat';
+import { useAppStore } from '@/stores/app';
 // 路由前置守卫
 router.beforeEach((to, from) => {
   if (to.name) NProgress.start();
+  const appStore = useAppStore();
+  appStore.loading = true;
   if (to.meta.title) {
     document.title = (import.meta.env.VITE_APP_TITLE +
       ' - ' +
@@ -18,4 +21,6 @@ router.beforeEach((to, from) => {
 
 router.afterEach((to, from) => {
   NProgress.done();
+  const appStore = useAppStore();
+  appStore.loading = false;
 });

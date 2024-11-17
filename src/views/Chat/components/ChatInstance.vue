@@ -12,6 +12,7 @@
         @on-get-more-message="getMoreMessage"
         @onMemberIgnoreChanged="handleMemberIgnoreChanged"
         :key="componentKey"
+        v-loading="isloading"
       />
       <ChatToolBar
         @on-emoji-selected="handleEmojiSelected"
@@ -56,6 +57,7 @@ import type {
 import { useGroupStore } from '@/stores/group';
 import { getGroupMemberMuteInfo } from '@/api/group';
 const componentKey = ref(0);
+const isloading = ref(false);
 const chatStore = useChatStore();
 const groupStore = useGroupStore();
 const userStore = useUserStore();
@@ -158,6 +160,7 @@ const handleMemberIgnoreChanged = (memberId: number, ignored: boolean) => {
 };
 /** 初始化数据 */
 const initChatData = async () => {
+  isloading.value = true;
   hasMoreMessage.value = true;
   componentKey.value++;
   msgPageIndex.value = 0;
@@ -194,6 +197,7 @@ const initChatData = async () => {
       onReceiveMessage(message);
     });
   }
+  isloading.value = false;
 };
 const onReceiveMessage = (message: WSMessage) => {
   if (
@@ -238,6 +242,7 @@ const msgPageIndex = ref(0);
 const hasMoreMessage = ref(true);
 const getMoreMessage = async () => {
   if (!hasMoreMessage.value) return;
+  isloading.value = true;
   if (chatInfo.value.chatType == ChatType.FRIEND) {
     const resp = await getMessageHistory(
       userStore.userInfo.id,
@@ -246,7 +251,6 @@ const getMoreMessage = async () => {
     );
     if (msgPageIndex.value > 1 && resp.data.length == 0) {
       hasMoreMessage.value = false;
-      return;
     }
     messageData.value.unshift(...resp.data);
   } else if (chatInfo.value.chatType == ChatType.GROUP) {
@@ -256,11 +260,11 @@ const getMoreMessage = async () => {
     );
     if (msgPageIndex.value > 1 && resp.data.length == 0) {
       hasMoreMessage.value = false;
-      return;
     }
     messageData.value.unshift(...resp.data);
     messageData.value = messageData.value.filter(isMessageVisible);
   }
+  isloading.value = false;
 };
 onMounted(() => {
   if (chatStore.isChatting) initChatData();
