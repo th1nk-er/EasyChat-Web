@@ -1,4 +1,4 @@
-import service from '@/utils/service';
+import request from '@/utils/service';
 import type { Result } from '../types';
 import type {
   GroupNotificationVo,
@@ -23,7 +23,7 @@ export const createGroup = (
   groupName: string,
   friendIds: number[]
 ) => {
-  return service.post<Result<null>>({
+  return request.post<Result<null>>({
     url: '/group/create',
     data: { userId, groupName, friendIds },
   });
@@ -35,7 +35,7 @@ export const createGroup = (
  * @param page 页码
  */
 export const getGroupList = (userId: number, page: number) => {
-  return service.get<Result<UserGroupVo[]>>({
+  return request.get<Result<UserGroupVo[]>>({
     url: `/group/list/${userId}/${page}`,
   });
 };
@@ -46,7 +46,7 @@ export const getGroupList = (userId: number, page: number) => {
  * @param page 页码
  */
 export const getGroupInvitationList = (userId: number, page: number) => {
-  return service.get<Result<GroupNotificationVo[]>>({
+  return request.get<Result<GroupNotificationVo[]>>({
     url: `/group/notification/list/${userId}/${page}`,
   });
 };
@@ -62,7 +62,7 @@ export const userhandleGroupInvitation = (
   groupId: number,
   accept: boolean
 ) => {
-  return service.post<Result<null>>({
+  return request.post<Result<null>>({
     url: '/group/invitation',
     data: { userId, groupId, accept },
   });
@@ -78,7 +78,7 @@ export const adminhandleGroupInvitation = (
   groupId: number,
   accept: boolean
 ) => {
-  return service.post<Result<null>>({
+  return request.post<Result<null>>({
     url: '/group/invitation/manage',
     data: { userId, groupId, accept },
   });
@@ -89,7 +89,7 @@ export const adminhandleGroupInvitation = (
  * @param groupId 群聊ID
  */
 export const getGroupInfo = (groupId: number) => {
-  return service.get<Result<GroupVo>>({
+  return request.get<Result<GroupVo>>({
     url: `/group/info/${groupId}`,
   });
 };
@@ -103,7 +103,7 @@ export const updateUserGroupInfo = (
   userId: number,
   params: UpdateUserGroupParams
 ) => {
-  return service.put<Result<null>>({
+  return request.put<Result<null>>({
     url: `/group//update/user/${userId}`,
     data: params,
   });
@@ -115,7 +115,7 @@ export const updateUserGroupInfo = (
  * @param userId 用户ID
  */
 export const getGroupmemberInfo = (groupId: number, userId: number) => {
-  return service.get<Result<GroupMemberInfoVo>>({
+  return request.get<Result<GroupMemberInfoVo>>({
     url: `/group/${groupId}/member/${userId}`,
   });
 };
@@ -126,7 +126,7 @@ export const getGroupmemberInfo = (groupId: number, userId: number) => {
  * @param groupId 群聊ID
  */
 export const quitGroup = (userId: number, groupId: number) => {
-  return service.delete<Result<null>>({
+  return request.delete<Result<null>>({
     url: `/group/quit/${userId}/${groupId}`,
   });
 };
@@ -143,7 +143,7 @@ export const kickGroupMember = (
   groupId: number,
   memberId: number
 ) => {
-  return service.delete<Result<null>>({
+  return request.delete<Result<null>>({
     url: `/group/kick/${userId}/${groupId}/${memberId}`,
   });
 };
@@ -154,7 +154,7 @@ export const kickGroupMember = (
  * @param page 页码
  */
 export const getGroupMemberList = (groupId: number, page: number) => {
-  return service.get<Result<GroupMemberInfoVo[]>>({
+  return request.get<Result<GroupMemberInfoVo[]>>({
     url: `/group/${groupId}/member/list/${page}`,
   });
 };
@@ -171,7 +171,7 @@ export const inviteGroupMember = (
   groupId: number,
   friendIds: number[]
 ) => {
-  return service.post<Result<null>>({
+  return request.post<Result<null>>({
     url: `/group/invite/${userId}/${groupId}`,
     data: friendIds,
   });
@@ -188,7 +188,7 @@ export const updateUserGroupNickname = (
   groupId: number,
   nickname: string
 ) => {
-  return service.put<Result<null>>({
+  return request.put<Result<null>>({
     url: `/group/${groupId}/user/${userId}/nickname`,
     data: { nickname },
   });
@@ -207,7 +207,7 @@ export const updateUserGroupRole = (
   memberId: number,
   role: UserRole
 ) => {
-  return service.put<Result<null>>({
+  return request.put<Result<null>>({
     url: `/group/${groupId}/member/${memberId}/role`,
     data: { userId, role },
   });
@@ -219,7 +219,7 @@ export const updateUserGroupRole = (
  * @param groupId 群聊ID
  */
 export const getGroupIgnored = (userId: number, groupId: number) => {
-  return service.get<Result<GroupMemberIgnoredVo[]>>({
+  return request.get<Result<GroupMemberIgnoredVo[]>>({
     url: `/group/${groupId}/${userId}/ignored/members`,
   });
 };
@@ -235,7 +235,7 @@ export const ignoreGroupMember = (
   groupId: number,
   memberId: number
 ) => {
-  return service.post<Result<null>>({
+  return request.post<Result<null>>({
     url: `/group/${groupId}/${userId}/ignore/member/${memberId}`,
   });
 };
@@ -251,7 +251,7 @@ export const cancelIgnoreGroupMember = (
   groupId: number,
   memberId: number
 ) => {
-  return service.delete<Result<null>>({
+  return request.delete<Result<null>>({
     url: `/group/${groupId}/${userId}/ignore/member/${memberId}`,
   });
 };
@@ -261,7 +261,7 @@ export const cancelIgnoreGroupMember = (
  * @param dto 禁言参数
  */
 export const muteGroupMember = (dto: MuteMemberDto) => {
-  return service.post<Result<null>>({
+  return request.post<Result<null>>({
     url: '/group/mute/member',
     data: dto,
   });
@@ -278,7 +278,7 @@ export const cancelMuteGroupMember = (
   memberId: number,
   adminId: number
 ) => {
-  return service.delete<Result<null>>({
+  return request.delete<Result<null>>({
     url: `/group/${groupId}/mute/member/${memberId}/${adminId}`,
   });
 };
@@ -289,7 +289,7 @@ export const cancelMuteGroupMember = (
  * @param memberId 成员ID
  */
 export const getGroupMemberMuteInfo = (groupId: number, memberId: number) => {
-  return service.get<Result<GroupMemberMuteVo>>({
+  return request.get<Result<GroupMemberMuteVo>>({
     url: `/group/${groupId}/mute/status/member/${memberId}`,
   });
 };
@@ -299,7 +299,26 @@ export const getGroupMemberMuteInfo = (groupId: number, memberId: number) => {
  * @param groupId 群聊ID
  */
 export const getGroupMemberMuteInfoList = (groupId: number) => {
-  return service.get<Result<GroupMemberMuteVo[]>>({
+  return request.get<Result<GroupMemberMuteVo[]>>({
     url: `/group/${groupId}/mute/list`,
+  });
+};
+
+/**
+ * 更新群头像
+ * @param userId 管理员ID
+ * @param groupId 群聊ID
+ * @param file 头像文件
+ */
+export const updateGroupAvatar = (
+  userId: number,
+  groupId: number,
+  file: File
+) => {
+  const formData = new FormData();
+  formData.append('file', file, file.name);
+  return request.upload<Result<string>>({
+    url: `/group/${groupId}/avatar/${userId}`,
+    data: formData,
   });
 };

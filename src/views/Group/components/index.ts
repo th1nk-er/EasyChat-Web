@@ -1,4 +1,4 @@
 import GroupList from './GroupList.vue';
-import GroupInvitationDialog from './GroupInvitationDialog.vue';
+import GroupNotificationDialog from './GroupNotificationDialog.vue';
 import GroupDetails from './GroupDetails.vue';
-export { GroupList, GroupInvitationDialog, GroupDetails };
+export { GroupList, GroupNotificationDialog, GroupDetails };

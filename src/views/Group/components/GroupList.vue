@@ -3,7 +3,7 @@
     <div class="group-item" @click="groupInvitationDialogVisible = true">
       <IconGroup class="group-item__avatar svg" />
       <div class="group-item__name">
-        <span>邀请列表</span>
+        <span>群通知</span>
       </div>
     </div>
     <div
@@ -27,14 +27,14 @@
         <IconNotificationOff />
       </div>
     </div>
-    <GroupInvitationDialog v-model="groupInvitationDialogVisible" />
+    <GroupNotificationDialog v-model="groupInvitationDialogVisible" />
     <GroupInfoDialog v-model="groupInfoDialogVisible" :group-id="groupId" />
   </div>
 </template>
 <script setup lang="ts">
 import { useGroupStore } from '@/stores/group';
 import { getFileUrl } from '@/utils/file';
-import { GroupInvitationDialog } from '.';
+import { GroupNotificationDialog } from '.';
 import GroupInfoDialog from '@/components/group/GroupInfoDialog.vue';
 const groupStore = useGroupStore();
 const groupInvitationDialogVisible = ref(false);

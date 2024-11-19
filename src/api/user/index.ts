@@ -51,7 +51,7 @@ export const sendChangePasswordEmail = () => {
  * @param file 头像文件
  * @returns 上传后的头像路径
  */
-export const changeAvatar = (userId: number, file: File) => {
+export const updateUserAvatar = (userId: number, file: File) => {
   const formData = new FormData();
   formData.append('file', file, file.name);
   return request.upload<Result<string>>({

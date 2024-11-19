@@ -94,7 +94,7 @@
   </el-dialog>
 </template>
 <script setup lang="ts">
-import { changeAvatar, getUserInfo, updateUserInfo } from '@/api/user';
+import { updateUserAvatar, getUserInfo, updateUserInfo } from '@/api/user';
 import { UserSex, type UpdateUserInfoParams } from '@/api/user/types';
 import { useUserStore } from '@/stores/user';
 import { getFileUrl } from '@/utils/file';
@@ -116,7 +116,7 @@ const handleAvatarUpload = async () => {
     ElMessage.error('头像图片过大,请更换其他图片');
     return;
   }
-  const resp = await changeAvatar(userStore.userInfo.id, file);
+  const resp = await updateUserAvatar(userStore.userInfo.id, file);
   userStore.userInfo.avatar = resp.data;
   ElMessage.success('头像上传成功');
 };

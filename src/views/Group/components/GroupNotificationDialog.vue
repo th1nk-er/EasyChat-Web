@@ -1,5 +1,5 @@
 <template>
-  <el-dialog v-model="dialogVisible" title="邀请列表">
+  <el-dialog v-model="dialogVisible" title="群通知">
     <div class="container">
       <h2 v-show="notificationList.length === 0" style="text-align: center">
         无数据

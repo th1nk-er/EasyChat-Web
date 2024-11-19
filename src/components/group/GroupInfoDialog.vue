@@ -3,6 +3,18 @@
     <div class="container">
       <div class="avatar">
         <img :src="getFileUrl(groupInfo.avatar)" class="img-avatar" />
+        <IconAddAPhoto
+          class="icon-add-a-photo"
+          @click="avatarUploader?.click()"
+        />
+        <input
+          type="file"
+          hidden
+          ref="avatarUploader"
+          multiple="false"
+          accept="image/*"
+          @change="handleAvatarUpload"
+        />
       </div>
       <el-divider />
       <div class="info-container">
@@ -40,31 +52,31 @@
           <span class="info-item__label">免&nbsp;&nbsp;打&nbsp;&nbsp;扰</span>
           <el-switch v-model="groupInfo.muted" />
         </div>
-      </div>
-      <el-divider />
-      <div class="info-item-button-group">
-        <el-button
-          class="button"
-          type="primary"
-          @click="handleUpdateUserGroupInfo"
-          >保存修改</el-button
-        >
-        <el-button class="button" type="primary" @click="handleSendMessage"
-          >发送消息</el-button
-        >
-        <el-button class="button" type="primary" @click="handleManageGroup"
-          >群聊设置</el-button
-        >
-        <el-button class="button" type="danger" @click="handleQuitGroup"
-          >退出群聊</el-button
-        >
+        <el-divider />
+        <div class="info-item-button-group">
+          <el-button
+            class="button"
+            type="primary"
+            @click="handleUpdateUserGroupInfo"
+            >保存修改</el-button
+          >
+          <el-button class="button" type="primary" @click="handleSendMessage"
+            >发送消息</el-button
+          >
+          <el-button class="button" type="primary" @click="handleManageGroup"
+            >群聊管理</el-button
+          >
+          <el-button class="button" type="danger" @click="handleQuitGroup"
+            >退出群聊</el-button
+          >
+        </div>
       </div>
     </div>
   </el-dialog>
 </template>
 <script setup lang="ts">
 import { ChatType } from '@/api/chat/types';
-import { quitGroup, updateUserGroupInfo } from '@/api/group';
+import { quitGroup, updateGroupAvatar, updateUserGroupInfo } from '@/api/group';
 import type { UserGroupVo } from '@/api/group/types';
 import { useChatStore } from '@/stores/chat';
 import { useGroupStore } from '@/stores/group';
@@ -92,6 +104,7 @@ const userStore = useUserStore();
 const groupStore = useGroupStore();
 const chatStore = useChatStore();
 const groupInfo = ref({} as UserGroupVo);
+const avatarUploader = ref<HTMLInputElement>();
 const loadData = () => {
   const userGroupVo = groupStore.getUserGroupVoById(props.groupId);
   if (userGroupVo) {
@@ -100,6 +113,24 @@ const loadData = () => {
 };
 const editRemarkShow = ref(false);
 const remarkInputRef = ref<HTMLInputElement>();
+const handleAvatarUpload = async () => {
+  const file = avatarUploader.value?.files?.[0];
+  if (file == undefined) return;
+  if (file.size > 1024 * 1024 * 5) {
+    ElMessage.error('头像图片过大,请更换其他图片');
+    return;
+  }
+  const resp = await updateGroupAvatar(
+    userStore.userInfo.id,
+    props.groupId,
+    file
+  );
+  const groupVo = groupStore.getUserGroupVoById(props.groupId);
+  if (groupVo) groupVo.avatar = resp.data;
+  groupInfo.value.avatar = resp.data;
+  chatStore.updateGroupConversation(groupInfo.value);
+  ElMessage.success('头像上传成功');
+};
 const handleUpdateUserGroupInfo = async () => {
   // 检测是否有修改
   if (
@@ -165,6 +196,20 @@ const handleManageGroup = () => {
       width: 120px;
       height: 120px;
     }
+    .icon-add-a-photo {
+      border-radius: 3px;
+      padding: 2px;
+      fill: white;
+      background-color: rgba(0, 0, 0, 0.4);
+      position: absolute;
+      left: 50%;
+      top: 130px;
+      transform: translateX(35px);
+      cursor: pointer;
+      &:hover {
+        background-color: rgba(0, 0, 0, 0.6);
+      }
+    }
   }
   .info-container {
     display: flex;
@@ -192,9 +237,11 @@ const handleManageGroup = () => {
       }
       &-button-group {
         display: flex;
+        flex-wrap: wrap;
         justify-content: space-between;
+        gap: 10px;
         .button {
-          width: 30%;
+          flex: 1;
         }
       }
     }
