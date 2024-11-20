@@ -8,21 +8,29 @@
       :offset="[-10, 10]"
     >
       <IconChat
+        class="icon"
         :class="router.currentRoute.value.name == 'Chat' ? 'icon-selected' : ''"
         @click="router.push({ name: 'Chat' })"
       />
     </el-badge>
     <IconPerson
+      class="icon"
       :class="router.currentRoute.value.name == 'Friend' ? 'icon-selected' : ''"
       @click="router.push({ name: 'Friend' })"
     />
     <IconGroup
+      class="icon"
       :class="router.currentRoute.value.name == 'Group' ? 'icon-selected' : ''"
       @click="router.push({ name: 'Group' })"
     />
     <div class="divider" />
-    <IconAccountCircle @click="userInfoShow = true" />
+    <el-avatar
+      :src="getFileUrl(userStore.userInfo.avatar)"
+      class="avatar"
+      @click="userInfoShow = true"
+    />
     <IconSettings
+      class="icon"
       :class="
         router.currentRoute.value.name == 'Setting' ? 'icon-selected' : ''
       "
@@ -34,9 +42,12 @@
 <script setup lang="ts">
 import { useChatStore } from '@/stores/chat';
 import UserInfoDialog from '@/components/user/UserInfoDialog.vue';
+import { useUserStore } from '@/stores/user';
+import { getFileUrl } from '@/utils/file';
 
 const router = useRouter();
 const chatStore = useChatStore();
+const userStore = useUserStore();
 const userInfoShow = ref(false);
 </script>
 
@@ -52,7 +63,7 @@ const userInfoShow = ref(false);
   .divider {
     flex-grow: 1;
   }
-  svg {
+  .icon {
     fill: #757e88;
     width: 50px;
     height: 50px;
@@ -60,12 +71,18 @@ const userInfoShow = ref(false);
     margin-bottom: 8px;
     transition: all 0.2s;
   }
-  svg:hover {
+  .icon:hover {
     fill: #eeffff;
   }
   .icon-selected {
     border-left: 1px solid #eeffff;
     fill: #eeffff;
+  }
+  .avatar {
+    width: 32px;
+    height: 32px;
+    margin: 8px auto;
+    cursor: pointer;
   }
 }
 </style>
