@@ -41,7 +41,8 @@ onMounted(() => {
 }
 .center-box {
   flex-grow: 1;
-  height: 100%;
+  height: 100vh;
+  overflow-y: scroll;
 }
 .tab-box {
   margin: 3%;

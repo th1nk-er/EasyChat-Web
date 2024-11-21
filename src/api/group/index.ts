@@ -9,6 +9,7 @@ import type {
   GroupMemberIgnoredVo,
   MuteMemberDto,
   GroupMemberMuteVo,
+  GroupUpdateParams,
 } from './types';
 import type { UserRole } from '../user/types';
 /**
@@ -320,5 +321,17 @@ export const updateGroupAvatar = (
   return request.upload<Result<string>>({
     url: `/group/${groupId}/avatar/${userId}`,
     data: formData,
+  });
+};
+
+/**
+ * 更新群信息
+ * @param groupId 群聊ID
+ * @param params 更新参数
+ */
+export const updateGroupInfo = (groupId: number, params: GroupUpdateParams) => {
+  return request.put<Result<null>>({
+    url: `/group/${groupId}/info`,
+    data: params,
   });
 };

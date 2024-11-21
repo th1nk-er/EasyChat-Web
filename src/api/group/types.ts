@@ -86,3 +86,9 @@ export type GroupMemberMuteVo = {
   muteTime: string;
   unmuteTime: string;
 };
+
+export type GroupUpdateParams = {
+  userId: number;
+  groupName: string;
+  groupDesc: string;
+};

@@ -3,18 +3,6 @@
     <div class="container">
       <div class="avatar">
         <img :src="getFileUrl(groupInfo.avatar)" class="img-avatar" />
-        <IconAddAPhoto
-          class="icon-add-a-photo"
-          @click="avatarUploader?.click()"
-        />
-        <input
-          type="file"
-          hidden
-          ref="avatarUploader"
-          multiple="false"
-          accept="image/*"
-          @change="handleAvatarUpload"
-        />
       </div>
       <el-divider />
       <div class="info-container">
@@ -76,7 +64,7 @@
 </template>
 <script setup lang="ts">
 import { ChatType } from '@/api/chat/types';
-import { quitGroup, updateGroupAvatar, updateUserGroupInfo } from '@/api/group';
+import { quitGroup, updateUserGroupInfo } from '@/api/group';
 import type { UserGroupVo } from '@/api/group/types';
 import { useChatStore } from '@/stores/chat';
 import { useGroupStore } from '@/stores/group';
@@ -104,7 +92,6 @@ const userStore = useUserStore();
 const groupStore = useGroupStore();
 const chatStore = useChatStore();
 const groupInfo = ref({} as UserGroupVo);
-const avatarUploader = ref<HTMLInputElement>();
 const loadData = () => {
   const userGroupVo = groupStore.getUserGroupVoById(props.groupId);
   if (userGroupVo) {
@@ -113,24 +100,6 @@ const loadData = () => {
 };
 const editRemarkShow = ref(false);
 const remarkInputRef = ref<HTMLInputElement>();
-const handleAvatarUpload = async () => {
-  const file = avatarUploader.value?.files?.[0];
-  if (file == undefined) return;
-  if (file.size > 1024 * 1024 * 5) {
-    ElMessage.error('头像图片过大,请更换其他图片');
-    return;
-  }
-  const resp = await updateGroupAvatar(
-    userStore.userInfo.id,
-    props.groupId,
-    file
-  );
-  const groupVo = groupStore.getUserGroupVoById(props.groupId);
-  if (groupVo) groupVo.avatar = resp.data;
-  groupInfo.value.avatar = resp.data;
-  chatStore.updateGroupConversation(groupInfo.value);
-  ElMessage.success('头像上传成功');
-};
 const handleUpdateUserGroupInfo = async () => {
   // 检测是否有修改
   if (

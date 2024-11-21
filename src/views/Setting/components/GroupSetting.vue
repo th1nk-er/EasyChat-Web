@@ -22,6 +22,62 @@
             </div>
           </el-option>
         </el-select>
+        <h4 style="text-align: center">群聊信息</h4>
+        <div class="group-info" v-if="selectedGroupId != -1">
+          <div class="group-info__avatar">
+            <el-avatar
+              shape="square"
+              :size="100"
+              :src="getFileUrl(groupInfo.avatar)"
+            />
+            <IconAddAPhoto
+              class="icon-add-a-photo"
+              v-if="isUserAdmin(userStore.userInfo.id)"
+              @click="avatarUploader?.click()"
+            />
+            <input
+              type="file"
+              hidden
+              ref="avatarUploader"
+              multiple="false"
+              accept="image/*"
+              @change="handleAvatarUpload"
+            />
+          </div>
+          <div class="group-info__detail">
+            <div class="group-info__detail-item">
+              <span class="group-info__detail-item-label"> 群聊名称： </span>
+              <el-input
+                :disabled="!isUserAdmin(userStore.userInfo.id)"
+                minlength="1"
+                maxlength="20"
+                class="group-info__detail-item-value"
+                v-model="groupInfo.groupName"
+                placeholder="请输入群聊名称"
+              />
+            </div>
+            <div class="group-info__detail-item">
+              <span class="group-info__detail-item-label"> 群聊简介： </span>
+              <el-input
+                :disabled="!isUserAdmin(userStore.userInfo.id)"
+                maxlength="150"
+                type="textarea"
+                class="group-info__detail-item-value"
+                v-model="groupInfo.groupDesc"
+                placeholder="请输入群聊简介"
+              />
+            </div>
+            <div class="group-info__detail-item">
+              <el-button
+                type="primary"
+                v-if="isUserAdmin(userStore.userInfo.id)"
+                @click="handleUpdateGroupInfo"
+                >保存</el-button
+              >
+            </div>
+          </div>
+        </div>
+        <el-divider />
         <h4 style="text-align: center">成员列表</h4>
         <el-table
           :data="filterTableData"
@@ -185,8 +241,14 @@ import {
   getGroupMemberMuteInfoList,
   muteGroupMember,
   cancelMuteGroupMember,
+  updateGroupAvatar,
+  updateGroupInfo,
 } from '@/api/group';
-import type { GroupMemberInfoVo, GroupMemberMuteVo } from '@/api/group/types';
+import type {
+  GroupMemberInfoVo,
+  GroupMemberMuteVo,
+  UserGroupVo,
+} from '@/api/group/types';
 import { useGroupStore } from '@/stores/group';
 import { getFileUrl } from '@/utils/file';
 import { getDurationString, getTimeString } from '@/utils/timeUtils';
@@ -199,10 +261,14 @@ import InviteGroupMemberDialog from '@/components/group/InviteGroupMemberDialog.
 import EditUserGroupNicknameDialog from '@/components/group/EditUserGroupNicknameDialog.vue';
 import MuteMemberDialog from '@/components/group/MuteMemberDialog.vue';
 import type { VNode } from 'vue';
+import { useChatStore } from '@/stores/chat';
 const groupStore = useGroupStore();
 const userStore = useUserStore();
+const chatStore = useChatStore();
 const route = useRoute();
 const searchText = ref('');
+const groupInfo = ref({} as UserGroupVo);
+const avatarUploader = ref<HTMLInputElement>();
 const filterTableData = computed(() =>
   groupMemberList.value.filter(
     (data) =>
@@ -229,6 +295,7 @@ const groupMemberList = ref([] as (GroupMemberInfoVo & { ignored: boolean })[]);
 const ignoredIds = ref([] as number[]);
 const isLoading = ref(false);
 const onSelectedGroupChange = async (groupId: number) => {
+  groupInfo.value = { ...groupStore.getGroupVo(groupId)! };
   groupMemberList.value = [];
   if (groupId === -1) return;
   loadMuteInfo();
@@ -451,6 +518,44 @@ const handleRoleChange = (role: UserRole, userId: number) => {
       }
     });
 };
+const handleAvatarUpload = async () => {
+  const file = avatarUploader.value?.files?.[0];
+  if (file == undefined) return;
+  if (file.size > 1024 * 1024 * 5) {
+    ElMessage.error('头像图片过大,请更换其他图片');
+    return;
+  }
+  const resp = await updateGroupAvatar(
+    userStore.userInfo.id,
+    selectedGroupId.value,
+    file
+  );
+  const groupVo = groupStore.getUserGroupVoById(selectedGroupId.value);
+  if (groupVo) groupVo.avatar = resp.data;
+  groupInfo.value.avatar = resp.data;
+  chatStore.updateGroupConversation(groupInfo.value);
+  ElMessage.success('头像上传成功');
+};
+const handleUpdateGroupInfo = async () => {
+  if (!groupInfo.value.groupDesc) groupInfo.value.groupDesc = '';
+  const oldInfo = groupStore.getGroupVo(selectedGroupId.value);
+  if (oldInfo) {
+    if (
+      oldInfo.groupName == groupInfo.value.groupName &&
+      oldInfo.groupDesc == groupInfo.value.groupDesc
+    ) {
+      ElMessage.info('未修改任何信息');
+      return;
+    }
+  }
+  await updateGroupInfo(selectedGroupId.value, {
+    userId: userStore.userInfo.id,
+    groupName: groupInfo.value.groupName,
+    groupDesc: groupInfo.value.groupDesc,
+  });
+  chatStore.updateGroupConversation(groupInfo.value);
+  ElMessage.success('修改群聊信息成功');
+};
 </script>
 <style lang="scss" scoped>
 @import './style.scss';
@@ -458,6 +563,41 @@ const handleRoleChange = (role: UserRole, userId: number) => {
   display: flex;
   .divider {
     flex: 1;
+  }
+}
+.group-info {
+  display: flex;
+  gap: 20px;
+  width: 100%;
+  &__avatar {
+    .icon-add-a-photo {
+      border-radius: 3px;
+      padding: 2px;
+      fill: white;
+      background-color: rgba(0, 0, 0, 0.4);
+      position: absolute;
+      transform: translateX(-25px) translateY(75px);
+      cursor: pointer;
+      &:hover {
+        background-color: rgba(0, 0, 0, 0.6);
+      }
+    }
+  }
+  &__detail {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: 10px;
+    &-item {
+      display: flex;
+      align-items: center;
+      &-label {
+        color: var(--color-subtitle);
+      }
+      &-value {
+        width: 50%;
+      }
+    }
   }
 }
 </style>
