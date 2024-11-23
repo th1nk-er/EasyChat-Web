@@ -17,13 +17,20 @@
         >
           <GroupSetting />
         </el-tab-pane>
+        <el-tab-pane
+          label="安全设置"
+          :name="SettingType.SECURITY"
+          class="tab-item"
+        >
+          <SecuritySetting />
+        </el-tab-pane>
       </el-tabs>
     </div>
   </div>
 </template>
 <script setup lang="ts">
 import LeftNavigation from '@/components/common/LeftNavigation.vue';
-import { CommonSetting, GroupSetting } from './components';
+import { CommonSetting, GroupSetting, SecuritySetting } from './components';
 import { SettingType } from './components/types';
 const route = useRoute();
 const tabIndex = ref(SettingType.COMMON);

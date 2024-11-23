@@ -7,4 +7,5 @@ export enum ThemePrefer {
 export enum SettingType {
   COMMON = 'common',
   GROUP = 'group',
+  SECURITY = 'security',
 }

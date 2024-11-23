@@ -41,6 +41,7 @@ declare module 'vue' {
     ElTableColuom: typeof import('element-plus/es')['ElTableColuom']
     ElTabPane: typeof import('element-plus/es')['ElTabPane']
     ElTabs: typeof import('element-plus/es')['ElTabs']
+    ElTag: typeof import('element-plus/es')['ElTag']
     ElTransfer: typeof import('element-plus/es')['ElTransfer']
     ElUpload: typeof import('element-plus/es')['ElUpload']
     FriendInfoDialog: typeof import('./src/components/friend/FriendInfoDialog.vue')['default']
