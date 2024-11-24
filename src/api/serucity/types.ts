@@ -1,4 +1,5 @@
 export type UserTokenVo = {
+  id: number;
   userId: number;
   userAgent: string;
   loginIp: string;

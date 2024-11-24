@@ -9,6 +9,7 @@ export type UserLoginVo = {
 };
 
 export type UserToken = {
+  id: number;
   token: string;
   issueTime: number;
   expireTime: number;

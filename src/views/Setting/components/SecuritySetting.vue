@@ -16,6 +16,11 @@
           <el-table-column label="状态">
             <template #default="scope">
               <el-tag
+                v-if="userStore.userToken.id == scope.row.id"
+                type="success"
+                >当前设备</el-tag
+              >
+              <el-tag
                 v-if="new Date(scope.row.expireTime) > new Date()"
                 type="success"
                 >有效</el-tag
