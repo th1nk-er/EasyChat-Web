@@ -28,13 +28,27 @@
               <el-tag v-else type="danger">失效</el-tag>
             </template>
           </el-table-column>
+          <el-table-column label="操作">
+            <template #default="scope">
+              <el-button
+                type="danger"
+                link
+                v-if="
+                  userStore.userToken.id != scope.row.id &&
+                  new Date(scope.row.expireTime) > new Date()
+                "
+                @click="handleExpireToken(scope.row.id)"
+                >下线</el-button
+              >
+            </template>
+          </el-table-column>
         </el-table>
       </div>
     </div>
   </div>
 </template>
 <script setup lang="ts">
-import { getUserTokenVoList } from '@/api/serucity';
+import { expireUserToken, getUserTokenVoList } from '@/api/serucity';
 import type { UserTokenVo } from '@/api/serucity/types';
 import { useUserStore } from '@/stores/user';
 const userStore = useUserStore();
@@ -50,6 +64,17 @@ const loadTokenVo = async () => {
     item.issueTime = new Date(item.issueTime).toLocaleString();
     item.expireTime = new Date(item.expireTime).toLocaleString();
   });
+};
+const handleExpireToken = async (tokenId: number) => {
+  await ElMessageBox.confirm('确定下线该设备？', '警告', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
+  });
+  await expireUserToken(userStore.userInfo.id, tokenId);
+  tokenVoList.value.filter((item) => item.id == tokenId)[0].expireTime =
+    new Date().toLocaleString();
+  ElMessage.success('下线成功');
 };
 </script>
 <style scoped lang="scss">

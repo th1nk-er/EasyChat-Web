@@ -12,3 +12,15 @@ export const getUserTokenVoList = (userId: number) => {
     url: `/security/token/list/user/${userId}`,
   });
 };
+
+/**
+ * 使Token失效
+ * @param userId 用户ID
+ * @param tokenId TokenID
+ * @returns
+ */
+export const expireUserToken = (userId: number, tokenId: number) => {
+  return request.put<Result<null>>({
+    url: `/security/token/expire/user/${userId}/token/${tokenId}`,
+  });
+};
