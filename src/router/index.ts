@@ -17,6 +17,14 @@ const router = createRouter({
       },
     },
     {
+      path: '/logout',
+      name: 'Logout',
+      component: () => import('@/views/Logout/Logout.vue'),
+      meta: {
+        title: '退出登录...',
+      },
+    },
+    {
       path: '/register',
       name: 'Register',
       component: () => import('@/views/Register/Register.vue'),

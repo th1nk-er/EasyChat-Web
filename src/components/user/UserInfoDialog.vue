@@ -87,6 +87,9 @@
             >修改密码</el-button
           >
           <el-button class="button">修改邮箱</el-button>
+          <el-button class="button" type="danger" @click="handleLogOut"
+            >退出登录</el-button
+          >
           <ChangePasswordDialog v-model="changePasswordDialogShow" />
         </div>
       </div>
@@ -101,6 +104,7 @@ import { getFileUrl } from '@/utils/file';
 import { getSexString } from '@/utils/userUtils';
 import ChangePasswordDialog from './ChangePasswordDialog.vue';
 
+const router = useRouter();
 const userStore = useUserStore();
 const dialogShow = defineModel({
   type: Boolean,
@@ -157,6 +161,15 @@ watch(dialogShow, (value) => {
     loadData();
   }
 });
+
+const handleLogOut = async () => {
+  await ElMessageBox.confirm('确定退出登录吗?', '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
+  });
+  router.push({ name: 'Logout' });
+};
 </script>
 <style scoped lang="scss">
 .container {
@@ -211,9 +224,10 @@ watch(dialogShow, (value) => {
       }
       &-button-group {
         display: flex;
-        justify-content: space-between;
+        flex-wrap: wrap;
+        row-gap: 5px;
         .button {
-          width: 30%;
+          flex: 1;
         }
       }
     }

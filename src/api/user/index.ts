@@ -81,3 +81,12 @@ export const getStrangerInfo = (userId: number) => {
     url: `/user/info/${userId}`,
   });
 };
+
+/**
+ *  用户登出
+ */
+export const userLogout = () => {
+  return request.post<Result<null>>({
+    url: '/user/logout',
+  });
+};
