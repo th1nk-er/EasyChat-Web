@@ -9,7 +9,12 @@
       <div class="setting-item-container">
         <el-table :data="tokenVoList">
           <el-table-column type="index" width="50" />
-          <el-table-column prop="loginIp" label="登录IP" width="180" />
+          <el-table-column prop="loginIp" label="登录IP" />
+          <el-table-column label="登录地点" width="150">
+            <template #default="scope">
+              {{ getIpLocationText(scope.row.loginIp) }}
+            </template>
+          </el-table-column>
           <el-table-column prop="userAgent" label="登录设备UA" width="180" />
           <el-table-column prop="issueTime" label="登录时间" />
           <el-table-column prop="expireTime" label="令牌失效时间" />
@@ -48,6 +53,8 @@
   </div>
 </template>
 <script setup lang="ts">
+import { getIpDetails } from '@/api/external';
+import type { IPDetails } from '@/api/external/types';
 import { expireUserToken, getUserTokenVoList } from '@/api/serucity';
 import type { UserTokenVo } from '@/api/serucity/types';
 import { useUserStore } from '@/stores/user';
@@ -75,6 +82,47 @@ const handleExpireToken = async (tokenId: number) => {
   tokenVoList.value.filter((item) => item.id == tokenId)[0].expireTime =
     new Date().toLocaleString();
   ElMessage.success('下线成功');
+};
+const ipDetails = ref([] as IPDetails[]);
+const loadIpDetails = async (ip: string) => {
+  if (!ip) return;
+  ipDetails.value.push({ query: ip } as IPDetails);
+  try {
+    const resp = await getIpDetails(ip);
+    ipDetails.value = ipDetails.value.map((item) => {
+      if (item.query == ip) {
+        item.status = resp.status;
+        item.message = resp.message;
+        item.country = resp.country;
+        item.regionName = resp.regionName;
+        item.org = resp.org;
+        item.city = resp.city;
+      }
+      return item;
+    });
+  } catch (_) {
+    ipDetails.value = ipDetails.value.map((item) => {
+      if (item.query == ip) {
+        item.status = 'fail';
+        item.message = '获取失败';
+      }
+      return item;
+    });
+  }
+};
+
+const getIpLocationText = (ip: string) => {
+  if (!ip) return;
+  const ipDetail = ipDetails.value.find((item) => item.query == ip);
+  if (ipDetail) {
+    if (ipDetail.status == 'fail') {
+      return ipDetail.message;
+    }
+    return `${ipDetail.country} ${ipDetail.regionName} ${ipDetail.city} ${ipDetail.org}`;
+  } else {
+    loadIpDetails(ip);
+  }
+  return '';
 };
 </script>
 <style scoped lang="scss">
