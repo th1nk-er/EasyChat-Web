@@ -2,7 +2,11 @@
   <div class="setting">
     <div class="setting-item">
       <span class="setting-item-label">账号设置</span>
-      <!-- TODO -->
+      <el-button type="primary" @click="changePasswordDialogShow = true"
+        >修改密码</el-button
+      >
+      <ChangePasswordDialog v-model="changePasswordDialogShow" />
+      <el-button type="primary">修改邮箱</el-button>
     </div>
     <div class="setting-item">
       <span class="setting-item-label">登录设置</span>
@@ -63,7 +67,7 @@ const tokenVoList = ref([] as UserTokenVo[]);
 onMounted(() => {
   loadTokenVo();
 });
-
+const changePasswordDialogShow = ref(false);
 const loadTokenVo = async () => {
   const resp = await getUserTokenVoList(userStore.userInfo.id);
   tokenVoList.value = resp.data;
@@ -86,7 +90,13 @@ const handleExpireToken = async (tokenId: number) => {
 const ipDetails = ref([] as IPDetails[]);
 const loadIpDetails = async (ip: string) => {
   if (!ip) return;
-  ipDetails.value.push({ query: ip } as IPDetails);
+  ipDetails.value.push({
+    query: ip,
+    country: '',
+    regionName: '',
+    city: '',
+    org: '',
+  } as IPDetails);
   try {
     const resp = await getIpDetails(ip);
     ipDetails.value = ipDetails.value.map((item) => {
