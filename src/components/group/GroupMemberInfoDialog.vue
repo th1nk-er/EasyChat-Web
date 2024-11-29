@@ -54,8 +54,14 @@
         }}</span
       >
       <div class="button-group">
-        <el-button type="primary" @click="addInfoDialogVisible = true"
+        <el-button
+          type="primary"
+          @click="addInfoDialogVisible = true"
+          v-if="friendStore.getFriendVoById(props.userId) == undefined"
           >添加好友</el-button
+        >
+        <el-button type="primary" @click="handleStartConversation" v-else
+          >发起对话</el-button
         >
         <el-button
           type="danger"
@@ -110,6 +116,9 @@ import {
   kickGroupMember,
   muteGroupMember,
 } from '@/api/group';
+import { useFriendStore } from '@/stores/friend';
+import { useChatStore } from '@/stores/chat';
+import { ChatType } from '@/api/chat/types';
 
 const dialogVisible = defineModel({ type: Boolean, default: false });
 const emit = defineEmits<{
@@ -124,7 +133,10 @@ watch(dialogVisible, (val) => {
     loadData();
   }
 });
+const router = useRouter();
 const groupStore = useGroupStore();
+const friendStore = useFriendStore();
+const chatStore = useChatStore();
 const userStore = useUserStore();
 const memberInfo = ref({ sex: 'SECRET' } as GroupMemberInfoVo);
 const addInfoDialogVisible = ref(false);
@@ -206,6 +218,12 @@ const handleCancelMute = async () => {
   );
   ElMessage.success('操作成功');
   muteInfo.value.muted = false;
+};
+const handleStartConversation = () => {
+  router.push({ name: 'Chat' });
+  chatStore.chatId = props.userId;
+  chatStore.isChatting = true;
+  chatStore.chatType = ChatType.FRIEND;
 };
 </script>
 

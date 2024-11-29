@@ -147,6 +147,9 @@
               item.groupName
             }}</span>
           </p>
+          <p class="invitation-list-item__time">
+            {{ getTimeString(item.createTime) }}
+          </p>
         </div>
         <div
           class="invitation-list-item__button-group"
@@ -211,6 +214,7 @@ import StrangerInfoDialog from '@/components/user/StrangerInfoDialog.vue';
 import { useGroupStore } from '@/stores/group';
 import GroupDetails from './GroupDetails.vue';
 import { useFriendStore } from '@/stores/friend';
+import { getTimeString } from '@/utils/timeUtils';
 
 const dialogVisible = defineModel({ type: Boolean, default: false });
 const userStore = useUserStore();
@@ -320,6 +324,9 @@ const handleAdminRejectInvitation = async (index: number) => {
     &__content {
       flex-grow: 1;
       margin-left: 10px;
+    }
+    &__time {
+      color: var(--color-subtitle);
     }
   }
 }
