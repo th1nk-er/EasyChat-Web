@@ -6,6 +6,7 @@
         v-for="(conversation, key) in chatStore.conversationList"
         :key="key"
         class="user-item"
+        :class="isConversationChatting(conversation) ? 'chatting' : ''"
         @click="handleClickConversation(conversation)"
       >
         <div class="user-item__avatar-box">
@@ -80,6 +81,14 @@ const handleClickConversation = (conversation: UserConversation) => {
   chatStore.chatType = conversation.chatType;
   chatStore.isChatting = true;
 };
+
+const isConversationChatting = (conversation: UserConversation) => {
+  return (
+    chatStore.chatId == conversation.chatId &&
+    chatStore.isChatting &&
+    chatStore.chatType == conversation.chatType
+  );
+};
 onMounted(() => {
   chatStore.loadConversations();
 });
@@ -90,6 +99,10 @@ onMounted(() => {
   flex-direction: column;
   min-width: 400px;
   height: 100%;
+
+  .chatting {
+    background-color: var(--color-background);
+  }
   &-box {
     flex-grow: 1;
     width: 100%;

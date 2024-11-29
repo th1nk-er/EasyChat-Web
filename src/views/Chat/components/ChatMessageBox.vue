@@ -1,148 +1,154 @@
 <template>
-  <div class="message-container" ref="msgBox">
-    <div class="message-container-item">
-      <p class="message-container-item-history">
-        <span @click="emit('onGetMoreMessage')"
-          ><IconHistory />查看更多消息</span
-        >
-      </p>
-    </div>
-    <div
-      class="message-container-item"
-      v-for="(item, index) in props.messageData"
-      :key="index"
-    >
-      <!-- 显示时间 -->
-      <p
-        class="message-container-item-time"
-        v-if="
-          index != 0 &&
-          new Date(item.createTime).getTime() -
-            new Date(messageData[index - 1].createTime).getTime() >
-            1000 * 60 * 3
-        "
-      >
-        {{ getTimeString(item.createTime) }}
-      </p>
-      <!-- 命令消息 -->
-      <div
-        class="message-container-item-command"
-        v-if="item.messageType == MessageType.COMMAND"
-      >
-        <!-- 用户邀请进群 -->
-        <div
-          class="command-group-invitation"
-          v-if="item.content == MessageCommand.GROUP_INVITED"
-        >
-          <p>
-            <span
-              class="primary link"
-              @click="showUserInfo(Number(getMessageCommandParams(item)[0]))"
-              >{{
-                getMemberNickname(Number(getMessageCommandParams(item)[0]))
-              }}</span
-            >
-            <span>邀请</span>
-            <span
-              class="primary link"
-              @click="showUserInfo(Number(getMessageCommandParams(item)[1]))"
-              >{{
-                getMemberNickname(Number(getMessageCommandParams(item)[1]))
-              }}</span
-            >
-            <span>加入了群聊</span>
-          </p>
-        </div>
-        <div
-          class="command-group-mute"
-          v-else-if="item.content == MessageCommand.MEMBER_MUTED"
-        >
-          <p>
-            <span>管理员</span>
-            <span
-              class="primary link"
-              @click="showUserInfo(Number(getMessageCommandParams(item)[0]))"
-            >
-              {{ getMemberNickname(Number(getMessageCommandParams(item)[0])) }}
-            </span>
-            <span>将</span>
-            <span
-              class="primary link"
-              @click="showUserInfo(Number(getMessageCommandParams(item)[1]))"
-              >{{
-                getMemberNickname(Number(getMessageCommandParams(item)[1]))
-              }}</span
-            >
-            <span>禁言</span>
-            <span>{{ getMessageCommandParams(item)[2] }}分钟</span>
-          </p>
-        </div>
-        <div
-          class="command-group-cancel-mute"
-          v-else-if="item.content == MessageCommand.MEMBER_CANCEL_MUTE"
-        >
-          <p>
-            <span
-              class="primary link"
-              @click="showUserInfo(Number(getMessageCommandParams(item)[1]))"
-              >{{
-                getMemberNickname(Number(getMessageCommandParams(item)[1]))
-              }}</span
-            >
-            <span>被管理员</span>
-            <span
-              class="primary link"
-              @click="showUserInfo(Number(getMessageCommandParams(item)[0]))"
-            >
-              {{ getMemberNickname(Number(getMessageCommandParams(item)[0])) }}
-            </span>
-            <span>解除禁言</span>
-          </p>
-        </div>
-      </div>
-      <!-- 文本消息和图片消息 -->
-      <div
-        v-if="
-          item.messageType == MessageType.TEXT ||
-          item.messageType == MessageType.IMAGE
-        "
-        :class="
-          item.senderId == userStore.userInfo.id ? 'item-right' : 'item-left'
-        "
-      >
-        <!-- 用户头像 -->
-        <img
-          :src="getUserAvatarUrl(item.senderId)"
-          class="message-container-item-avatar"
-          @click="showUserInfo(item.senderId)"
-        />
-        <!-- 文本消息 -->
-        <div
-          class="message-container-item-content"
-          v-if="item.messageType == MessageType.TEXT"
-        >
-          <!-- 用户群昵称 -->
-          <p
-            v-if="chatInfo.chatType == ChatType.GROUP"
-            class="message-container-item-content-nickname"
+  <el-scrollbar class="message-container" ref="msgBox">
+    <div ref="scrollInner">
+      <div class="message-container-item">
+        <p class="message-container-item-history">
+          <span @click="emit('onGetMoreMessage')"
+            ><IconHistory />查看更多消息</span
           >
-            {{ memberInfo.get(item.senderId)?.userGroupNickname }}
-          </p>
-          <!-- 消息内容 -->
-          <p class="message-container-item-content-text">
-            {{ item.content }}
-          </p>
-        </div>
-        <!-- 图片消息 -->
-        <div
-          class="message-container-item-img"
-          v-if="item.messageType == MessageType.IMAGE"
-          @click="
-            previewImgSrc = getFileUrl(item.content);
-            previewImgShow = true;
+        </p>
+      </div>
+      <div
+        class="message-container-item"
+        v-for="(item, index) in props.messageData"
+        :key="index"
+      >
+        <!-- 显示时间 -->
+        <p
+          class="message-container-item-time"
+          v-if="
+            index != 0 &&
+            new Date(item.createTime).getTime() -
+              new Date(messageData[index - 1].createTime).getTime() >
+              1000 * 60 * 3
           "
         >
-          <img :src="getFileUrl(item.content)" />
+          {{ getTimeString(item.createTime) }}
+        </p>
+        <!-- 命令消息 -->
+        <div
+          class="message-container-item-command"
+          v-if="item.messageType == MessageType.COMMAND"
+        >
+          <!-- 用户邀请进群 -->
+          <div
+            class="command-group-invitation"
+            v-if="item.content == MessageCommand.GROUP_INVITED"
+          >
+            <p>
+              <span
+                class="primary link"
+                @click="showUserInfo(Number(getMessageCommandParams(item)[0]))"
+                >{{
+                  getMemberNickname(Number(getMessageCommandParams(item)[0]))
+                }}</span
+              >
+              <span>邀请</span>
+              <span
+                class="primary link"
+                @click="showUserInfo(Number(getMessageCommandParams(item)[1]))"
+                >{{
+                  getMemberNickname(Number(getMessageCommandParams(item)[1]))
+                }}</span
+              >
+              <span>加入了群聊</span>
+            </p>
+          </div>
+          <div
+            class="command-group-mute"
+            v-else-if="item.content == MessageCommand.MEMBER_MUTED"
+          >
+            <p>
+              <span>管理员</span>
+              <span
+                class="primary link"
+                @click="showUserInfo(Number(getMessageCommandParams(item)[0]))"
+              >
+                {{
+                  getMemberNickname(Number(getMessageCommandParams(item)[0]))
+                }}
+              </span>
+              <span>将</span>
+              <span
+                class="primary link"
+                @click="showUserInfo(Number(getMessageCommandParams(item)[1]))"
+                >{{
+                  getMemberNickname(Number(getMessageCommandParams(item)[1]))
+                }}</span
+              >
+              <span>禁言</span>
+              <span>{{ getMessageCommandParams(item)[2] }}分钟</span>
+            </p>
+          </div>
+          <div
+            class="command-group-cancel-mute"
+            v-else-if="item.content == MessageCommand.MEMBER_CANCEL_MUTE"
+          >
+            <p>
+              <span
+                class="primary link"
+                @click="showUserInfo(Number(getMessageCommandParams(item)[1]))"
+                >{{
+                  getMemberNickname(Number(getMessageCommandParams(item)[1]))
+                }}</span
+              >
+              <span>被管理员</span>
+              <span
+                class="primary link"
+                @click="showUserInfo(Number(getMessageCommandParams(item)[0]))"
+              >
+                {{
+                  getMemberNickname(Number(getMessageCommandParams(item)[0]))
+                }}
+              </span>
+              <span>解除禁言</span>
+            </p>
+          </div>
+        </div>
+        <!-- 文本消息和图片消息 -->
+        <div
+          v-if="
+            item.messageType == MessageType.TEXT ||
+            item.messageType == MessageType.IMAGE
+          "
+          :class="
+            item.senderId == userStore.userInfo.id ? 'item-right' : 'item-left'
+          "
+        >
+          <!-- 用户头像 -->
+          <img
+            :src="getUserAvatarUrl(item.senderId)"
+            class="message-container-item-avatar"
+            @click="showUserInfo(item.senderId)"
+          />
+          <!-- 文本消息 -->
+          <div
+            class="message-container-item-content"
+            v-if="item.messageType == MessageType.TEXT"
+          >
+            <!-- 用户群昵称 -->
+            <p
+              v-if="chatInfo.chatType == ChatType.GROUP"
+              class="message-container-item-content-nickname"
+            >
+              {{ memberInfo.get(item.senderId)?.userGroupNickname }}
+            </p>
+            <!-- 消息内容 -->
+            <p class="message-container-item-content-text">
+              {{ item.content }}
+            </p>
+          </div>
+          <!-- 图片消息 -->
+          <div
+            class="message-container-item-img"
+            v-if="item.messageType == MessageType.IMAGE"
+            @click="
+              previewImgSrc = getFileUrl(item.content);
+              previewImgShow = true;
+            "
+          >
+            <img :src="getFileUrl(item.content)" />
+          </div>
         </div>
       </div>
     </div>
@@ -163,7 +169,7 @@
       :user-id="userInfoId"
       @onMemberIgnoreChanged="emit('onMemberIgnoreChanged', userInfoId, $event)"
     />
-  </div>
+  </el-scrollbar>
 </template>
 
 <script setup lang="ts">
@@ -182,8 +188,10 @@ import type { ChatInfo } from '.';
 import { useGroupStore } from '@/stores/group';
 import type { GroupMemberInfoVo } from '@/api/group/types';
 import { getMessageCommandParams } from '@/utils/chat';
+import type { ElScrollbar } from 'element-plus';
 
-const msgBox = ref<HTMLElement>();
+const msgBox = ref<InstanceType<typeof ElScrollbar>>();
+const scrollInner = ref<HTMLDivElement>();
 const props = defineProps({
   messageData: {
     type: Array as PropType<ChatMessage[]>,
@@ -204,12 +212,8 @@ const emit = defineEmits<{
    */
   onMemberIgnoreChanged: [memberId: number, ignored: boolean];
 }>();
-
 const scrollToBottom = () => {
-  msgBox.value?.scrollTo({
-    top: msgBox.value?.scrollHeight,
-    behavior: 'smooth',
-  });
+  msgBox.value?.setScrollTop(scrollInner.value!.clientHeight);
 };
 const userStore = useUserStore();
 const groupStore = useGroupStore();
@@ -303,14 +307,13 @@ defineExpose({
 }
 .message-container {
   height: 65vh;
-  overflow-y: scroll;
   display: flex;
   flex-direction: column;
   padding: 20px;
-  gap: 15px;
   border-bottom: 2px solid var(--color-border);
 
   &-item {
+    margin: 15px 0;
     display: flex;
     gap: 3px;
     flex-direction: column;
