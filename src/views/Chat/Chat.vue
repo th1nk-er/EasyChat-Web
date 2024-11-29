@@ -1,10 +1,7 @@
 <template>
-  <div class="main">
-    <LeftNavigation />
-    <div class="center-box" v-loading="appStore.loading">
-      <ChatList />
-      <ChatInstance />
-    </div>
+  <div class="container">
+    <ChatList />
+    <ChatInstance />
   </div>
 </template>
 <script setup lang="ts">
@@ -13,7 +10,6 @@ import {
   subscribeGroupMessage,
   subscribeMessage,
 } from '@/api/chat';
-import LeftNavigation from '@/components/common/LeftNavigation.vue';
 import { useWSStore } from '@/stores/ws';
 import {
   ChatType,
@@ -25,8 +21,6 @@ import { useUserStore } from '@/stores/user';
 import { useChatStore } from '@/stores/chat';
 import { ChatList, ChatInstance } from './components';
 import { useGroupStore } from '@/stores/group';
-import { useAppStore } from '@/stores/app';
-const appStore = useAppStore();
 const userStore = useUserStore();
 const chatStore = useChatStore();
 const groupStore = useGroupStore();
@@ -93,14 +87,8 @@ const handleUserMessage = async (message: WSMessage) => {
 </script>
 
 <style scoped lang="scss">
-.main {
-  height: 100vh;
-  min-height: 600px;
-  display: flex;
-}
-.center-box {
-  flex-grow: 1;
-  height: 100%;
+.container {
+  width: 100%;
   display: flex;
 }
 </style>

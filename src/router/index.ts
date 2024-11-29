@@ -33,36 +33,46 @@ const router = createRouter({
       },
     },
     {
-      path: '/chat',
-      name: 'Chat',
-      component: () => import('@/views/Chat/Chat.vue'),
+      path: '/s',
+      name: 'Main',
+      component: () => import('@/views/Main/Main.vue'),
       meta: {
-        title: '聊天',
+        title: '主页',
       },
-    },
-    {
-      path: '/friend',
-      name: 'Friend',
-      component: () => import('@/views/Friend/Friend.vue'),
-      meta: {
-        title: '好友',
-      },
-    },
-    {
-      path: '/group',
-      name: 'Group',
-      component: () => import('@/views/Group/Group.vue'),
-      meta: {
-        title: '群组',
-      },
-    },
-    {
-      path: '/setting/:settingType?',
-      name: 'Setting',
-      component: () => import('@/views/Setting/Setting.vue'),
-      meta: {
-        title: '设置',
-      },
+      children: [
+        {
+          path: 'chat',
+          name: 'Chat',
+          component: () => import('@/views/Chat/Chat.vue'),
+          meta: {
+            title: '聊天',
+          },
+        },
+        {
+          path: 'friend',
+          name: 'Friend',
+          component: () => import('@/views/Friend/Friend.vue'),
+          meta: {
+            title: '好友',
+          },
+        },
+        {
+          path: 'group',
+          name: 'Group',
+          component: () => import('@/views/Group/Group.vue'),
+          meta: {
+            title: '群组',
+          },
+        },
+        {
+          path: 'setting/:settingType?',
+          name: 'Setting',
+          component: () => import('@/views/Setting/Setting.vue'),
+          meta: {
+            title: '设置',
+          },
+        },
+      ],
     },
   ],
 });
