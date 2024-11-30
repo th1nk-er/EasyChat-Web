@@ -16,10 +16,10 @@
 </template>
 <script setup lang="ts">
 import { useSettingStore } from '@/stores/setting';
-import { ThemePrefer } from './types';
+import { ThemePrefer } from './components/types';
 const settingStore = useSettingStore();
 const theme = ref(settingStore.themePreference);
 </script>
 <style scoped lang="scss">
-@import './style.scss';
+@import './components/style.scss';
 </style>

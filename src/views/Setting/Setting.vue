@@ -24,7 +24,9 @@
   </el-scrollbar>
 </template>
 <script setup lang="ts">
-import { CommonSetting, GroupSetting, SecuritySetting } from './components';
+import CommonSetting from './CommonSetting.vue';
+import GroupSetting from './GroupSetting.vue';
+import SecuritySetting from './SecuritySetting.vue';
 import { SettingType } from './components/types';
 import type { TabPaneName } from 'element-plus';
 const route = useRoute();
