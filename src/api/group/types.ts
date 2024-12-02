@@ -11,6 +11,12 @@ export enum GroupNotificationType {
   KICKED = 'KICKED', // 被踢
   SET_ADMIN = 'SET_ADMIN', // 设置为管理员
   CANCEL_ADMIN = 'CANCEL_ADMIN', // 取消管理员
+  GROUP_DISBAND = 'GROUP_DISBAND', // 群解散
+}
+
+export enum GroupStatus {
+  NORMAL = 'NORMAL',
+  DISBAND = 'DISBAND',
 }
 
 export type UserGroupVo = {
@@ -18,6 +24,7 @@ export type UserGroupVo = {
   groupName: string;
   groupDesc?: string;
   avatar: string;
+  status: GroupStatus;
   role: UserRole;
   muted: boolean;
   groupRemark?: string;
@@ -42,6 +49,7 @@ export type GroupVo = {
   groupName: string;
   groupDesc: string;
   avatar: string;
+  status: GroupStatus;
   createTime: string;
   memberCount: number;
 };
