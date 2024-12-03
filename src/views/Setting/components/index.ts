@@ -1,2 +1,3 @@
 import GroupMemberTable from './GroupMemberTable.vue';
-export { GroupMemberTable };
+import DisbandGroup from './DisbandGroup.vue';
+export { GroupMemberTable, DisbandGroup };

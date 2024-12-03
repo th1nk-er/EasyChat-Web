@@ -104,6 +104,22 @@
               <span>解除禁言</span>
             </p>
           </div>
+          <div
+            class="command-group-disband"
+            v-else-if="item.content == MessageCommand.GROUP_DISBAND"
+          >
+            <p>
+              <span>群主</span>
+              <span
+                class="primary link"
+                @click="showUserInfo(Number(getMessageCommandParams(item)[0]))"
+                >{{
+                  getMemberNickname(Number(getMessageCommandParams(item)[0]))
+                }}</span
+              >
+              <span>解散了群聊</span>
+            </p>
+          </div>
         </div>
         <!-- 文本消息和图片消息 -->
         <div

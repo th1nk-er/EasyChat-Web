@@ -22,6 +22,7 @@
         hidden
         ref="imageUploader"
         multiple="false"
+        :disabled="disabled"
         accept="image/*"
         @change="handleImageUpload"
       />
@@ -31,14 +32,34 @@
 <script setup lang="ts">
 import EmojiPicker from 'vue3-emoji-picker';
 import 'vue3-emoji-picker/css';
+import type { ChatInfo } from '.';
+import { useGroupStore } from '@/stores/group';
+import { ChatType } from '@/api/chat/types';
+import { GroupStatus } from '@/api/group/types';
 const emit = defineEmits<{
   onEmojiSelected: [emoji: string];
   onImageUpload: [file: File, imgUrl: string];
 }>();
 
+const groupStore = useGroupStore();
+const props = defineProps<{
+  chatInfo: ChatInfo;
+}>();
+const disabled = computed(() => {
+  if (props.chatInfo.chatType == ChatType.GROUP) {
+    if (props.chatInfo.muted) return true;
+    if (
+      groupStore.getUserGroupVoById(props.chatInfo.chatId)?.status ==
+      GroupStatus.DISBAND
+    )
+      return true;
+  }
+  return false;
+});
 const emojiSelectorVisible = ref(false);
 const imageUploader = ref<HTMLInputElement>();
 const onEmojiSelected = (emoji: any) => {
+  if (disabled.value) return;
   emojiSelectorVisible.value = false;
   emit('onEmojiSelected', emoji.i);
 };

@@ -17,6 +17,7 @@
       <ChatToolBar
         @on-emoji-selected="handleEmojiSelected"
         @on-image-upload="handleImageUpload"
+        :chat-info="chatInfo"
         :key="componentKey"
       />
       <ChatInputBox
@@ -24,6 +25,7 @@
         v-model:image-src="imageSrc"
         v-model:image-file="imgFile"
         v-model:mute-info="muteInfo"
+        :chat-info="chatInfo"
         @on-send-message="handleSendMessage"
         ref="inputBox"
         :key="componentKey"

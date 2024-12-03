@@ -82,7 +82,7 @@ const handleCreateGroup = async () => {
   await createGroup(userStore.userInfo.id, groupName.value, ids);
   ElMessage.success('群聊创建成功');
   dialogVisible.value = false;
-  groupStore.loadGroupList();
+  groupStore.loadGroupList(true);
 };
 </script>
 <style lang="scss" scoped>

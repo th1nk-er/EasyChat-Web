@@ -335,3 +335,13 @@ export const updateGroupInfo = (groupId: number, params: GroupUpdateParams) => {
     data: params,
   });
 };
+
+/**
+ * 解散群聊
+ * @param groupId 群聊ID
+ */
+export const disbandGroup = (groupId: number) => {
+  return request.delete<Result<null>>({
+    url: `/group/${groupId}/disband`,
+  });
+};

@@ -10,6 +10,7 @@
       class="group-item"
       v-for="(item, index) in groupStore.groupList"
       :key="index"
+      v-show="item.status != GroupStatus.DISBAND"
       @click="
         groupInfoDialogVisible = true;
         groupId = item.groupId;
@@ -36,6 +37,7 @@ import { useGroupStore } from '@/stores/group';
 import { getFileUrl } from '@/utils/file';
 import { GroupNotificationDialog } from '.';
 import GroupInfoDialog from '@/components/group/GroupInfoDialog.vue';
+import { GroupStatus } from '@/api/group/types';
 const groupStore = useGroupStore();
 const groupInvitationDialogVisible = ref(false);
 const groupInfoDialogVisible = ref(false);

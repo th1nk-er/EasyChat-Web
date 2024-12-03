@@ -9,7 +9,7 @@
         maxlength="1024"
         class="input-container__textarea"
         @keydown.enter.native="handleEnterDown"
-        :disabled="muteInfo?.muted"
+        :disabled="isInputDisabled()"
         ref="messageInputRef"
       />
       <div class="upload-image" v-show="imgSrc != ''">
@@ -30,7 +30,7 @@
       class="input-container__button-send"
       type="primary"
       @click="$emit('onSendMessage')"
-      :disabled="muteInfo?.muted"
+      :disabled="isInputDisabled()"
       >发送</el-button
     >
     <el-dialog
@@ -45,9 +45,16 @@
   </div>
 </template>
 <script setup lang="ts">
-import { type GroupMemberMuteVo } from '@/api/group/types';
+import { GroupStatus, type GroupMemberMuteVo } from '@/api/group/types';
+import { useGroupStore } from '@/stores/group';
 import { getDurationString } from '@/utils/timeUtils';
+import type { ChatInfo } from '.';
+import { ChatType } from '@/api/chat/types';
 
+const groupStore = useGroupStore();
+const props = defineProps<{
+  chatInfo: ChatInfo;
+}>();
 const message = defineModel('message', { type: String, required: true });
 const imgSrc = defineModel('imageSrc', { type: String });
 const imgFile = defineModel('imageFile', { type: File });
@@ -60,7 +67,7 @@ const emit = defineEmits<{
 const messageInputRef = ref<HTMLInputElement>();
 /** 用户输入的消息 */
 const handleEnterDown = (e: Event | KeyboardEvent) => {
-  if (muteInfo.value?.muted) {
+  if (isInputDisabled()) {
     return;
   }
   if (e instanceof KeyboardEvent) {
@@ -94,6 +101,24 @@ watch(muteInfo, (value) => {
     }
   }
 });
+onMounted(() => {
+  const groupVo = groupStore.getUserGroupVoById(props.chatInfo.chatId);
+  if (groupVo?.status == GroupStatus.DISBAND) {
+    message.value = '群聊已解散，无法发送消息';
+  }
+});
+const isInputDisabled = () => {
+  if (props.chatInfo.chatType == ChatType.GROUP) {
+    const groupVo = groupStore.getUserGroupVoById(props.chatInfo.chatId);
+    if (muteInfo.value?.muted) {
+      return true;
+    }
+    if (groupVo?.status == GroupStatus.DISBAND) {
+      return true;
+    }
+  }
+  return false;
+};
 </script>
 <style lang="scss" scoped>
 .input-container {

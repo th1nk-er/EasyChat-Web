@@ -41,8 +41,8 @@ export const useGroupStore = defineStore('group', {
     },
   },
   actions: {
-    loadGroupList() {
-      if (this.loaded) return;
+    loadGroupList(force?: boolean) {
+      if (this.loaded && !force) return;
       let groupList: UserGroupVo[] = [];
       let page = 1;
       const intervalId = setInterval(async () => {

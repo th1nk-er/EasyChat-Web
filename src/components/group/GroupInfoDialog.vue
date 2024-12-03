@@ -38,13 +38,17 @@
         </div>
         <div class="info-item">
           <span class="info-item__label">免&nbsp;&nbsp;打&nbsp;&nbsp;扰</span>
-          <el-switch v-model="groupInfo.muted" />
+          <el-switch
+            :disabled="groupInfo.status == GroupStatus.DISBAND"
+            v-model="groupInfo.muted"
+          />
         </div>
         <el-divider />
         <div class="info-item-button-group">
           <el-button
             class="button"
             type="primary"
+            :disabled="groupInfo.status == GroupStatus.DISBAND"
             @click="handleUpdateUserGroupInfo"
             >保存修改</el-button
           >
@@ -65,7 +69,7 @@
 <script setup lang="ts">
 import { ChatType } from '@/api/chat/types';
 import { quitGroup, updateUserGroupInfo } from '@/api/group';
-import type { UserGroupVo } from '@/api/group/types';
+import { GroupStatus, type UserGroupVo } from '@/api/group/types';
 import { useChatStore } from '@/stores/chat';
 import { useGroupStore } from '@/stores/group';
 import { useUserStore } from '@/stores/user';
@@ -117,7 +121,7 @@ const handleUpdateUserGroupInfo = async () => {
       muted: groupInfo.value.muted,
     });
     ElMessage.success('修改成功');
-    groupStore.loadGroupList();
+    groupStore.loadGroupList(true);
     emit('onGroupInfoUpdate', groupInfo.value);
     chatStore.updateGroupConversation(groupInfo.value);
   }
@@ -140,7 +144,7 @@ const handleQuitGroup = () => {
       await quitGroup(userStore.userInfo.id, props.groupId);
       ElMessage.success('操作成功');
       dialogVisible.value = false;
-      groupStore.loadGroupList();
+      groupStore.loadGroupList(true);
       chatStore.deleteConversation(props.groupId, ChatType.GROUP);
     })
     .catch(() => {});

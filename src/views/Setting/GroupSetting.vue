@@ -12,6 +12,7 @@
           <el-option label="请选择群聊" :value="-1" />
           <el-option
             v-for="group in groupStore.groupList"
+            v-show="group.status !== GroupStatus.DISBAND"
             :key="group.groupId"
             :label="group.groupName"
             :value="group.groupId"
@@ -32,7 +33,7 @@
             />
             <IconAddAPhoto
               class="icon-add-a-photo"
-              v-if="isUserAdmin()"
+              v-if="isUserAdmin() && groupInfo.status !== GroupStatus.DISBAND"
               @click="avatarUploader?.click()"
             />
             <input
@@ -48,7 +49,9 @@
             <div class="group-info__detail-item">
               <span class="group-info__detail-item-label"> 群聊名称： </span>
               <el-input
-                :disabled="!isUserAdmin()"
+                :disabled="
+                  !isUserAdmin() || groupInfo.status === GroupStatus.DISBAND
+                "
                 minlength="1"
                 maxlength="20"
                 class="group-info__detail-item-value"
@@ -59,7 +62,9 @@
             <div class="group-info__detail-item">
               <span class="group-info__detail-item-label"> 群聊简介： </span>
               <el-input
-                :disabled="!isUserAdmin()"
+                :disabled="
+                  !isUserAdmin() || groupInfo.status === GroupStatus.DISBAND
+                "
                 maxlength="150"
                 type="textarea"
                 class="group-info__detail-item-value"
@@ -71,6 +76,7 @@
               <el-button
                 type="primary"
                 v-if="isUserAdmin()"
+                :disabled="groupInfo.status === GroupStatus.DISBAND"
                 @click="handleUpdateGroupInfo"
                 >保存</el-button
               >
@@ -81,12 +87,25 @@
         <h4 style="text-align: center">成员列表</h4>
         <GroupMemberTable :group-id="selectedGroupId" />
         <div class="group-btn" v-show="selectedGroupId != -1">
-          <el-button type="primary" @click="inviteDialogShow = true"
+          <el-button
+            type="primary"
+            @click="inviteDialogShow = true"
+            :disabled="groupInfo.status === GroupStatus.DISBAND"
             >邀请成员</el-button
           >
           <div class="divider"></div>
-          <el-button type="danger" v-if="isUserLeader()">解散群组</el-button>
-          <el-button type="danger" v-else @click="handleQuitGroup"
+          <el-button
+            type="danger"
+            v-if="isUserLeader()"
+            @click="disbandDialogShow = true"
+            :disabled="groupInfo.status === GroupStatus.DISBAND"
+            >解散群组</el-button
+          >
+          <el-button
+            type="danger"
+            v-else
+            @click="handleQuitGroup"
+            :disabled="groupInfo.status === GroupStatus.DISBAND"
             >退出群组</el-button
           >
         </div>
@@ -97,6 +116,11 @@
       :group-id="selectedGroupId"
       :member-list="groupMemberList"
     />
+    <DisbandGroup
+      v-model="disbandDialogShow"
+      :groupId="selectedGroupId"
+      :groupName="groupInfo.groupName"
+    />
   </div>
 </template>
 <script setup lang="ts">
@@ -106,7 +130,11 @@ import {
   updateGroupInfo,
   quitGroup,
 } from '@/api/group';
-import type { GroupMemberInfoVo, UserGroupVo } from '@/api/group/types';
+import {
+  GroupStatus,
+  type GroupMemberInfoVo,
+  type UserGroupVo,
+} from '@/api/group/types';
 import { useGroupStore } from '@/stores/group';
 import { getFileUrl } from '@/utils/file';
 import { SettingType } from './components/types';
@@ -115,7 +143,7 @@ import { UserRole } from '@/api/user/types';
 import InviteGroupMemberDialog from '@/components/group/InviteGroupMemberDialog.vue';
 import { useChatStore } from '@/stores/chat';
 import { ChatType } from '@/api/chat/types';
-import { GroupMemberTable } from './components';
+import { DisbandGroup, GroupMemberTable } from './components';
 const groupStore = useGroupStore();
 const userStore = useUserStore();
 const chatStore = useChatStore();
@@ -211,10 +239,11 @@ const handleQuitGroup = async () => {
   });
   await quitGroup(userStore.userInfo.id, selectedGroupId.value);
   ElMessage.success('操作成功');
-  groupStore.loadGroupList();
+  groupStore.loadGroupList(true);
   chatStore.deleteConversation(selectedGroupId.value, ChatType.GROUP);
   selectedGroupId.value = -1;
 };
+const disbandDialogShow = ref(false);
 </script>
 <style lang="scss" scoped>
 @import './components/style.scss';

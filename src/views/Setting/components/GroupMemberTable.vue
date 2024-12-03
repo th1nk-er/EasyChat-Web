@@ -18,6 +18,7 @@
     <el-table-column label="身份">
       <template #default="scope">
         <el-select
+          :disabled="isDisband"
           v-if="
             isUserLeader(userStore.userInfo.id) &&
             userStore.userInfo.id != scope.row.userId
@@ -43,7 +44,7 @@
     <el-table-column label="屏蔽">
       <template #default="scope">
         <el-switch
-          :disabled="userStore.userInfo.id == scope.row.userId"
+          :disabled="userStore.userInfo.id == scope.row.userId || isDisband"
           v-model="scope.row.ignored"
           @change="handleIgnoreChange($event, scope.row.userId)"
         />
@@ -71,6 +72,7 @@
         <el-button
           link
           type="primary"
+          :disabled="isDisband"
           v-if="
             userStore.userInfo.id == scope.row.userId ||
             (isUserAdmin(userStore.userInfo.id) &&
@@ -90,6 +92,7 @@
             link
             type="danger"
             v-if="!isMemberMuted(scope.row.userId)"
+            :disabled="isDisband"
             @click="
               muteMemberId = scope.row.userId;
               muteDialogShow = true;
@@ -99,6 +102,7 @@
           <el-button
             link
             type="danger"
+            :disabled="isDisband"
             v-else
             @click="handleCancelMuteMember(scope.row.userId)"
             >解除禁言</el-button
@@ -106,6 +110,7 @@
           <el-button
             link
             type="danger"
+            :disabled="isDisband"
             @click="handleKickMember(scope.row.userId)"
             >踢出</el-button
           >
@@ -139,16 +144,22 @@ import {
 } from '@/api/group';
 import EditUserGroupNicknameDialog from '@/components/group/EditUserGroupNicknameDialog.vue';
 import MuteMemberDialog from '@/components/group/MuteMemberDialog.vue';
-import type { GroupMemberInfoVo, GroupMemberMuteVo } from '@/api/group/types';
+import {
+  GroupStatus,
+  type GroupMemberInfoVo,
+  type GroupMemberMuteVo,
+} from '@/api/group/types';
 import { UserRole } from '@/api/user/types';
 import { useUserStore } from '@/stores/user';
 import { getFileUrl } from '@/utils/file';
 import { getDurationString, getTimeString } from '@/utils/timeUtils';
 import { getRoleString } from '@/utils/userUtils';
+import { useGroupStore } from '@/stores/group';
 const props = defineProps<{
   groupId: number;
 }>();
 const userStore = useUserStore();
+const groupStore = useGroupStore();
 const isLoading = ref(false);
 const groupMemberList = ref([] as (GroupMemberInfoVo & { ignored: boolean })[]);
 const searchText = ref('');
@@ -369,6 +380,11 @@ watch(
     }
   }
 );
+const isDisband = computed(() => {
+  return (
+    groupStore.getUserGroupVoById(props.groupId)?.status == GroupStatus.DISBAND
+  );
+});
 /**
  * 回调函数，当用户群昵称修改成功时调用
  * @param nickname 群昵称

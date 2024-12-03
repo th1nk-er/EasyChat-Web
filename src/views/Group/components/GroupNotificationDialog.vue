@@ -120,6 +120,26 @@
             }}</span>
             <span>的管理员权限</span>
           </p>
+          <p v-else-if="item.type == GroupNotificationType.DISBAND">
+            <span v-if="item.operatorId == userStore.userInfo.id">你</span>
+            <span v-else>群主</span>
+            <span
+              class="primary link"
+              v-if="item.operatorId != userStore.userInfo.id"
+              @click="showUserInfo(item.operatorId)"
+              >{{ item.operatorNickname }}</span
+            >
+            <span
+              class="primary link"
+              v-if="item.operatorId != userStore.userInfo.id"
+              @click="showUserInfo(item.operatorId)"
+              >({{ item.operatorUsername }})</span
+            >
+            <span>解散了群聊</span>
+            <span class="primary link" @click="showGroupInfo(item.groupId)">{{
+              item.groupName
+            }}</span>
+          </p>
           <p v-else>
             <span v-if="item.operatorId == userStore.userInfo.id">你</span>
             <span v-else>
@@ -270,7 +290,7 @@ const handleAgreeInvitation = async (index: number) => {
   notificationList.value[index].type = GroupNotificationType.ADMIN_PENDING;
   ElMessage.success('已同意该邀请');
   groupStore.loaded = false;
-  groupStore.loadGroupList();
+  groupStore.loadGroupList(true);
 };
 const handleRejectInvitation = async (index: number) => {
   await userhandleGroupInvitation(
