@@ -136,7 +136,7 @@ const selectedGroupId = ref(-1);
 const groupMemberList = ref([] as GroupMemberInfoVo[]);
 const isLoading = ref(false);
 const onSelectedGroupChange = async (groupId: number) => {
-  groupInfo.value = { ...groupStore.getGroupVo(groupId)! };
+  groupInfo.value = { ...groupStore.getUserGroupVoById(groupId)! };
   groupMemberList.value = [];
   if (groupId === -1) return;
   let page = 1;
@@ -185,7 +185,7 @@ const handleAvatarUpload = async () => {
 };
 const handleUpdateGroupInfo = async () => {
   if (!groupInfo.value.groupDesc) groupInfo.value.groupDesc = '';
-  const oldInfo = groupStore.getGroupVo(selectedGroupId.value);
+  const oldInfo = groupStore.getUserGroupVoById(selectedGroupId.value);
   if (oldInfo) {
     if (
       oldInfo.groupName == groupInfo.value.groupName &&

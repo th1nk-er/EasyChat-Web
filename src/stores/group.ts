@@ -36,14 +36,11 @@ export const useGroupStore = defineStore('group', {
       if (r) return r.ignoredList;
       return [];
     },
-    getGroupVo: (state) => (groupId: number) => {
+    getUserGroupVoById: (state) => (groupId: number) => {
       return state.groupList.find((item) => item.groupId == groupId);
     },
   },
   actions: {
-    getUserGroupVoById(groupId: number) {
-      return this.groupList.find((item) => item.groupId == groupId);
-    },
     loadGroupList() {
       if (this.loaded) return;
       let groupList: UserGroupVo[] = [];
