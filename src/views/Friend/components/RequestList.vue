@@ -107,6 +107,7 @@ const handleAgreeRequest = async (key: number) => {
     display: flex;
     align-items: center;
     border-bottom: 1px solid var(--color-border);
+    transition: 0.5s;
     cursor: pointer;
     &__img-avatar {
       border-radius: 8px;

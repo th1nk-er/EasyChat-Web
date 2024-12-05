@@ -102,6 +102,7 @@ const handleFriendClick = (index: number) => {
     width: 100%;
     align-items: center;
     border-bottom: 1px solid var(--color-border);
+    transition: 0.5s;
     cursor: pointer;
 
     &__img-avatar {

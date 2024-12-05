@@ -116,6 +116,7 @@ onMounted(() => {
       align-items: center;
       border-bottom: 1px solid var(--color-border-mute);
       cursor: pointer;
+      transition: 0.5s;
 
       &:hover {
         background-color: var(--color-background-soft);

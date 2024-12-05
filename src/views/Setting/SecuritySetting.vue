@@ -6,12 +6,15 @@
         >修改密码</el-button
       >
       <ChangePasswordDialog v-model="changePasswordDialogShow" />
-      <el-button type="primary">修改邮箱</el-button>
+      <el-button type="primary" @click="changeEmailDialogShow = true"
+        >修改邮箱</el-button
+      >
+      <ChangeEmailDialog v-model="changeEmailDialogShow" />
     </div>
     <div class="setting-item">
       <span class="setting-item-label">登录设置</span>
       <div class="setting-item-container">
-        <el-table :data="tokenVoList">
+        <el-table :data="tokenVoList" v-loading="isLoading">
           <el-table-column type="index" width="50" />
           <el-table-column prop="loginIp" label="登录IP" />
           <el-table-column label="登录地点" width="150">
@@ -68,7 +71,10 @@ onMounted(() => {
   loadTokenVo();
 });
 const changePasswordDialogShow = ref(false);
+const changeEmailDialogShow = ref(false);
+const isLoading = ref(false);
 const loadTokenVo = async () => {
+  isLoading.value = true;
   const resp = await getUserTokenVoList(userStore.userInfo.id);
   tokenVoList.value = resp.data;
   tokenVoList.value.map((item) => {
@@ -98,7 +104,7 @@ const loadIpDetails = async (ip: string) => {
     org: '',
   } as IPDetails);
   try {
-    const resp = await getIpDetails(ip);
+    const resp: IPDetails = await getIpDetails(ip);
     ipDetails.value = ipDetails.value.map((item) => {
       if (item.query == ip) {
         item.status = resp.status;
@@ -119,6 +125,7 @@ const loadIpDetails = async (ip: string) => {
       return item;
     });
   }
+  isLoading.value = false;
 };
 
 const getIpLocationText = (ip: string) => {

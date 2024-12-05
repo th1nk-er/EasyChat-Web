@@ -10,6 +10,7 @@ declare module 'vue' {
     AddFriendDialog: typeof import('./src/components/friend/AddFriendDialog.vue')['default']
     AddFriendInfoDialog: typeof import('./src/components/friend/AddFriendInfoDialog.vue')['default']
     AppTitle: typeof import('./src/components/common/AppTitle.vue')['default']
+    ChangeEmailDialog: typeof import('./src/components/user/ChangeEmailDialog.vue')['default']
     ChangePasswordDialog: typeof import('./src/components/user/ChangePasswordDialog.vue')['default']
     CreateGroupDialog: typeof import('./src/components/common/CreateGroupDialog.vue')['default']
     EditUserGroupNicknameDialog: typeof import('./src/components/group/EditUserGroupNicknameDialog.vue')['default']
