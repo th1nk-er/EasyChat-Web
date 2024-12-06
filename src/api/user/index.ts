@@ -90,3 +90,29 @@ export const userLogout = () => {
     url: '/user/logout',
   });
 };
+
+/**
+ * 发送修改邮箱的验证邮件
+ */
+export const sendChangeEmailCode = () => {
+  return request.post<Result<null>>({
+    url: '/user/email/change-email',
+  });
+};
+
+/**
+ * 修改邮箱
+ * @param userId 用户ID
+ * @param code 验证码
+ * @param email 新邮箱
+ */
+export const updateUserEmail = (
+  userId: number,
+  code: string,
+  email: string
+) => {
+  return request.put<Result<null>>({
+    url: `/user/email`,
+    data: { userId, code, newEmail: email },
+  });
+};

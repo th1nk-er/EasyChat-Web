@@ -51,6 +51,9 @@ import type { UserLoginVo } from '@/api/login/types';
 import { getUserInfo } from '@/api/user';
 import { useUserStore } from '@/stores/user';
 import type { FormInstance, FormRules } from 'element-plus';
+import { useChatStore } from '@/stores/chat';
+import { useFriendStore } from '@/stores/friend';
+import { useGroupStore } from '@/stores/group';
 const router = useRouter();
 const loginState = useLoginState();
 const userStore = useUserStore();
@@ -109,6 +112,14 @@ const handleLogin = async (formEl: FormInstance | undefined) => {
         userStore.setLoginForm(formData.username, formData.password);
       else userStore.removeLoginForm();
       ElMessage.success('登录成功');
+      const chatStore = useChatStore();
+      const friendStore = useFriendStore();
+      const groupStore = useGroupStore();
+      chatStore.conversationList = [];
+      chatStore.loaded = false;
+      friendStore.friendList = [];
+      groupStore.groupList = [];
+      groupStore.loaded = false;
       // 同步获取用户信息
       getUserInfo()
         .then((res) => {

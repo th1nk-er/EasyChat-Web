@@ -56,6 +56,9 @@ import { getUserInfo } from '@/api/user';
 import type { UserLoginVo } from '@/api/login/types';
 import { useUserStore } from '@/stores/user';
 import { isValidEmail } from '@/utils/validate';
+import { useChatStore } from '@/stores/chat';
+import { useFriendStore } from '@/stores/friend';
+import { useGroupStore } from '@/stores/group';
 const loginState = useLoginState();
 const userStore = useUserStore();
 const router = useRouter();
@@ -134,6 +137,14 @@ const handleLogin = (formEl: FormInstance | undefined) => {
       const resp = await login(userLoginVo);
       userStore.userToken = resp.data;
       ElMessage.success('登录成功');
+      const chatStore = useChatStore();
+      const friendStore = useFriendStore();
+      const groupStore = useGroupStore();
+      chatStore.conversationList = [];
+      chatStore.loaded = false;
+      friendStore.friendList = [];
+      groupStore.groupList = [];
+      groupStore.loaded = false;
       // 同步获取用户信息
       getUserInfo()
         .then((res) => {
