@@ -24,6 +24,20 @@
       <el-form-item label="再次输入邮箱" prop="repeatEmail">
         <el-input v-model="formData.repeatEmail" />
       </el-form-item>
+      <el-form-item label="验证码" prop="newCode">
+        <el-input v-model="formData.newCode" placeholder="请输入新邮箱验证码">
+          <template #append>
+            <el-button
+              type="primary"
+              @click="handleSendEmailNew"
+              :disabled="sendDisabled2"
+              >获取验证码<span v-show="sendDisabled2"
+                >({{ sendSeconds2 }})</span
+              ></el-button
+            >
+          </template>
+        </el-input>
+      </el-form-item>
     </el-form>
     <template #footer>
       <span class="dialog-footer">
@@ -36,7 +50,11 @@
   </el-dialog>
 </template>
 <script setup lang="ts">
-import { sendChangeEmailCode, updateUserEmail } from '@/api/user';
+import {
+  sendChangeEmailCode,
+  sendNewEmailVerifyCode,
+  updateUserEmail,
+} from '@/api/user';
 import { useUserStore } from '@/stores/user';
 import { useWSStore } from '@/stores/ws';
 import type { FormInstance, FormRules } from 'element-plus';
@@ -51,6 +69,7 @@ const formData = ref({
   newEmail: '',
   repeatEmail: '',
   code: '',
+  newCode: '',
 });
 const rules = reactive<FormRules<typeof formData>>({
   newEmail: [
@@ -71,11 +90,20 @@ const rules = reactive<FormRules<typeof formData>>({
     },
   ],
   code: [{ required: true, message: '请输入验证码', trigger: 'blur' }],
+  newCode: [{ required: true, message: '请输入验证码', trigger: 'blur' }],
 });
 const handleSendEmail = async () => {
   await sendChangeEmailCode();
   sendDisabled.value = true;
   sendSeconds.value = 60;
+  ElMessage.success('验证码发送成功');
+};
+const sendDisabled2 = ref(false);
+const sendSeconds2 = ref(0);
+const handleSendEmailNew = async () => {
+  await sendNewEmailVerifyCode(formData.value.code, formData.value.newEmail);
+  sendDisabled2.value = true;
+  sendSeconds2.value = 60;
   ElMessage.success('验证码发送成功');
 };
 const sendDisabled = ref(false);
@@ -89,6 +117,15 @@ watch(sendSeconds, (newValue) => {
     sendDisabled.value = false;
   }
 });
+watch(sendSeconds2, (newValue) => {
+  if (newValue > 0) {
+    setTimeout(() => {
+      sendSeconds2.value--;
+    }, 1000);
+  } else {
+    sendDisabled2.value = false;
+  }
+});
 const handleChangeEmail = async () => {
   if (!formRef.value) return;
   await formRef.value.validate(async (valid, fields) => {
@@ -96,7 +133,8 @@ const handleChangeEmail = async () => {
       await updateUserEmail(
         userStore.userInfo.id,
         formData.value.code,
-        formData.value.newEmail
+        formData.value.newEmail,
+        formData.value.newCode
       );
       ElMessage.success('邮箱修改成功');
       dialogVisible.value = false;

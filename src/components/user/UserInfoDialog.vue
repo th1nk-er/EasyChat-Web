@@ -86,11 +86,14 @@
           <el-button class="button" @click="changePasswordDialogShow = true"
             >修改密码</el-button
           >
-          <el-button class="button">修改邮箱</el-button>
+          <el-button class="button" @click="changeEmailDialogShow = true"
+            >修改邮箱</el-button
+          >
           <el-button class="button" type="danger" @click="handleLogOut"
             >退出登录</el-button
           >
           <ChangePasswordDialog v-model="changePasswordDialogShow" />
+          <ChangeEmailDialog v-model="changeEmailDialogShow" />
         </div>
       </div>
     </div>
@@ -103,6 +106,7 @@ import { useUserStore } from '@/stores/user';
 import { getFileUrl } from '@/utils/file';
 import { getSexString } from '@/utils/userUtils';
 import ChangePasswordDialog from './ChangePasswordDialog.vue';
+import ChangeEmailDialog from './ChangeEmailDialog.vue';
 
 const router = useRouter();
 const userStore = useUserStore();
@@ -112,6 +116,7 @@ const dialogShow = defineModel({
 });
 
 const changePasswordDialogShow = ref(false);
+const changeEmailDialogShow = ref(false);
 const avatarUploader = ref<HTMLInputElement>();
 const handleAvatarUpload = async () => {
   const file = avatarUploader.value?.files?.[0];

@@ -101,18 +101,32 @@ export const sendChangeEmailCode = () => {
 };
 
 /**
+ * 发送新邮箱的验证邮件
+ * @param code 原始邮箱验证码
+ * @param email 新邮箱
+ */
+export const sendNewEmailVerifyCode = (code: string, email: string) => {
+  return request.post<Result<null>>({
+    url: '/user/email/email-verify',
+    data: { code, email },
+  });
+};
+
+/**
  * 修改邮箱
  * @param userId 用户ID
  * @param code 验证码
  * @param email 新邮箱
+ * @param newCode 新邮箱验证码
  */
 export const updateUserEmail = (
   userId: number,
   code: string,
-  email: string
+  email: string,
+  newCode: string
 ) => {
   return request.put<Result<null>>({
     url: `/user/email`,
-    data: { userId, code, newEmail: email },
+    data: { userId, code, newEmail: email, newCode },
   });
 };
