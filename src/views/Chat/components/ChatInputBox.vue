@@ -105,6 +105,8 @@ onMounted(() => {
   const groupVo = groupStore.getUserGroupVoById(props.chatInfo.chatId);
   if (groupVo?.status == GroupStatus.DISBAND) {
     message.value = '群聊已解散，无法发送消息';
+  } else {
+    message.value = '';
   }
 });
 const isInputDisabled = () => {

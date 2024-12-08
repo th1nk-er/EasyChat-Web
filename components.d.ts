@@ -60,6 +60,7 @@ declare module 'vue' {
     IconEdit: typeof import('./src/components/icons/IconEdit.vue')['default']
     IconEmail: typeof import('./src/components/icons/IconEmail.vue')['default']
     IconFemale: typeof import('./src/components/icons/IconFemale.vue')['default']
+    IconFolder: typeof import('./src/components/icons/IconFolder.vue')['default']
     IconForum: typeof import('./src/components/icons/IconForum.vue')['default']
     IconGroup: typeof import('./src/components/icons/IconGroup.vue')['default']
     IconGroupAdd: typeof import('./src/components/icons/IconGroupAdd.vue')['default']

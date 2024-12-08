@@ -58,6 +58,7 @@ import type {
 } from '@/api/group/types';
 import { useGroupStore } from '@/stores/group';
 import { getGroupMemberMuteInfo } from '@/api/group';
+import type { StompSubscription } from '@stomp/stompjs';
 const componentKey = ref(0);
 const isloading = ref(false);
 const chatStore = useChatStore();
@@ -160,6 +161,7 @@ const handleMemberIgnoreChanged = (memberId: number, ignored: boolean) => {
     groupStore.cancelIgnoreMember(chatInfo.value.chatId, memberId);
   }
 };
+const stompSubscription = ref<StompSubscription>();
 /** 初始化数据 */
 const initChatData = async () => {
   isloading.value = true;
@@ -184,7 +186,7 @@ const initChatData = async () => {
   getMoreMessage();
   if (chatStore.chatType == ChatType.FRIEND) {
     // 订阅消息
-    subscribeMessage((message: WSMessage) => {
+    stompSubscription.value = subscribeMessage((message: WSMessage) => {
       onReceiveMessage(message);
     });
   } else if (chatStore.chatType == ChatType.GROUP) {
@@ -195,9 +197,12 @@ const initChatData = async () => {
     muteInfo.value = resp.data;
     await groupStore.loadIgnoredMembers(chatStore.chatId);
     ignoredMembers.value = groupStore.getIgnoredList(chatStore.chatId);
-    subscribeGroupMessage(chatInfo.value.chatId, (message: WSMessage) => {
-      onReceiveMessage(message);
-    });
+    stompSubscription.value = subscribeGroupMessage(
+      chatInfo.value.chatId,
+      (message: WSMessage) => {
+        onReceiveMessage(message);
+      }
+    );
   }
   isloading.value = false;
 };
@@ -237,6 +242,9 @@ const onReceiveMessage = (message: WSMessage) => {
 watch(
   () => chatStore.chatId,
   (value) => {
+    if (stompSubscription.value) {
+      stompSubscription.value.unsubscribe();
+    }
     if (value > 0 && chatStore.isChatting) initChatData();
   }
 );

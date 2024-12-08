@@ -1,8 +1,8 @@
 <template>
   <div class="toolbar-container">
-    <div class="emoji-selector-container">
+    <div class="tool-box">
       <IconMood
-        class="icon-mood"
+        class="icon"
         @click="emojiSelectorVisible = !emojiSelectorVisible"
       />
       <EmojiPicker
@@ -15,8 +15,8 @@
         @select="onEmojiSelected"
       />
     </div>
-    <div class="send-image-container">
-      <IconImage class="icon-image" @click="imageUploader?.click()" />
+    <div class="tool-box">
+      <IconImage class="icon" @click="imageUploader?.click()" />
       <input
         type="file"
         hidden
@@ -26,6 +26,9 @@
         accept="image/*"
         @change="handleImageUpload"
       />
+    </div>
+    <div class="tool-box">
+      <IconFolder class="icon" />
     </div>
   </div>
 </template>
@@ -82,9 +85,9 @@ const handleImageUpload = () => {
   border-bottom: 2px solid var(--color-border);
   padding-left: 10px;
   display: flex;
-  .emoji-selector-container {
+  .tool-box {
     position: relative;
-    .icon-mood {
+    .icon {
       cursor: pointer;
       &:hover {
         fill: dodgerblue;
@@ -93,14 +96,6 @@ const handleImageUpload = () => {
     .emoji-picker {
       position: absolute;
       bottom: 110%;
-    }
-  }
-  .send-image-container {
-    .icon-image {
-      cursor: pointer;
-      &:hover {
-        fill: dodgerblue;
-      }
     }
   }
 }

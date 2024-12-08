@@ -17,16 +17,15 @@ export const subscribeMessage = (callback: (message: WSMessage) => void) => {
   const stompClient = useWSStore().stompClient;
   const userToken = useUserStore().getUserToken?.token;
   if (userToken == undefined) {
-    return false;
+    return;
   }
   if (!stompClient.connected) return;
-  stompClient.subscribe(
+  return stompClient.subscribe(
     '/notify/message/' + SHA256(userToken).toString(),
     (message) => {
       callback(JSON.parse(message.body));
     }
   );
-  return true;
 };
 /**
  * 订阅群聊消息
@@ -39,10 +38,12 @@ export const subscribeGroupMessage = (
 ) => {
   const stompClient = useWSStore().stompClient;
   if (!stompClient.connected) return;
-  stompClient.subscribe('/notify/message/group/' + groupId, (message) => {
-    callback(JSON.parse(message.body));
-  });
-  return true;
+  return stompClient.subscribe(
+    '/notify/message/group/' + groupId,
+    (message) => {
+      callback(JSON.parse(message.body));
+    }
+  );
 };
 /**
  * 发送消息
@@ -53,7 +54,7 @@ export const sendMessage = (message: WSMessage) => {
   if (userToken == undefined) {
     return false;
   }
-  if (!stompClient.connected) return;
+  if (!stompClient.connected) return false;
   stompClient.publish({
     destination: '/message/chat.send',
     body: JSON.stringify(message),
