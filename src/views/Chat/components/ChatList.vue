@@ -48,6 +48,9 @@
               <span v-else-if="conversation.messageType == MessageType.IMAGE">
                 [图片]
               </span>
+              <span v-else-if="conversation.messageType == MessageType.FILE"
+                >[文件]</span
+              >
               <span v-else-if="conversation.messageType == MessageType.COMMAND"
                 >[系统消息]</span
               >

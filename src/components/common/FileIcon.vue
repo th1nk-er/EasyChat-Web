@@ -4,6 +4,7 @@
   <IconPDF v-else-if="isFilePDF()" />
   <IconExcel v-else-if="isFileExcel()" />
   <IconPPT v-else-if="isFilePPT()" />
+  <IconImage v-else-if="isImage()" />
   <IconQuestionMark v-else />
 </template>
 <script setup lang="ts">
@@ -35,5 +36,14 @@ const isFileExcel = () => {
 };
 const isFilePPT = () => {
   return fileExtension === 'ppt' || fileExtension === 'pptx';
+};
+const isImage = () => {
+  return (
+    fileExtension === 'jpg' ||
+    fileExtension === 'jpeg' ||
+    fileExtension === 'png' ||
+    fileExtension === 'gif' ||
+    fileExtension === 'bmp'
+  );
 };
 </script>
