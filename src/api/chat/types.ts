@@ -4,7 +4,7 @@ export type WSMessage = {
   fromId: number;
   toId: number;
   chatType: ChatType;
-  params?: string;
+  params?: string | string[];
 };
 
 export enum MessageType {
@@ -29,7 +29,7 @@ export type ChatMessage = {
   messageType: MessageType;
   content: string;
   createTime: string;
-  params?: string;
+  params?: string | string[];
 };
 
 export type UserConversation = {

@@ -55,9 +55,17 @@ export const sendMessage = (message: WSMessage) => {
     return false;
   }
   if (!stompClient.connected) return false;
+  const msg = JSON.parse(JSON.stringify(message));
+  if (msg.params) {
+    if (Array.isArray(msg.params)) {
+      for (let i = 0; i < msg.params.length; i++) {
+        msg.params[i] = '"' + msg.params[i] + '"';
+      }
+    }
+  }
   stompClient.publish({
     destination: '/message/chat.send',
-    body: JSON.stringify(message),
+    body: JSON.stringify(msg),
   });
   return true;
 };
@@ -137,6 +145,24 @@ export const uploadChatImage = (file: File) => {
   formData.append('file', file);
   return request.post<Result<string>>({
     url: '/upload/chat/image',
+    method: 'post',
+    data: formData,
+  });
+};
+
+export const uploadChatFileChunk = (
+  chunk: Blob,
+  fileName: string,
+  total: number,
+  index: number
+) => {
+  const formData = new FormData();
+  formData.append('chunk', chunk);
+  formData.append('fileName', fileName);
+  formData.append('total', total.toString());
+  formData.append('index', index.toString());
+  return request.post<Result<string | null>>({
+    url: '/upload/chat/file/chunk',
     method: 'post',
     data: formData,
   });

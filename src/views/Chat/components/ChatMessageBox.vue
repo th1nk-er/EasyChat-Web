@@ -121,11 +121,12 @@
             </p>
           </div>
         </div>
-        <!-- 文本消息和图片消息 -->
+        <!-- 文本消息、图片消息、文件消息 -->
         <div
           v-if="
             item.messageType == MessageType.TEXT ||
-            item.messageType == MessageType.IMAGE
+            item.messageType == MessageType.IMAGE ||
+            item.messageType == MessageType.FILE
           "
           :class="
             item.senderId == userStore.userInfo.id ? 'item-right' : 'item-left'
@@ -164,6 +165,24 @@
             "
           >
             <img :src="getFileUrl(item.content)" />
+          </div>
+          <!-- 文件消息 -->
+          <div
+            class="message-container-item-file"
+            v-if="item.messageType == MessageType.FILE"
+          >
+            <a
+              class="message-container-item-file-info"
+              :href="
+                getFileUrl(getMessageCommandParams(item)[0]) +
+                '?name=' +
+                item.content
+              "
+              :download="item.content"
+            >
+              <p class="file-name">{{ item.content }}</p>
+              <FileIcon :filename="item.content" />
+            </a>
           </div>
         </div>
       </div>
@@ -205,6 +224,7 @@ import { useGroupStore } from '@/stores/group';
 import type { GroupMemberInfoVo } from '@/api/group/types';
 import { getMessageCommandParams } from '@/utils/chat';
 import type { ElScrollbar } from 'element-plus';
+import FileIcon from '@/components/common/FileIcon.vue';
 
 const msgBox = ref<InstanceType<typeof ElScrollbar>>();
 const scrollInner = ref<HTMLDivElement>();
@@ -272,6 +292,7 @@ const getUserAvatarUrl = (userId: number) => {
   } else if (props.chatInfo.chatType == ChatType.GROUP) {
     return getFileUrl(memberInfo.value.get(userId)?.avatar);
   }
+  return '';
 };
 const userInfoId = ref(0);
 const userInfoDialogShow = ref(false);
@@ -401,6 +422,35 @@ defineExpose({
       .message-container-item-content-text {
         color: black;
         background-color: rgb(149, 236, 105);
+      }
+    }
+    &-file {
+      background-color: var(--color-background-mute);
+      padding: 12px;
+      border-radius: 5px;
+      width: 250px;
+      height: 80px;
+      cursor: pointer;
+      transition: 0.3s;
+      &:hover {
+        background-color: var(--color-subtitle);
+      }
+      svg {
+        width: 50px;
+        height: 50px;
+      }
+      a {
+        display: flex;
+        justify-content: space-between;
+        gap: 5px;
+        align-items: center;
+        text-decoration: none;
+        color: var(--color-text);
+        .file-name {
+          font-weight: bold;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
       }
     }
   }

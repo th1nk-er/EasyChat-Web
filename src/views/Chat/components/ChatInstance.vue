@@ -18,6 +18,7 @@
         @on-emoji-selected="handleEmojiSelected"
         @on-image-upload="handleImageUpload"
         :chat-info="chatInfo"
+        v-model:files="chatFiles"
         :key="componentKey"
       />
       <ChatInputBox
@@ -41,6 +42,7 @@ import {
   sendMessage,
   subscribeGroupMessage,
   subscribeMessage,
+  uploadChatFileChunk,
   uploadChatImage,
 } from '@/api/chat';
 import {
@@ -72,6 +74,8 @@ const msgBox = ref();
 const inputMessage = ref('');
 /** 消息输入框 */
 const inputBox = ref();
+const chatFiles = ref([] as File[]);
+const isSending = ref(false);
 const _sendMessage = (message: WSMessage) => {
   if (!sendMessage(message)) {
     ElMessage.error('消息发送失败');
@@ -84,6 +88,7 @@ const _sendMessage = (message: WSMessage) => {
     content: message.content,
     createTime: new Date().toISOString(),
     chatType: chatInfo.value.chatType,
+    params: message.params,
   });
   chatStore.updateConversation(message);
   inputMessage.value = '';
@@ -91,6 +96,7 @@ const _sendMessage = (message: WSMessage) => {
 };
 /** 处理发送消息 */
 const handleSendMessage = async () => {
+  isSending.value = true;
   if (inputMessage.value.trim() != '') {
     _sendMessage({
       messageType: MessageType.TEXT,
@@ -111,6 +117,53 @@ const handleSendMessage = async () => {
     });
     imgFile.value = undefined;
     imageSrc.value = '';
+  }
+  if (chatFiles.value.length > 0) {
+    const uploadeds = await uploadFiles();
+    if (uploadeds) {
+      for (const file of uploadeds) {
+        console.log('发送消息', file.name);
+        _sendMessage({
+          messageType: MessageType.FILE,
+          content: file.name,
+          fromId: userStore.userInfo.id,
+          toId: chatInfo.value.chatId,
+          chatType: chatInfo.value.chatType,
+          params: [file.uri],
+        });
+      }
+    }
+  }
+  isSending.value = false;
+};
+const uploadFiles = async () => {
+  const chunkSize = 1024 * 1024 * 2; // 2MB
+  const files = chatFiles.value;
+  const uploadedFiles = [] as { uri: string; name: string }[];
+  for (const file of files) {
+    const totalChunks = Math.ceil(file.size / chunkSize);
+    let uploadedChunks = 0;
+    for (let i = 0; i < totalChunks; i++) {
+      const start = i * chunkSize;
+      const end = Math.min(start + chunkSize, file.size);
+      const chunk = file.slice(start, end);
+      try {
+        const resp = await uploadChatFileChunk(
+          chunk,
+          file.name,
+          totalChunks,
+          i
+        );
+        uploadedChunks++;
+        if (resp.data) {
+          chatFiles.value = chatFiles.value.filter((f) => f != file);
+          uploadedFiles.push({ uri: resp.data, name: file.name });
+          return uploadedFiles;
+        }
+      } catch (error) {
+        ElMessage.error('文件上传失败');
+      }
+    }
   }
 };
 /** 当用户选择表情 */
