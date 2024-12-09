@@ -129,7 +129,7 @@ const handleSendMessage = async () => {
           fromId: userStore.userInfo.id,
           toId: chatInfo.value.chatId,
           chatType: chatInfo.value.chatType,
-          params: [file.uri],
+          params: [file.uri, file.filesize.toString()],
         });
       }
     }
@@ -139,7 +139,7 @@ const handleSendMessage = async () => {
 const uploadFiles = async () => {
   const chunkSize = 1024 * 1024 * 2; // 2MB
   const files = chatFiles.value;
-  const uploadedFiles = [] as { uri: string; name: string }[];
+  const uploadedFiles = [] as { uri: string; name: string; filesize: number }[];
   for (const file of files) {
     const totalChunks = Math.ceil(file.size / chunkSize);
     let uploadedChunks = 0;
@@ -157,7 +157,11 @@ const uploadFiles = async () => {
         uploadedChunks++;
         if (resp.data) {
           chatFiles.value = chatFiles.value.filter((f) => f != file);
-          uploadedFiles.push({ uri: resp.data, name: file.name });
+          uploadedFiles.push({
+            uri: resp.data,
+            name: file.name,
+            filesize: file.size,
+          });
           return uploadedFiles;
         }
       } catch (error) {

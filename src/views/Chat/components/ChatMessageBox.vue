@@ -180,7 +180,12 @@
               "
               :download="item.content"
             >
-              <p class="file-name">{{ item.content }}</p>
+              <div class="file-info">
+                <p class="file-name">{{ item.content }}</p>
+                <p class="file-size">
+                  {{ getFileSizeStr(Number(getMessageCommandParams(item)[1])) }}
+                </p>
+              </div>
               <FileIcon :filename="item.content" />
             </a>
           </div>
@@ -215,7 +220,7 @@ import {
   MessageCommand,
 } from '@/api/chat/types';
 import { useUserStore } from '@/stores/user';
-import { getFileUrl } from '@/utils/file';
+import { getFileSizeStr, getFileUrl } from '@/utils/file';
 import { getTimeString } from '@/utils/timeUtils';
 import UserInfoDialog from '@/components/user/UserInfoDialog.vue';
 import FriendInfoDialog from '@/components/friend/FriendInfoDialog.vue';
@@ -429,7 +434,7 @@ defineExpose({
       padding: 12px;
       border-radius: 5px;
       width: 250px;
-      height: 80px;
+      height: 90px;
       cursor: pointer;
       transition: 0.3s;
       &:hover {
@@ -446,10 +451,15 @@ defineExpose({
         align-items: center;
         text-decoration: none;
         color: var(--color-text);
-        .file-name {
-          font-weight: bold;
-          overflow: hidden;
-          text-overflow: ellipsis;
+        .file-info {
+          display: flex;
+          flex-direction: column;
+          gap: 5px;
+          .file-name {
+            font-weight: bold;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
         }
       }
     }
