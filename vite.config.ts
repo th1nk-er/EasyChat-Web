@@ -27,6 +27,7 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
           target: 'http://localhost:8080',
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/api/, ''),
+          ws: true,
         },
       },
     },
