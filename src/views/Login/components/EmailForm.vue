@@ -104,14 +104,13 @@ const sendDisabled = ref(false);
 const sendSeconds = ref(0);
 // 发送邮箱验证码
 const sendEmail = async () => {
-  sendDisabled.value = true;
   if (!isValidEmail(formData.email)) {
     ElMessage.error('请输入正确的邮箱');
-    sendDisabled.value = false;
     return;
   }
   await sendVerifyCode({ email: formData.email });
   ElMessage.success('验证码发送成功');
+  sendDisabled.value = true;
   sendSeconds.value = 60;
 };
 

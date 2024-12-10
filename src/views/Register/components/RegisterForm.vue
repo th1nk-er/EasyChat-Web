@@ -4,6 +4,7 @@
       <el-input
         v-model="formData.username"
         placeholder="请输入用户名"
+        :prefix-icon="IconPerson"
         maxlength="20"
       ></el-input>
     </el-form-item>
@@ -11,6 +12,7 @@
       <el-input
         v-model="formData.password"
         placeholder="请输入密码"
+        :prefix-icon="IconLock"
         type="password"
         show-password
         maxlength="20"
@@ -20,6 +22,7 @@
       <el-input
         v-model="formData.repeatPassword"
         placeholder="请再次输入密码"
+        :prefix-icon="IconLock"
         type="password"
         show-password
         maxlength="20"
@@ -29,6 +32,7 @@
       <el-input
         v-model="formData.email"
         placeholder="请输入邮箱"
+        :prefix-icon="IconEmail"
         maxlength="30"
       ></el-input>
     </el-form-item>
@@ -37,6 +41,7 @@
         <el-input
           v-model="formData.verifyCode"
           placeholder="验证码"
+          :prefix-icon="IconKey"
           maxlength="6"
           class="verifycode-container__input-verifycode"
         >
@@ -69,6 +74,10 @@ import { register, sendVerifyCode } from '@/api/register';
 import type { RegisterVo } from '@/api/register/types';
 import type { FormInstance, FormRules } from 'element-plus';
 import { isValidEmail } from '@/utils/validate';
+import IconPerson from '@/components/icons/IconPerson.vue';
+import IconLock from '@/components/icons/IconLock.vue';
+import IconEmail from '@/components/icons/IconEmail.vue';
+import IconKey from '@/components/icons/IconKey.vue';
 
 const router = useRouter();
 
@@ -152,14 +161,13 @@ const toLogin = () => {
 const sendDisabled = ref(false);
 const sendSeconds = ref(0);
 const getVerifyCode = async () => {
-  sendDisabled.value = true;
   if (isValidEmail(formData.email)) {
     await sendVerifyCode(formData.email);
     ElMessage.success('验证码已发送');
+    sendDisabled.value = true;
     sendSeconds.value = 60;
   } else {
     ElMessage.error('请输入正确的邮箱');
-    sendDisabled.value = false;
   }
 };
 
