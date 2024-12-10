@@ -1,5 +1,5 @@
 <template>
-  <el-dialog v-model="visible" title="新朋友" width="40%" class="dialog dark">
+  <el-dialog v-model="visible" title="新朋友" class="dialog dark">
     <el-divider />
     <RequestList v-model:visible="showList" @on-selected="handleSelected" />
     <RequestDetails

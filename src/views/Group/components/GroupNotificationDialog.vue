@@ -1,6 +1,6 @@
 <template>
   <el-dialog v-model="dialogVisible" title="群通知">
-    <div class="container">
+    <el-scrollbar class="container">
       <h2 v-show="notificationList.length === 0" style="text-align: center">
         无数据
       </h2>
@@ -208,10 +208,14 @@
           <span v-if="item.type == GroupNotificationType.EXPIRED">已过期</span>
         </div>
       </div>
-      <el-link :underline="false" @click="loadData" v-if="hasMoreData"
+      <el-link
+        :underline="false"
+        @click="loadData"
+        v-if="hasMoreData"
+        style="display: block; text-align: center"
         >加载更多</el-link
       >
-    </div>
+    </el-scrollbar>
     <FriendInfoDialog :friend-id="friendId" v-model="friendInfoShow" />
     <StrangerInfoDialog v-model="strangerInfoShow" :stranger-id="strangerId" />
     <GroupDetails v-model="groupInfoShow" :group-id="groupId" />
@@ -326,13 +330,16 @@ const handleAdminRejectInvitation = async (index: number) => {
   width: 100%;
   display: flex;
   flex-direction: column;
-  max-height: 400px;
-  overflow-y: scroll;
+  height: 60vh;
+  padding: 5px;
   .invitation-list-item {
-    margin-bottom: 5px;
+    margin: 5px 10px;
     display: flex;
     align-items: center;
-    padding: 5px;
+    padding: 8px;
+    transition: 0.5s;
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
     &:hover {
       background-color: var(--color-background-mute);
     }

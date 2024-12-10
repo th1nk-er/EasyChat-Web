@@ -1,21 +1,17 @@
 <template>
-  <div
-    class="request-list"
-    v-show="visible"
-    v-infinite-scroll="loadRequestList"
-    :infinite-scroll-disabled="scrollDisabled"
-  >
+  <el-scrollbar class="request-list" v-show="visible">
     <div
       class="request-list-item"
       v-for="(item, key) in loadedData.records"
       :key="key"
+      @click="emit('onSelected', item)"
     >
       <img
         :src="getFileUrl(item.avatar)"
         class="request-list-item__img-avatar"
       />
       <div class="request-list-item__content">
-        <div class="content-info" @click="emit('onSelected', item)">
+        <div class="content-info">
           <span class="content-info-nickname">{{ item.nickname }}</span>
           <span class="content-info-username">({{ item.username }})</span>
           <p class="content-info-addInfo">{{ item.addInfo }}</p>
@@ -48,7 +44,14 @@
         </div>
       </div>
     </div>
-  </div>
+    <el-link
+      :underline="false"
+      @click="loadRequestList"
+      v-if="hasMoreData"
+      style="display: block; text-align: center"
+      >加载更多</el-link
+    >
+  </el-scrollbar>
 </template>
 <script setup lang="ts">
 import { getAddRequestList } from '@/api/friend';
@@ -67,29 +70,32 @@ const emit = defineEmits<{
 const visible = defineModel('visible', { type: Boolean, default: false });
 const userStore = useUserStore();
 const currentPage = ref(0);
-const scrollDisabled = ref(false);
+const hasMoreData = ref(true);
 const loadedData = ref<FriendRequestData>({
   total: 0,
   pageSize: 0,
   records: [],
 });
 const loadRequestList = async () => {
+  if (!hasMoreData) return;
   currentPage.value++;
   const resp = await getAddRequestList(
     userStore.userInfo.id,
     currentPage.value
   );
-  if (resp.data.records.length < resp.data.pageSize)
-    scrollDisabled.value = true;
+  if (resp.data.records.length < resp.data.pageSize) hasMoreData.value = false;
   loadedData.value.records.push(...resp.data.records);
 };
 watch(visible, (value) => {
   if (value) {
     currentPage.value = 0;
-    scrollDisabled.value = false;
+    hasMoreData.value = true;
     loadedData.value.records = [];
     loadRequestList();
   }
+});
+onMounted(() => {
+  loadRequestList();
 });
 const handleAgreeRequest = async (key: number) => {
   await agreeRequest(loadedData.value.records[key].id);
@@ -100,13 +106,15 @@ const handleAgreeRequest = async (key: number) => {
 <style scoped lang="scss">
 .request-list {
   overflow: auto;
-  min-height: 400px;
+  height: 60vh;
   width: 100%;
   &-item {
-    width: 100%;
     display: flex;
     align-items: center;
-    border-bottom: 1px solid var(--color-border);
+    margin: 5px 10px;
+    padding: 3px 5px;
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
     transition: 0.5s;
     cursor: pointer;
     &__img-avatar {
