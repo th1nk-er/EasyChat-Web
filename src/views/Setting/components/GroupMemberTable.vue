@@ -367,7 +367,7 @@ const loadGroupMemberInfo = async () => {
       clearInterval(intervalId);
       isLoading.value = false;
     }
-  }, 200);
+  }, 500);
 };
 watch(
   () => props.groupId,

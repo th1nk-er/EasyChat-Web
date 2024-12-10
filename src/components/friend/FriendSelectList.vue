@@ -103,7 +103,7 @@ const loadData = () => {
     } catch (e) {
       clearInterval(intervalId);
     }
-  }, 300);
+  }, 500);
 };
 onMounted(() => {
   loadData();

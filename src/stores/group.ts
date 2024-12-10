@@ -61,7 +61,7 @@ export const useGroupStore = defineStore('group', {
           clearInterval(intervalId);
           this.loaded = true;
         }
-      }, 300);
+      }, 500);
     },
     /**
      * 获取群组成员信息并存储，如果已经存储则直接返回

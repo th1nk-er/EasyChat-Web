@@ -179,7 +179,7 @@ const onSelectedGroupChange = async (groupId: number) => {
       clearInterval(intervalId);
       isLoading.value = false;
     }
-  }, 200);
+  }, 500);
 };
 /** 判断用户是否拥有管理员权限 */
 const isUserAdmin = () => {
