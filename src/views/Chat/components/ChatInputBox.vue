@@ -5,8 +5,8 @@
         v-model="message"
         type="textarea"
         resize="none"
-        :rows="4"
         maxlength="1024"
+        autofocus
         class="input-container__textarea"
         @keydown.enter.native="handleEnterDown"
         :disabled="isInputDisabled()"
@@ -50,6 +50,7 @@ import { useGroupStore } from '@/stores/group';
 import { getDurationString } from '@/utils/timeUtils';
 import type { ChatInfo } from '.';
 import { ChatType } from '@/api/chat/types';
+import type { InputInstance } from 'element-plus';
 
 const groupStore = useGroupStore();
 const props = defineProps<{
@@ -64,7 +65,7 @@ const muteInfo = defineModel('muteInfo', {
 const emit = defineEmits<{
   onSendMessage: [];
 }>();
-const messageInputRef = ref<HTMLInputElement>();
+const messageInputRef = ref<InputInstance>();
 /** 用户输入的消息 */
 const handleEnterDown = (e: Event | KeyboardEvent) => {
   if (isInputDisabled()) {
@@ -126,12 +127,14 @@ const isInputDisabled = () => {
 .input-container {
   flex-grow: 1;
   padding: 3px 10px;
+  padding-bottom: 1%;
   display: flex;
   flex-direction: column;
   gap: 5px;
   &__content {
     display: flex;
     gap: 5px;
+    height: 100%;
     .upload-image {
       position: relative;
       height: 120px;
@@ -171,9 +174,13 @@ const isInputDisabled = () => {
       }
     }
     &__textarea {
-      // width: 100%;
       font-size: 1.2rem;
     }
+  }
+}
+.el-textarea {
+  :first-child {
+    height: 100%;
   }
 }
 </style>
