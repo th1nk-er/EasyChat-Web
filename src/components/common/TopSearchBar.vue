@@ -1,7 +1,22 @@
 <template>
   <div class="tool-bar">
-    <div class="tool-bar-item search-bar">
-      <IconSearch />
+    <div
+      class="tool-bar-item search-bar"
+      @click="
+        searchInputVisible = true;
+        searchInput?.focus();
+      "
+    >
+      <IconSearch v-show="!searchInputVisible" />
+      <el-input
+        v-model="searchContent"
+        placeholder="输入搜索内容"
+        v-show="searchInputVisible"
+        ref="searchInput"
+        @blur="handlSearchInputBlur"
+        @input="emits('onSearch', searchContent)"
+        clearable
+      />
     </div>
     <el-dropdown class="tool-bar-item" trigger="click">
       <IconAdd />
@@ -21,10 +36,20 @@
   </div>
 </template>
 <script setup lang="ts">
+import type { InputInstance } from 'element-plus';
 import AddFriendDialog from '../friend/AddFriendDialog.vue';
 import CreateGroupDialog from './CreateGroupDialog.vue';
+const emits = defineEmits<{
+  onSearch: [string];
+}>();
 const addDialogVisible = ref(false);
 const createGroupVisible = ref(false);
+const searchInputVisible = ref(false);
+const searchContent = ref('');
+const searchInput = ref<InputInstance>();
+const handlSearchInputBlur = () => {
+  if (searchContent.value == '') searchInputVisible.value = false;
+};
 </script>
 
 <style lang="scss" scoped>
@@ -53,6 +78,11 @@ const createGroupVisible = ref(false);
   }
   &-item.search-bar {
     flex-grow: 1;
+    transition: 0.5s;
+    cursor: text;
+    &:hover {
+      background-color: var(--color-background);
+    }
   }
 }
 </style>

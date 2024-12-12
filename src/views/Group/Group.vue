@@ -1,11 +1,9 @@
 <template>
   <div class="container">
-    <TopSearchBar />
     <GroupList />
   </div>
 </template>
 <script setup lang="ts">
-import TopSearchBar from '@/components/common/TopSearchBar.vue';
 import { GroupList } from './components';
 </script>
 <style lang="scss" scoped>

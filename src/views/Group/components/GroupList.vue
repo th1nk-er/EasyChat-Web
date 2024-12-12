@@ -1,5 +1,6 @@
 <template>
   <div class="container">
+    <TopSearchBar @onSearch="handleSearchContent" />
     <div class="group-item" @click="groupInvitationDialogVisible = true">
       <IconGroup class="group-item__avatar svg" />
       <div class="group-item__name">
@@ -8,7 +9,7 @@
     </div>
     <div
       class="group-item"
-      v-for="(item, index) in groupStore.groupList"
+      v-for="(item, index) in groupList"
       :key="index"
       v-show="item.status != GroupStatus.DISBAND"
       @click="
@@ -37,13 +38,23 @@ import { useGroupStore } from '@/stores/group';
 import { getFileUrl } from '@/utils/file';
 import { GroupNotificationDialog } from '.';
 import GroupInfoDialog from '@/components/group/GroupInfoDialog.vue';
-import { GroupStatus } from '@/api/group/types';
+import { GroupStatus, type UserGroupVo } from '@/api/group/types';
 const groupStore = useGroupStore();
 const groupInvitationDialogVisible = ref(false);
 const groupInfoDialogVisible = ref(false);
+const groupList = ref<UserGroupVo[]>([]);
 const groupId = ref(0);
+const handleSearchContent = (content: string) => {
+  groupList.value = groupStore.groupList.filter((item) => {
+    return (
+      item.groupName.includes(content) ||
+      (item.groupRemark && item.groupRemark.includes(content))
+    );
+  });
+};
 onMounted(() => {
   groupStore.loadGroupList();
+  groupList.value = groupStore.groupList;
 });
 </script>
 <style lang="scss" scoped>

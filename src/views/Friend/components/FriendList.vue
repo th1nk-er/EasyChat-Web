@@ -1,5 +1,6 @@
 <template>
   <div class="main">
+    <TopSearchBar @onSearch="handleSearchContent" />
     <FriendRequestDialog v-model="requestDialogShow" />
     <div class="friend-item" @click="requestDialogShow = true">
       <IconPersonFill
@@ -15,7 +16,7 @@
     >
       <div
         class="friend-item"
-        v-for="(item, index) in friendStore.friendList"
+        v-for="(item, index) in friendList"
         :key="index"
         @click="handleFriendClick(index)"
       >
@@ -45,7 +46,7 @@
   <FriendInfoDialog v-model="friendInfoShow" :friend-id="selectedFriendId" />
 </template>
 <script setup lang="ts">
-import type { FriendListVo } from '@/api/friend/types';
+import type { FriendListVo, UserFriendVo } from '@/api/friend/types';
 import { useFriendStore } from '@/stores/friend';
 import { getUserFriendList } from '@/api/friend';
 import { getFileUrl } from '@/utils/file';
@@ -62,6 +63,7 @@ const friendListVo = ref<FriendListVo>({
   pageSize: 0,
   records: [],
 });
+const friendList = ref<UserFriendVo[]>([]);
 const friendInfoShow = ref(false);
 const selectedFriendId = ref(0);
 const loadFriendList = async () => {
@@ -75,6 +77,7 @@ const loadFriendList = async () => {
     friendListVo.value.records.push(...resp.data.records);
     currentPage.value++;
     friendStore.friendList = friendListVo.value.records;
+    friendList.value = friendStore.friendList;
   }
   if (resp.data.records.length < resp.data.pageSize) {
     scrollDisabled.value = true;
@@ -84,6 +87,11 @@ const loadFriendList = async () => {
 const handleFriendClick = (index: number) => {
   selectedFriendId.value = friendStore.friendList[index].friendId;
   friendInfoShow.value = true;
+};
+const handleSearchContent = (content: string) => {
+  friendList.value = friendStore.friendList.filter((item) => {
+    return item.remark?.includes(content) || item.nickname.includes(content);
+  });
 };
 </script>
 <style lang="scss" scoped>

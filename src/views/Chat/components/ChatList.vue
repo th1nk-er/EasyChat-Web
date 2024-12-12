@@ -1,9 +1,9 @@
 <template>
   <div class="chat-list">
-    <TopSearchBar />
+    <TopSearchBar @onSearch="handleSearchConversation" />
     <div class="chat-list-box">
       <div
-        v-for="(conversation, key) in chatStore.conversationList"
+        v-for="(conversation, key) in conversationList"
         :key="key"
         class="user-item"
         :class="isConversationChatting(conversation) ? 'chatting' : ''"
@@ -78,6 +78,7 @@ import { getTimeString } from '@/utils/timeUtils';
 import { getFileUrl } from '@/utils/file';
 
 const chatStore = useChatStore();
+const conversationList = ref<UserConversation[]>([]);
 const handleClickConversation = (conversation: UserConversation) => {
   chatStore.clearConversationUnread(conversation.chatId, conversation.chatType);
   chatStore.chatId = conversation.chatId;
@@ -92,8 +93,21 @@ const isConversationChatting = (conversation: UserConversation) => {
     chatStore.chatType == conversation.chatType
   );
 };
+const handleSearchConversation = (searchContent: string) => {
+  conversationList.value = chatStore.conversationList.filter((conversation) => {
+    const name =
+      conversation.remark == undefined
+        ? conversation.nickname
+        : conversation.remark;
+    return (
+      name.includes(searchContent) ||
+      conversation.lastMessage.includes(searchContent)
+    );
+  });
+};
 onMounted(() => {
   chatStore.loadConversations();
+  conversationList.value = chatStore.conversationList;
 });
 </script>
 <style scoped lang="scss">

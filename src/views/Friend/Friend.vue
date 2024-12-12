@@ -1,11 +1,9 @@
 <template>
   <div class="container">
-    <TopSearchBar />
     <FriendList />
   </div>
 </template>
 <script setup lang="ts">
-import TopSearchBar from '@/components/common/TopSearchBar.vue';
 import { FriendList } from './components';
 </script>
 
