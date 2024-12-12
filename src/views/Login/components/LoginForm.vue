@@ -124,7 +124,11 @@ const handleLogin = async (formEl: FormInstance | undefined) => {
       getUserInfo()
         .then((res) => {
           userStore.userInfo = res.data;
-          router.push({ name: 'Chat' });
+          const url = router.currentRoute.value.query.redirect;
+          if (url) {
+            const redirectUrl = url.toString();
+            window.location.href = redirectUrl;
+          } else router.push({ name: 'Chat' });
         })
         .catch(() => {
           userStore.removeToken();

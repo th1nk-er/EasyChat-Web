@@ -24,5 +24,7 @@ export const useSettingStore = defineStore('Setting', {
       }
     },
   },
-  persist: {},
+  persist: {
+    pick: ['themePreference'],
+  },
 });

@@ -246,7 +246,7 @@ const handleQuitGroup = async () => {
 const disbandDialogShow = ref(false);
 </script>
 <style lang="scss" scoped>
-@import './components/style.scss';
+@use './components/style.scss';
 .group-btn {
   display: flex;
   .divider {

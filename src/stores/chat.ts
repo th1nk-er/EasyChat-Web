@@ -225,6 +225,6 @@ export const useChatStore = defineStore('chat', {
     },
   },
   persist: {
-    paths: ['conversationList'],
+    pick: ['conversationList'],
   },
 });

@@ -21,5 +21,5 @@ const settingStore = useSettingStore();
 const theme = ref(settingStore.themePreference);
 </script>
 <style scoped lang="scss">
-@import './components/style.scss';
+@use './components/style.scss';
 </style>

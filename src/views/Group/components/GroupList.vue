@@ -52,8 +52,8 @@ const handleSearchContent = (content: string) => {
     );
   });
 };
-onMounted(() => {
-  groupStore.loadGroupList();
+onMounted(async () => {
+  await groupStore.loadGroupList();
   groupList.value = groupStore.groupList;
 });
 </script>

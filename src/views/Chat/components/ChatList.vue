@@ -105,8 +105,8 @@ const handleSearchConversation = (searchContent: string) => {
     );
   });
 };
-onMounted(() => {
-  chatStore.loadConversations();
+onMounted(async () => {
+  await chatStore.loadConversations();
   conversationList.value = chatStore.conversationList;
 });
 </script>

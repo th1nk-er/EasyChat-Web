@@ -143,5 +143,5 @@ const getIpLocationText = (ip: string) => {
 };
 </script>
 <style scoped lang="scss">
-@import './components/style.scss';
+@use './components/style.scss';
 </style>

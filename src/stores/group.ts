@@ -113,6 +113,6 @@ export const useGroupStore = defineStore('group', {
     },
   },
   persist: {
-    paths: ['groupList'],
+    pick: ['groupList'],
   },
 });
