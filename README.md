@@ -10,8 +10,8 @@
 
 |                            Light                             |                             Dark                             |
 | :----------------------------------------------------------: | :----------------------------------------------------------: |
-| ![image-20241213191325559](D:\WebProjects\EasyChat-Web\assets\image-20241213191325559.png) | ![image-20241213191347339](D:\WebProjects\EasyChat-Web\assets\image-20241213191347339.png) |
-| ![image-20241213191601564](D:\WebProjects\EasyChat-Web\assets\image-20241213191601564.png) | ![image-20241213191528937](D:\WebProjects\EasyChat-Web\assets\image-20241213191528937.png) |
+| ![image-20241213191325559](.\assets\image-20241213191325559.png) | ![image-20241213191347339](.\assets\image-20241213191347339.png) |
+| ![image-20241213191601564](.\assets\image-20241213191601564.png) | ![image-20241213191528937](.\assets\image-20241213191528937.png) |
 
 ## 部署
 
