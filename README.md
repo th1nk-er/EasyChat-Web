@@ -1,6 +1,6 @@
 # EasyChat-Web
 
-![GitLab License](https://img.shields.io/gitlab/license/th1nk-er/EasyChat-Web)![Gitlab Pipeline Status](https://img.shields.io/gitlab/pipeline-status/th1nk-er/EasyChat-Web?branch=master)![vue](https://img.shields.io/badge/vue-3.5.1-brightgreen.svg)![element-plus](https://img.shields.io/badge/element--plus-2.9.0-brightgreen.svg)
+![GitLab License](https://img.shields.io/gitlab/license/th1nk-er/EasyChat-Web) ![Gitlab Pipeline Status](https://img.shields.io/gitlab/pipeline-status/th1nk-er/EasyChat-Web?branch=master) ![vue](https://img.shields.io/badge/vue-3.5.1-brightgreen.svg) ![element-plus](https://img.shields.io/badge/element--plus-2.9.0-brightgreen.svg)
 
 ## 介绍
 
