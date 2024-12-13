@@ -62,7 +62,11 @@
     </el-table-column>
     <el-table-column fixed="right" align="center">
       <template #header>
-        <el-input v-model="searchText" placeholder="输入关键字搜索">
+        <el-input
+          v-model="searchText"
+          placeholder="输入关键字搜索"
+          style="width: 220px"
+        >
           <template #prepend>
             <IconSearch />
           </template>
