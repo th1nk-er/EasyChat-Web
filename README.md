@@ -4,7 +4,7 @@
 
 ## 介绍
 
-[EasyChat-Web](https://gitlab.com/th1nk-er/EasyChat-Web) 是一个在线聊天室的前端页面，它基于 [vue](https://github.com/vuejs/vue) 和 [element-plus](https://github.com/element-plus/element-plus) 实现，使用 [websocket](https://github.com/stomp-js/stompjs) 进行实时通讯，基本功能已搭建完善。项目后端地址:[EasyChat](https://gitlab.com/th1nl-er/EasyChat)
+[EasyChat-Web](https://gitlab.com/th1nk-er/EasyChat-Web) 是一个在线聊天室的前端页面，它基于 [vue](https://github.com/vuejs/vue) 和 [element-plus](https://github.com/element-plus/element-plus) 实现，使用 [websocket](https://github.com/stomp-js/stompjs) 进行实时通讯，基本功能已搭建完善。项目后端地址:[EasyChat](https://gitlab.com/th1nk-er/EasyChat)
 
 ## 部署
 
