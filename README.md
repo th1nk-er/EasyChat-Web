@@ -4,7 +4,10 @@
 
 ## 介绍
 
-[EasyChat-Web](https://gitlab.com/th1nk-er/EasyChat-Web) 是一个在线聊天室的前端页面，它基于 [vue](https://github.com/vuejs/vue) 和 [element-plus](https://github.com/element-plus/element-plus) 实现，使用 [websocket](https://github.com/stomp-js/stompjs) 进行实时通讯，基本功能已搭建完善。项目后端地址:[EasyChat](https://gitlab.com/th1nk-er/EasyChat)
+[EasyChat-Web](https://gitlab.com/th1nk-er/EasyChat-Web) 是一个在线聊天室的前端页面，它基于 [vue](https://github.com/vuejs/vue) 和 [element-plus](https://github.com/element-plus/element-plus) 实现，使用 [websocket](https://github.com/stomp-js/stompjs) 进行实时通讯，基本功能已搭建完善。
+
+<p>项目后端地址: <a href="https://gitlab.com/th1nk-er/EasyChat"><img alt="Static Badge" src="https://img.shields.io/badge/GitLab-gray?logo=gitlab"></a> <a href="https://github.com/th1nk-er/EasyChat"><img alt="Static Badge" src="https://img.shields.io/badge/GitHub-gray?logo=github"></a>
+
 
 ## 演示
 
@@ -22,7 +25,10 @@
 1. 拉取项目源码
 
 ```sh
+# gitlab
 git clone https://gitlab.com/th1nk-er/EasyChat-Web.git
+# github
+git clone https://github.com/th1nk-er/EasyChat-Web.git
 ```
 
 2. 安装依赖并启动预览
